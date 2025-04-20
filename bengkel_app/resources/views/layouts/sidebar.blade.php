@@ -33,12 +33,12 @@
                     </a>
                 </li>
                 <li class="nav-item" class="">
-                    <a href="#" class="nav-link @yield('navPelanggan')"  aria-current="page">
+                    <a href="/data-pelanggan" class="nav-link @yield('navPelanggan')"  aria-current="page">
                     Kelola Data Pelanggan
                     </a>
                 </li>
                 <li class="nav-item" class="">
-                    <a href="#" class="nav-link @yield('navKendaraan')"  aria-current="page">
+                    <a href="/jenis-kendaraan" class="nav-link @yield('navKendaraan')"  aria-current="page">
                     Kelola Jenis Kendaraan
                     </a>
                 </li>
@@ -61,3 +61,5 @@
         </div>
     </div>
   </div>
+
+  

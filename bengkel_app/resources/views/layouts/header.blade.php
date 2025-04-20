@@ -70,3 +70,13 @@
       </div>
     </div>
   </header>
+
+  <!-- Tombol toggle sidebar (mobile) -->
+<ul class="navbar-nav d-md-none me-auto">
+    <li class="nav-item text-nowrap">
+        <button class="nav-link px-3 text-white btn btn-link" type="button"
+            data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">
+            <i class="bi bi-list fs-4"></i>
+        </button>
+    </li>
+</ul>
