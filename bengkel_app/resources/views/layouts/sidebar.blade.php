@@ -1,4 +1,4 @@
-<div class="sidebar border border-right col-md-3 col-lg-2 p-0 ">
+<div class="sidebar border border-right col-md-3 col-lg-2 p-0 side-bar">
     <div class="offcanvas-md offcanvas-end " tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="sidebarMenuLabel">Company name</h5>
@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="nav-item" class="">
-                    <a href="#" class="nav-link @yield('navPelanggan')"  aria-current="page">
+                    <a href="/pelanggan" class="nav-link @yield('navPelanggan')"  aria-current="page">
                     Kelola Data Pelanggan
                     </a>
                 </li>
@@ -48,7 +48,7 @@
                     </a>
                 </li>
                 <li class="nav-item" class="">
-                    <a href="#" class="nav-link @yield('navLayanan')"  aria-current="page">
+                    <a href="/layanan" class="nav-link @yield('navLayanan')"  aria-current="page">
                     Kelola Jenis Layanan Service
                     </a>
                 </li>

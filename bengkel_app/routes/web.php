@@ -5,11 +5,14 @@ use App\Http\Controllers\SparepartController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\JenisLayananController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+<<<<<<< HEAD
 
 Route::get('login', [AuthControlller::class, 'index'])->name('login');
 Route::post('login', [AuthControlller::class, 'submitLogin'])->name('login.post');
@@ -30,3 +33,14 @@ Route::get('/user-create', function () {
         'role' => 'admin']);
         return redirect()->route('login')->with('success', 'User berhasil ditambahkan');
 });
+=======
+Route::get('/dashboard', function () {
+    return view('dashboard.index');
+});
+
+Route::resource('pelanggan', PelangganController::class);
+Route::resource('/pelanggan', PelangganController::class);
+
+Route::resource('layanan', JenisLayananController::class);
+Route::resource('/layanan', JenisLayananController::class);
+>>>>>>> origin/cipah
