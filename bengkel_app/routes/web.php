@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\JenisLayananController;
+use App\Http\Controllers\ManajemenKontenController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/user', UserController::class);
     Route::resource('/pelanggan', PelangganController::class);
     Route::resource('/layanan', JenisLayananController::class);
+    Route::resource('/manajemen_konten', ManajemenKontenController::class);
 });
 Route::get('/user-create', function () {
     DB::table('users')->insert([
@@ -34,12 +37,5 @@ Route::get('/user-create', function () {
         'role' => 'admin']);
         return redirect()->route('login')->with('success', 'User berhasil ditambahkan');
 });
-Route::get('/dashboard', function () {
-    return view('dashboard.index');
-});
 
-Route::resource('pelanggan', PelangganController::class);
-
-
-Route::resource('layanan', JenisLayananController::class);
-
+// use App\Http\Controllers\ManajemenKontenController;
