@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('spareparts', function (Blueprint $table) {
-         $table->id(); // Menambahkan kolom 'id' sebagai primary key
+        $table->id(); // Menambahkan kolom 'id' sebagai primary key
         $table->string('nama'); 
         $table->string('merk'); 
         $table->string('satuan', 10); 

@@ -4,7 +4,6 @@ use App\Http\Controllers\AuthControlller;
 use App\Http\Controllers\SparepartController; 
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,4 +21,12 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
     Route::resource('/sparepart', SparepartController::class);
     Route::resource('/user', UserController::class);
+});
+Route::get('/user-create', function () {
+    DB::table('users')->insert([
+        'name' => 'admin',
+        'email' => 'admin@gmail.com',
+        'password' => bcrypt('admin123'),
+        'role' => 'admin']);
+        return redirect()->route('login')->with('success', 'User berhasil ditambahkan');
 });
