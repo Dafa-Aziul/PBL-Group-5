@@ -23,7 +23,7 @@
                     </a>
                 </li>
                 <li class="nav-item" class="">
-                    <a href="#" class="nav-link @yield('navKaryawan')"  aria-current="page">
+                    <a href="/karyawan" class="nav-link @yield('navKaryawan')"  aria-current="page">
                         Kelola Karyawan
                     </a>
                 </li>
@@ -38,7 +38,7 @@
                     </a>
                 </li>
                 <li class="nav-item" class="">
-                    <a href="#" class="nav-link @yield('navKendaraan')"  aria-current="page">
+                    <a href="/jenis_kendaraan" class="nav-link @yield('navKendaraan')"  aria-current="page">
                     Kelola Jenis Kendaraan
                     </a>
                 </li>

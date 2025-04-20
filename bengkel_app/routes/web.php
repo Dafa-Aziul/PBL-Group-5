@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\JenisLayananController;
 use App\Http\Controllers\ManajemenKontenController;
+use App\Http\Controllers\JenisKendaraanController;
+use App\Http\Controllers\DataKaryawanController;
 
 
 Route::get('/', function () {
@@ -28,6 +30,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/pelanggan', PelangganController::class);
     Route::resource('/layanan', JenisLayananController::class);
     Route::resource('/manajemen_konten', ManajemenKontenController::class);
+    Route::resource('/jenis_kendaraan', JenisKendaraanController::class);
+    Route::resource('/karyawan', DataKaryawanController::class);
 });
 Route::get('/user-create', function () {
     DB::table('users')->insert([
@@ -39,3 +43,6 @@ Route::get('/user-create', function () {
 });
 
 // use App\Http\Controllers\ManajemenKontenController;
+
+
+

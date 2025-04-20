@@ -37,13 +37,10 @@ class JenisLayananController extends Controller
             'estimasi_pengerjaan' => 'required|string',
             'jenis_kendaraan' => 'required|string',
             'deskripsi' => 'required|string',
-            'harga' => 'required|numeric',
-            
-
         ]);
         
         $validate['harga'] = $harga;
-        JenisLayanan::create($request->all());
+        JenisLayanan::create($validate);
         return redirect('/layanan')->with('succes','Data Berhasil Dimasukan');
     }
 

@@ -11,7 +11,7 @@
     <div class="card-header d-flex justify-content-between align-items-center p-3">
       <h1 class="h4">Daftar Pelanggan</h1>
       <div class="d-flex justify-content-end">
-        <a href="{{ route('pelanggan.create') }}" class="btn btn-primary mb-3">+ Tambah Pelanggan</a>
+        <a href="{{ route('pelanggan.create') }}" class="btn btn-primary">+ Tambah Pelanggan</a>
       </div>
     </div>
     <div class="card-body">

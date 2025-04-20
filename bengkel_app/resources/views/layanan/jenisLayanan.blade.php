@@ -10,7 +10,7 @@
     <div class="card-header d-flex justify-content-between align-items-center p-3">
       <h1 class="h4">Daftar Jenis Layanan</h1>
       <div class="d-flex justify-content-end">
-        <a href="{{ route('layanan.create') }}" class="btn btn-primary mb-3">+ Tambah Jenis Layanan</a>
+        <a href="{{ route('layanan.create') }}" class="btn btn-primary">+ Tambah Jenis Layanan</a>
       </div>
     </div>
     <div class="card-body">

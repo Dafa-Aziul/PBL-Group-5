@@ -95,12 +95,8 @@
 
             
     
-            <div class="row mt-4">
-                <div class="offset-sm-2 col-sm-6">
-                    <button type="submit" class="btn btn-primary my-3 px-3">Simpan</button>
-                    <button type="reset" name="reset" class="btn btn-warning">Reset</button>
-                </div>
-                
+            <div class="d-flex justify-content-end mb-3">
+                <input type="submit" name="submit"class="btn btn-primary" value="Update">
             </div>
     
         </form>

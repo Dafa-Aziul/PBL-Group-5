@@ -122,8 +122,7 @@
             @enderror
         </div>
         <div class="d-flex justify-content-end mb-3">
-            <input type="submit" name="submit"class="btn btn-primary" value="Submit">
-            <input type="reset" class="btn btn-warning ms-2" value="Batal">
+            <input type="submit" name="submit"class="btn btn-primary" value="Update">
         </div>
     </form>
   </div> 
