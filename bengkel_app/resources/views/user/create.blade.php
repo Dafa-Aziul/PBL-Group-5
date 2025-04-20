@@ -9,7 +9,7 @@
         <div class="card-header d-flex justify-content-between align-items-center p-3">
             <h1 class="h4">Tambah Sparepart</h1>
             <div class="d-flex justify-content-end">
-            <a href="{{ route()->back() }}" class="btn btn-primary">Kembali</a>
+            <a href="{{ route('user.index') }}" class="btn btn-primary">Kembali</a>
             </div>
         </div>
         <div class="card-body">
