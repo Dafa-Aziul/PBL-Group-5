@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<<<<<<< HEAD
     <title>@yield('title','Sistem Informasi bengkel')</title>
-=======
-    <link rel="stylesheet" href="">
-    <title>@yield('title','Sitem Informasi Jurusan TI')</title>
->>>>>>> origin/cipah
     <style>
         main > .container {
             padding: 60px 15px 0;
