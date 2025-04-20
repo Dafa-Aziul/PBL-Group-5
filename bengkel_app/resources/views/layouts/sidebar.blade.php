@@ -53,7 +53,7 @@
                     </a>
                 </li>
                 <li class="nav-item" class="">
-                    <a href="#" class="nav-link @yield('navKonten')"  aria-current="page">
+                    <a href="ManajemenKonten" class="nav-link @yield('ManajemenKonten')"  aria-current="page">
                     Manajemen Konten
                     </a>
                 </li>
