@@ -43,8 +43,8 @@
                     </a>
                 </li>
                 <li class="nav-item" class="">
-                    <a href="#" class="nav-link @yield('navSukuCadang')"  aria-current="page">
-                    Manajemen Suku Cadang
+                    <a href="/sparepart" class="nav-link @yield('navSparepart')"  aria-current="page">
+                    Manajemen Sparepart
                     </a>
                 </li>
                 <li class="nav-item" class="">

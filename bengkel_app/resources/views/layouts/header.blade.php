@@ -1,7 +1,7 @@
 <header class="navbar sticky-top bg-dark flex-md-nowrap p-2" data-bs-theme="dark">
     <!-- Brand -->
     <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white d-none d-md-block" href="#">
-      <img src="kopcv.jpg" class="me-2" alt="" height="25">CV. Razka Pratama
+      <img src="{{ asset('storage/images/kopcv.jpg')}}" class="me-2" alt="" height="25">CV. Razka Pratama
     </a>
   
     <!-- Tombol Mobile -->
@@ -43,8 +43,8 @@
         <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
           <!-- Info User (Hanya Desktop) -->
           <div class="d-none d-md-flex flex-column text-end me-2">
-            <span class="fw-semibold text-white">Administrator</span>
-            <small class="text-light">Admin</small>
+            <span class="fw-semibold text-white">{{ Auth::user()->name }}</span>
+            <small class="text-light">{{ Auth::user()->role }}</small>
           </div>
     
           <!-- Avatar -->
@@ -55,8 +55,10 @@
         <ul class="dropdown-menu text-small shadow dropdown-menu-end">
           <!-- Info User (Hanya Mobile) -->
           <li class="px-3 py-2 d-block d-md-none">
-            <div class="fw-semibold">Administrator</div>
-            <div class="text-muted small">Admin</div>
+            <div class="fw-semibold">
+              {{ Auth::user()->name }}
+            </div>
+            <div class="text-muted small">{{ Auth::user()->role }}</div>
             <hr class="my-2">
           </li>
     
@@ -65,7 +67,10 @@
           <li><a class="dropdown-item" href="#">Settings</a></li>
           <li><a class="dropdown-item" href="#">Profile</a></li>
           <li><hr class="dropdown-divider" /></li>
-          <li><a class="dropdown-item" href="#">Sign out</a></li>
+          <li><form action="{{ route('logout') }}">
+            @csrf
+            <button class="btn btn-danger dropdown-item" href="#">Log out</button>
+          </form></li>
         </ul>
       </div>
     </div>
