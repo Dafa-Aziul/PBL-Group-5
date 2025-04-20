@@ -80,7 +80,7 @@ class PelangganController extends Controller
      */
     public function destroy(String $id)
     {
-        Pelanggan::destroy($id);
-        return redirect ('/pelanggan');
+        // Pelanggan::destroy($id);
+        // return redirect ('/pelanggan');
     }
 }

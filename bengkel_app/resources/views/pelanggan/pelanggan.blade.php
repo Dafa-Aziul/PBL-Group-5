@@ -44,17 +44,11 @@
                     <td>{{ $pelanggan->ket}}</td>
                     <td class="text-center">
                         <a href="{{ route('pelanggan.edit', $pelanggan->id) }}" class="btn btn-sm btn-warning">Edit</a>
-    
-                        <form action="{{ route('pelanggan.destroy', $pelanggan->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin mau hapus?')">Hapus</button>
-                        </form>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="9" class="text-center">Data pelanggan belum ada.</td>
+                    <td colspan="10" class="text-center">Data pelanggan belum ada.</td>
                 </tr>
                 @endforelse
             </tbody>

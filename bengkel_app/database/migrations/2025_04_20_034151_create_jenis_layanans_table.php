@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('harga');
             $table->text('deskripsi');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('no_telp', 20);
             $table->text('alamat');
             $table->string('no_polisi')->unique();
-            $table->unsignedBigInteger('jenis_kendaraan');
+            $table->string('jenis_kendaraan');
             $table->string('model');
             $table->enum('ket', ['Pribadi','Perusahaan']);
             $table->timestamps();
