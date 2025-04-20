@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('data_pelanggan', function (Blueprint $table) {
-            $table->id('id_pegawai');
-            $table->unsignedBigInteger('id_user');
+        Schema::create('data_karyawan', function (Blueprint $table) {
+            $table->id('id_karyawan');
             $table->string('email')->unique();
             $table->string('nama', 100);
             $table->string('jabatan', 50);
@@ -22,8 +21,9 @@ return new class extends Migration
             $table->date('tanggal_masuk');
             $table->enum('status', ['Aktif', 'Nonaktif']);
             $table->timestamps();
+            $table->softDeletes();
     
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+            
         });
     }
 
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('data_pelanggans');
+        Schema::dropIfExists('data_karyawans');
     }
 };

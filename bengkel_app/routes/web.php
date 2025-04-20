@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JenisKendaraanController;
-use App\Http\Controllers\DataPelangganController;
+use App\Http\Controllers\DataKaryawanController;
 
 
 Route::get('/', function () {
@@ -16,4 +16,5 @@ Route::get('/dashboard', function () {
 
 Route::resource('jenis-kendaraan', JenisKendaraanController::class);
 
-Route::resource('data-pelanggan', DataPelangganController::class);
+Route::resource('data-karyawan', DataKaryawanController::class);
+

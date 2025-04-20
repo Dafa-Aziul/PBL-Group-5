@@ -20,7 +20,6 @@ class JenisKendaraanFactory extends Factory
             'nama_jenis' => $this->faker->randomElement(['Truk Box', 'Truk Tangki', 'Truk Trailer']),
             'merk' => $this->faker->randomElement(['Hino', 'Fuso', 'Isuzu']),
             'model' => $this->faker->bothify('Model-###'),
-            'tahun' => $this->faker->numberBetween(2000, 2024),
             'deskripsi' => $this->faker->sentence(),
         ];
     }

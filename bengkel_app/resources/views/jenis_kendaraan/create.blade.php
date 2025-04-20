@@ -1,4 +1,4 @@
-@extends('layouts.appdatapelanggan')
+@extends('layouts.main')
 
 @section('content')
 <div class="card mt-4">
@@ -25,16 +25,12 @@
             </div>
 
             <div class="mb-3">
-                <label for="tahun" class="form-label">Tahun</label>
-                <input type="number" class="form-control" id="tahun" name="tahun" required>
-            </div>
-
-            <div class="mb-3">
                 <label for="deskripsi" class="form-label">Deskripsi</label>
                 <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">Simpan</button>
+            <a href="{{ route('jenis-kendaraan.index') }}" class="btn btn-secondary">Kembali</a>
         </form>
     </div>
 </div>
