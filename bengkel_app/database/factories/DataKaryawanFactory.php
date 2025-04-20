@@ -1,14 +1,14 @@
 <?php
 
 namespace Database\Factories;
-use App\Models\DataPelanggan;
+use App\Models\DataKaryawan;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DataPelanggan>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DataKaryawan>
  */
-class DataPelangganFactory extends Factory
+class DataKaryawanFactory extends Factory
 {
     /**
      * Define the model's default state.

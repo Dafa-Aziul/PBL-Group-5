@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DataPelanggan extends Model
+class DataKaryawan extends Model
 {
-    /** @use HasFactory<\Database\Factories\DataPelangganFactory> */
+    /** @use HasFactory<\Database\Factories\DataKaryawanFactory> */
     use HasFactory;
-    protected $table = 'data_pelanggan';
-    protected $primaryKey = 'id_pegawai';
+    protected $table = 'data_karyawan';
+    protected $primaryKey = 'id_karyawan';
 
     protected $fillable = [
         'id_user', 'email', 'nama', 'jabatan',

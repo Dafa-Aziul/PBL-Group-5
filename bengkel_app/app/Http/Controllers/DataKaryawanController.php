@@ -1,23 +1,23 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\DataPelanggan;
+use App\Models\DataKaryawan;
 use App\Models\User;
 
 use Illuminate\Http\Request;
 
-class DataPelangganController extends Controller
+class DataKaryawanController extends Controller
 {
     public function index()
     {
-        $dataPelanggan = DataPelanggan::all();
-        return view('data_pelanggan.index', compact('dataPelanggan'));
+        $dataKaryawan = DataKaryawan::all();
+        return view('data_karyawan.index', compact('dataKaryawan'));
     }
 
     public function create()
     {
         $users = User::all();
-        return view('data_pelanggan.create', compact('users'));
+        return view('data_karyawan.create', compact('users'));
     }
 
     public function store(Request $request)
@@ -33,32 +33,32 @@ class DataPelangganController extends Controller
             'status' => 'required|in:Aktif,Nonaktif'
         ]);
 
-        DataPelanggan::create($request->all());
-        return redirect()->route('data-pelanggan.index')->with('success', 'Data berhasil ditambahkan!');
+        DataKaryawan::create($request->all());
+        return redirect()->route('data-karyawan.index')->with('success', 'Data berhasil ditambahkan!');
     }
 
     public function edit($id)
     {
-        // $data = DataPelanggan::findOrFail($id);
+        // $data = DataKaryawan::findOrFail($id);
         // $users = User::all();
-        // return view('data_pelanggan.edit', compact('data', 'users'));
-        $pelanggan = DataPelanggan::findOrFail($id);
+        // return view('data_karyawan.edit', compact('data', 'users'));
+        $karyawan = DataKaryawan::findOrFail($id);
         $users = User::all(); // kalau kamu perlu juga data user untuk dropdown misalnya
 
-        return view('data_pelanggan.edit', compact('pelanggan', 'users'));
+        return view('data_karyawan.edit', compact('karyawan', 'users'));
     }
 
     public function update(Request $request, $id)
     {
-        $data = DataPelanggan::findOrFail($id);
+        $data = DataKaryawan::findOrFail($id);
         $data->update($request->all());
 
-        return redirect()->route('data-pelanggan.index')->with('success', 'Data berhasil diupdate!');
+        return redirect()->route('data-karyawan.index')->with('success', 'Data berhasil diupdate!');
     }
 
     public function destroy($id)
     {
-        DataPelanggan::destroy($id);
+        DataKaryawan::destroy($id);
         return back()->with('success', 'Data berhasil dihapus!');
     }
 }

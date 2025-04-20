@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('nama_jenis', 100);
             $table->string('merk', 50);
             $table->string('model', 50);
-            $table->integer('tahun');
             $table->string('deskripsi', 255)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -1,10 +1,17 @@
-@extends('layouts.appdatapelanggan')
-@section('title', 'Data Pelanggan')
+@extends('layouts.main')
+@section('title', 'Data Pegawai')
 @section('navKendaraan', 'active')
 
 @section('content')
-    
-    <h1>Daftar Jenis Kendaraan</h1>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Daftar Jenis Kendaraan</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+       </div>
+    </div>
 
     @if (session('success'))
         <div style="background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
@@ -12,8 +19,14 @@
         </div>
     @endif
 
-    <a href="{{ route('jenis-kendaraan.create') }}" class="btn btn-primary mb-3">Tambah Jenis Kendaraan</a>
-
+    <div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center p-3">
+        <h1 class="h4">Daftar Jenis Kendaraan</h1>
+        <div class="d-flex justify-content-end">
+        <a href="{{ route('jenis-kendaraan.create') }}" class="btn btn-primary mb-3">Tambah Jenis Kendaraan</a>
+        </div>
+    </div>
+    <div class="card-body">
     <table class="table table-bordered">
         <thead class="table-dark">
             <tr>
@@ -21,7 +34,6 @@
                 <th>Nama Jenis</th>
                 <th>Merk</th>
                 <th>Model</th>
-                <th>Tahun</th>
                 <th>Deskripsi</th>
                 <th>Aksi</th>
             </tr>
@@ -33,7 +45,6 @@
                     <td>{{ $jk->nama_jenis }}</td>
                     <td>{{ $jk->merk }}</td>
                     <td>{{ $jk->model }}</td>
-                    <td>{{ $jk->tahun }}</td>
                     <td>{{ $jk->deskripsi }}</td>
                     <td>
                         <a href="{{ route('jenis-kendaraan.edit', $jk->id_jenis) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -52,4 +63,6 @@
             @endforelse
         </tbody>
     </table>
+</div>
+</div>
 @endsection

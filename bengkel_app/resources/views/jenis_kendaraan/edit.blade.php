@@ -1,4 +1,4 @@
-@extends('layouts.appdatapelanggan')
+@extends('layouts.main')
 
 @section('content')
 <div class="container mt-4">
@@ -21,11 +21,6 @@
         <div class="mb-3">
             <label class="form-label">Model:</label>
             <input type="text" name="model" class="form-control" value="{{ $jenisKendaraan->model }}" required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Tahun:</label>
-            <input type="number" name="tahun" class="form-control" value="{{ $jenisKendaraan->tahun }}" required>
         </div>
 
         <div class="mb-3">

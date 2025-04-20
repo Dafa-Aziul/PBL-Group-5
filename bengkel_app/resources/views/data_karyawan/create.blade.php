@@ -1,11 +1,11 @@
-{{-- resources/views/data-pelanggan/create.blade.php --}}
-@extends('layouts.appjeniskendaraan')
-@section('title', 'Tambah Data Pelanggan')
+{{-- resources/views/data-Karyawan/create.blade.php --}}
+@extends('layouts.main')
+@section('title', 'Tambah Data Karyawan')
 
 @section('content')
-<h1>Tambah Data Pelanggan</h1>
+<h1>Tambah Data Karyawan</h1>
 
-<form action="{{ route('data-pelanggan.store') }}" method="POST">
+<form action="{{ route('data-karyawan.store') }}" method="POST">
     @csrf
 
     <div class="mb-3">
@@ -57,6 +57,6 @@
     </div>
 
     <button type="submit" class="btn btn-success">Simpan</button>
-    <a href="{{ route('data-pelanggan.index') }}" class="btn btn-secondary">Kembali</a>
+    <a href="{{ route('data-karyawan.index') }}" class="btn btn-secondary">Kembali</a>
 </form>
 @endsection
