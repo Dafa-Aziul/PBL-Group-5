@@ -14,8 +14,8 @@
       </div>
     </div>
     <div class="card-body">
-        <table class="table table-bordered table-striped table-hover">
-            <thead class="table-dark text-center">
+        <table class="table table-bordered ">
+            <thead class="table-primary text-center">
                 <tr>
                     <th>No</th>
                     <th>Nama Layanan</th>

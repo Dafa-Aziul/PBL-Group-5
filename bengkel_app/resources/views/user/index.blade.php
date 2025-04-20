@@ -14,7 +14,7 @@
   </div>
   <div class="card-body">
   <table class="table table-hover">
-    <thead>
+    <thead class="table table-primary">
       <tr class="text-md-cente">
         <th scope="col">No.</th>
         <th scope="col">Nama</th>
@@ -24,7 +24,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($users as $user)
+      @forelse ($users as $user)
         <tr class="">
           <th scope="row">{{ $loop->iteration }}</th>
           <td>{{ $user->name }}</td>
@@ -40,7 +40,11 @@
             </form>
           </td>
         </tr>
-        @endforeach
+        @empty
+        <tr>
+            <td colspan="5" class="text-center">Data pelanggan belum ada.</td>
+        </tr>
+        @endforelse
         @if(session('success') || session('gagal'))
           <script>
               alert("{{ session('success') ?? session('gagal') }}");

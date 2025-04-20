@@ -12,7 +12,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-<<<<<<< HEAD
 
 Route::get('login', [AuthControlller::class, 'index'])->name('login');
 Route::post('login', [AuthControlller::class, 'submitLogin'])->name('login.post');
@@ -24,6 +23,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
     Route::resource('/sparepart', SparepartController::class);
     Route::resource('/user', UserController::class);
+    Route::resource('/pelanggan', PelangganController::class);
+    Route::resource('/layanan', JenisLayananController::class);
 });
 Route::get('/user-create', function () {
     DB::table('users')->insert([
@@ -33,14 +34,12 @@ Route::get('/user-create', function () {
         'role' => 'admin']);
         return redirect()->route('login')->with('success', 'User berhasil ditambahkan');
 });
-=======
 Route::get('/dashboard', function () {
     return view('dashboard.index');
 });
 
 Route::resource('pelanggan', PelangganController::class);
-Route::resource('/pelanggan', PelangganController::class);
+
 
 Route::resource('layanan', JenisLayananController::class);
-Route::resource('/layanan', JenisLayananController::class);
->>>>>>> origin/cipah
+

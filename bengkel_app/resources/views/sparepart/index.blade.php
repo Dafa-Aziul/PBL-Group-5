@@ -20,7 +20,7 @@
   </div>
   <div class="card-body">
   <table class="table table-hover">
-    <thead>
+    <thead class="table table-primary">
       <tr class="text-md-cente">
         <th scope="col">No.</th>
         <th scope="col">Nama Sparepart</th>
@@ -30,7 +30,7 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($spareparts as $sparepart)
+      @forelse ($spareparts as $sparepart)
       <tr class="">
         <th scope="row">{{ $loop->iteration }}</th>
         <td>{{ $sparepart->nama }}</td>
@@ -45,7 +45,11 @@
           </form>
         </td>
       </tr>
-      @endforeach
+      @empty
+      <tr>
+          <td colspan="5" class="text-center">Data pelanggan belum ada.</td>
+      </tr>
+      @endforelse
     </tbody>
   </table>
   </div>
