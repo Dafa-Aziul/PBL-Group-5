@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jenis_kendaraans', function (Blueprint $table) {
+        Schema::create('kendaraans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_jenis');
+            $table->foreignId('pelanggan_id')->constrained('pelanggans');
+            $table->foreignId('jenis_kendaraan_id')->constrained('jenis_kendaraans');
+            $table->string('no_polisi')->unique();
             $table->string('tipe_kendaraan');
-            $table->text('deskripsi');
+            $table->unsignedBigInteger('odometer');
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jenis_kendaraans');
+        Schema::dropIfExists('kendaraans');
     }
 };

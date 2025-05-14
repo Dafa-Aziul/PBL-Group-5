@@ -15,5 +15,4 @@ class UserForm extends Form
     public string $role = '';   
     #[Validate('nullable|string|min:8|regex:/[A-Z]/|regex:/[^a-zA-Z\d]/')]
     public string $password = '';
-
 }

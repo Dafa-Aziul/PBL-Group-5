@@ -17,10 +17,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('no_hp');
             $table->string('alamat');
-            $table->string('no_polisi')->unique();
-            $table->foreignId('jenis_kendaraan_id')->constrained('jenis_kendaraans');
-            $table->string('tipe_kendaraan');
-            $table->unsignedBigInteger('odometer');
             $table->enum('keterangan', ['pribadi', 'perusahaan']);
             $table->timestamps();
         });

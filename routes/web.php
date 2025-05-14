@@ -8,6 +8,9 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Dashboard;
+use App\Livewire\JenisKendaraan\Create as JenisKendaraanCreate;
+use App\Livewire\JenisKendaraan\Edit as JenisKendaraanEdit;
+use App\Livewire\JenisKendaraan\Index as JenisKendaraanIndex;
 use App\Livewire\User\Index;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +26,10 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/user', Index::class)->name('user.view');
     Route::get('/user/create', Create::class)->name('user.create');
+    Route::get('/jenis_kendaraan', JenisKendaraanIndex::class)->name('jenis_kendaraan.view');
+    Route::get('/jenis_kendaraan/create', JenisKendaraanCreate::class)->name('jenis_kendaraan.create');
+    Route::get('/jenis_kendaraan/{id}/edit', JenisKendaraanEdit::class)->name('jenis_kendaraan.edit');
+
 });
 
 Route::middleware('auth')->group(function () {

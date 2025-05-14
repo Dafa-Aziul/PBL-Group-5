@@ -4,7 +4,9 @@
             <div class="sb-sidenav-menu-heading">Menu</div>
             <x-nav-link wire:current.exact href="{{ route('dashboard') }}" icon="fas fa-tachometer-alt p-2">Dashboard</x-nav-link>
             
-            <x-nav-link wire:current.exact href="{{ route('user.view') }}" icon="fa-solid fa-user p-2">User</x-nav-link>
+            <x-nav-link wire:current.exact href="{{ route('user.view') }}" icon="fas fa-solid fa-user p-2">User</x-nav-link>
+
+            <x-nav-link wire:current.exact href="{{ route('jenis_kendaraan.view') }}" icon="fas fa-solid fa-car p-2">Kelola Jenis Kendaraan</x-nav-link>
         </div>
     </div>
     <div class="sb-sidenav-footer">
