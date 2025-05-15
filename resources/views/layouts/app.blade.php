@@ -9,7 +9,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/kopcv.jpg') }}">
     {{-- <link rel="manifest" href="../../assets/img/favicon/site.webmanifest"> --}}
     {{-- <link rel="mask-icon" href="{{ assest('images/kopcv.jpg') }}" color="#ffffff"> --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous"> --}}
+    @vite('resources/sass/app.scss')
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -34,7 +35,7 @@
     </div>
     @livewireScripts
     @stack('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>    
-    <script src="{{ asset('js/scripts.js') }}"></script>  
+    @vite('resources/js/app.js')
+    {{-- <script src="{{ asset('js/scripts.js') }}"></script>   --}}
   </body>
   </html>

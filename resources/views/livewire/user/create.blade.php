@@ -1,10 +1,4 @@
-@push('scripts')
-    <script>
-        livewire.on('modal:close', () => {
-            $('#confirmPassword').modal('hide');
-        });
-    </script>
-@endpush
+
 <div>
     <h1 class="mt-4">Manajemen User</h1>
     <ol class="breadcrumb mb-4">

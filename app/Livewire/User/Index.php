@@ -68,9 +68,9 @@ class Index extends Component
             $user = User::findOrFail($id);
             $user->delete();
             session()->flash('success', 'User berhasil dihapus.');
+            sleep(2);
             $this->password_confirmation = NULL;
             $this->attempts = 0;
-            $this->emit('modal:close');
         } catch (\Exception $e) {
             session()->flash('error', 'Gagal menghapus user: ' . $e->getMessage());
         }

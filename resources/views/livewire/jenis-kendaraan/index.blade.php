@@ -74,7 +74,7 @@
                             <td>{{ $jenis->deskripsi }}</td>
                             <td class="text-center">
                                     <a href="{{ route('jenis_kendaraan.edit', ['id' => $jenis->id]) }}"
-                                        class="btn btn-warning">
+                                        class="btn btn-warning" wire:navigate>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>
