@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\JenisKendaraan;
+use App\Models\Pelanggan;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -32,5 +33,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         JenisKendaraan::factory(10)->create();
+
+        Pelanggan::factory(10)->create();
     }
 }
