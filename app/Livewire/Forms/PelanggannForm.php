@@ -20,7 +20,7 @@ class PelanggannForm extends Form
     public string $alamat = '';
 
     #[Validate('required|in:pribadi,perusahaan')]
-    public string $keterangan = '';
+    public string $keterangan = '   ';
 
     public function fillFromModel($pelanggan)
     {
