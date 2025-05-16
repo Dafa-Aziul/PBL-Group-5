@@ -53,44 +53,46 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>No.</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>No Hp</th>
-                            <th>Alamat</th>
-                            <th>Keterangan</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    </tfoot>
-                    <tbody>
-                        @forelse ($pelanggans as $pelanggan)
-                        <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td>{{ $pelanggan->nama }}</td>
-                            <td>{{ $pelanggan->email }}</td>
-                            <td>{{ $pelanggan->no_hp }}</td>
-                            <td>{{ $pelanggan->alamat }}</td>
-                            <td>{{ $pelanggan->keterangan }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }}"
-                                    class="btn btn-warning" wire:navigate>
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                    <span class="d-none d-md-inline ms-1">Edit</span>
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="7" class="text-center text-muted">Tidak ada data yang ditemukan.</td>
-                        </tr>
-                        @endforelse
-                </table>
-                {{ $pelanggans -> links() }}
+            <div x-data x-on:redirect-to-detail.window="Livewire.navigate(`/pelanggan/${$event.detail.id}`)">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>No.</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>No Hp</th>
+                                <th>Alamat</th>
+                                <th>Keterangan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        </tfoot>
+                        <tbody>
+                            @forelse ($pelanggans as $pelanggan)
+                            <tr style="cursor:pointer;"  x-data @click="Livewire.navigate(`/pelanggan/{{ $pelanggan->id }}`)">
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $pelanggan->nama }}</td>
+                                <td>{{ $pelanggan->email }}</td>
+                                <td>{{ $pelanggan->no_hp }}</td>
+                                <td>{{ $pelanggan->alamat }}</td>
+                                <td>{{ $pelanggan->keterangan }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }}"
+                                        class="btn btn-warning" wire:navigate>
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                        <span class="d-none d-md-inline ms-1">Edit</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Tidak ada data yang ditemukan.</td>
+                            </tr>
+                            @endforelse
+                    </table>
+                    {{ $pelanggans -> links() }}
+                </div>
             </div>
         </div>
     </div>

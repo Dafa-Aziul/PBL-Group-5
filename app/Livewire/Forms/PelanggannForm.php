@@ -10,9 +10,6 @@ class PelanggannForm extends Form
     #[Validate('required|string|max:255')]
     public string $nama = '';
 
-    #[Validate('required|email|unique:pelanggans,email')]
-    public string $email = '';
-
     #[Validate('required|string|max:15')]
     public string $no_hp = '';
 
@@ -25,7 +22,6 @@ class PelanggannForm extends Form
     public function fillFromModel($pelanggan)
     {
         $this->nama = $pelanggan->nama;
-        $this->email = $pelanggan->email;
         $this->no_hp = $pelanggan->no_hp;
         $this->keterangan= $pelanggan->keterangan;
         $this->alamat = $pelanggan->alamat;

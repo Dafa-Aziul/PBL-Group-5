@@ -26,8 +26,8 @@
 
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email" class="form-control" wire:model="form.email">
-                    @error('form.email') <span class="text-danger">{{ $message }}</span> @enderror
+                    <input type="email" class="form-control" wire:model="email">
+                    @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
                 <div class="mb-3">
                     <label>No.Hp</label>

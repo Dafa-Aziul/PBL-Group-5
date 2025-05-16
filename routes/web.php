@@ -14,6 +14,7 @@ use App\Livewire\JenisKendaraan\Index as JenisKendaraanIndex;
 use App\Livewire\Pelanggan\Create as PelangganCreate;
 use App\Livewire\Pelanggan\Edit as PelangganEdit;
 use App\Livewire\Pelanggan\Index as PelangganIndex;
+use App\Livewire\Pelanggan\Show as PelangganDetail;
 use App\Livewire\User\Index;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/pelanggan', PelangganIndex::class)->name('pelanggan.view');
     Route::get('/pelanggan/create', PelangganCreate::class)->name('pelanggan.create');
     Route::get('/pelanggan/{id}/edit', PelangganEdit::class)->name('pelanggan.edit');
+    Route::get('/pelanggan/{id}', PelangganDetail::class)->name('pelanggan.detail');
 });
 
 Route::middleware('auth')->group(function () {

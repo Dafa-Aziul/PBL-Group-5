@@ -2,13 +2,13 @@
     <h1 class="mt-4">Kelola Pelanggan</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
-        <li class="breadcrumb-item active">Tambah Pelanggan</li>
+        <li class="breadcrumb-item active">Edit Pelanggan</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fa-solid fa-clipboard-user"></i>
-                <span class="d-none d-md-inline ms-1">Input Data Pelanggan</span>
+                <span class="d-none d-md-inline ms-1">Edit Data Pelanggan</span>
             </div>
             <div>
                 <a class="btn btn-danger float-end" href="{{  route('pelanggan.view') }}" wire:navigate><i
@@ -26,8 +26,8 @@
 
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email" class="form-control" wire:model="form.email" value="{{ old('form.email', $pelanggan->email)}}">
-                    @error('form.email') <span class="text-danger">{{ $message }}</span> @enderror
+                    <input type="email" class="form-control" wire:model="email" value="{{ old('email', $pelanggan->email)}}" disabled>
+                    @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
                 <div class="mb-3">
                     <label>No.Hp</label>

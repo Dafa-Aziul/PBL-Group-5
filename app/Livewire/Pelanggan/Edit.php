@@ -4,13 +4,14 @@ namespace App\Livewire\Pelanggan;
 
 use App\Livewire\Forms\PelanggannForm;
 use App\Models\Pelanggan;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Edit extends Component
 {
     public Pelanggan $pelanggan;
     public PelanggannForm $form;
-
+    
     public function mount($id)
     {
         $this->pelanggan = Pelanggan::findOrFail($id);
@@ -19,7 +20,7 @@ class Edit extends Component
 
     public function update(){
         $validated = $this->form->validate();
-        $this->pelangan->update($validated);
+        $this->pelanggan->update($validated);
         // session()->flash('message', 'Data berhasil diperbarui!');
         return redirect()->route('pelanggan.view')->with('success', 'Data berhasil diperbarui!');
     }
