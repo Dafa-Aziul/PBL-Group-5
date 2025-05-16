@@ -7,7 +7,7 @@
                 href="{{ route('pelanggan.view') }}">Daftar Pelanggan</a></li>
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('pelanggan.view') }}">Detail Data Pelanggan : {{ $pelanggan->id }} </a></li>
-        <li class="breadcrumb-item active">Detail Data Pelanggan : </li>
+        <li class="breadcrumb-item active">Tambah Kendaraan</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
