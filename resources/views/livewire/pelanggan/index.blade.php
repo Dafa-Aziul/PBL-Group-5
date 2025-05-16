@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Pelanggan</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
         <li class="breadcrumb-item active">Daftar Pelanggan</li>
     </ol>
     @if (session()->has('success'))
@@ -78,8 +78,7 @@
                                 <td>{{ $pelanggan->alamat }}</td>
                                 <td>{{ $pelanggan->keterangan }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }}"
-                                        class="btn btn-warning" wire:navigate>
+                                    <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }} " class="btn btn-warning" wire:navigate @click.stop>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>

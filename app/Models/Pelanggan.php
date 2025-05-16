@@ -27,4 +27,9 @@ class Pelanggan extends Model
             ->orWhere('alamat', 'like', "%{$value}%")
             ->orWhere('keterangan', 'like', "%{$value}%");
     }
+    
+    public function kendaraans()
+    {
+        return $this->hasMany(Kendaraan::class);
+    }
 }

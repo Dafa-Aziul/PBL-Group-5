@@ -11,6 +11,7 @@ use App\Livewire\Dashboard;
 use App\Livewire\JenisKendaraan\Create as JenisKendaraanCreate;
 use App\Livewire\JenisKendaraan\Edit as JenisKendaraanEdit;
 use App\Livewire\JenisKendaraan\Index as JenisKendaraanIndex;
+use App\Livewire\Kendaraan\Create as KendaraanCreate;
 use App\Livewire\Pelanggan\Create as PelangganCreate;
 use App\Livewire\Pelanggan\Edit as PelangganEdit;
 use App\Livewire\Pelanggan\Index as PelangganIndex;
@@ -38,6 +39,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/pelanggan/create', PelangganCreate::class)->name('pelanggan.create');
     Route::get('/pelanggan/{id}/edit', PelangganEdit::class)->name('pelanggan.edit');
     Route::get('/pelanggan/{id}', PelangganDetail::class)->name('pelanggan.detail');
+    Route::get('/pelanggan/{id}/kendaraan/create', KendaraanCreate::class)->name('kendaraan.create');
 });
 
 Route::middleware('auth')->group(function () {
