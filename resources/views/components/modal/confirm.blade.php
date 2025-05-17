@@ -17,7 +17,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" data-bs-toggle="{{ $action }}"  wire:click="{{ $target }}" class="btn btn-primary">Ya</button>
+          <button type="button" data-bs-toggle="{{ $action }}"  wire:click="{{ $target }}" data-bs-target="#{{ $targetModal }}" data-bs-dismiss="modal" class="btn btn-primary">Ya</button>
         </div>
       </div>
     </div>

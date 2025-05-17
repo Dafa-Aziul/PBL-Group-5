@@ -10,8 +10,6 @@
 
 
 <a {{ $attributes->merge(['class' => $classes]) }} wire:navigate wire:current="active">
-    <div class="sb-nav-link-icon d-flex align-items-center justify-content-center">
-        <i class="{{ $icon }}" width="30"></i>
-    </div>
+    <i class="{{ $icon }}" width="30"></i>
     <span class="ml-2">{{ $slot }}</span>
 </a>

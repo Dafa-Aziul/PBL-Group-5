@@ -1,14 +1,14 @@
 <div>
     <h1 class="mt-4">Kelola Pelanggan</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
-        <li class="breadcrumb-item active">Tambah Pelanggan</li>
+        <li class="breadcrumb-item"><a wire:navigate  class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
+        <li class="breadcrumb-item active">Edit Pelanggan</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fa-solid fa-clipboard-user"></i>
-                <span class="d-none d-md-inline ms-1">Input Data Pelanggan</span>
+                <span class="d-none d-md-inline ms-1">Edit Data Pelanggan</span>
             </div>
             <div>
                 <a class="btn btn-danger float-end" href="{{  route('pelanggan.view') }}" wire:navigate><i
@@ -17,22 +17,23 @@
             </div>
         </div>
         <div class="card-body">
-            <form wire:submit.prevent="submit">
+            <form wire:submit.prevent="update">
                 <div class="mb-3">
                     <label>Nama </label>
-                    <input type="text" class="form-control" wire:model="form.nama">
+                    <input type="text" class="form-control" wire:model="form.nama" value="{{ old('form.nama', $pelanggan->nama)}}">
                     @error('form.nama') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email" class="form-control" wire:model="email">
+                    <input type="email" class="form-control" wire:model="email" value="{{ old('email', $pelanggan->email)}}" disabled>
                     @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
                 <div class="mb-3">
                     <label>No.Hp</label>
-                    <input type="text" class="form-control" wire:model="form.no_hp">
-                    @error('form.no_hp') <span class="text-danger">{{ $message }}</span> @enderror
+                    <input type="text" class="form-control" wire:model="form.no_hp"  value="{{ old('form.no_hp', $pelanggan->no_hp)}}">
+                    @error('form.no_hp') 
+                    <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">
@@ -55,7 +56,7 @@
                 </div>
                 <div class="mb-3">
                     <label>alamat</label>
-                    <textarea class="form-control" wire:model="form.alamat" id="" cols="20" rows="5"></textarea>
+                    <textarea class="form-control" wire:model="form.alamat" id="" cols="20" rows="5">{{ old('form.alamat', $pelanggan->alamat)}}</textarea>
                     @error('form.alamat') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
                 <button type="submit" class="btn btn-success">Simpan</button>

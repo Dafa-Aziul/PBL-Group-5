@@ -12,7 +12,7 @@ class Index extends Component
     use WithPagination, WithoutUrlPagination;
 
     protected $paginationTheme = 'bootstrap';
-        
+
     public $perPage = 5;
     public $search = '';
     public function render()
