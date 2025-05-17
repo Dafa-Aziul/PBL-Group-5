@@ -22,7 +22,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
                     <div>
-                        <div wire:loading.delay wire:target="submit">
+                        <div wire:loading.delay wire:targ   et="submit">
                             <span class="spinner-border spinner-border-sm" role="status"></span>
                             <span wire:loading.delay >Loading...</span>
                         </div>
