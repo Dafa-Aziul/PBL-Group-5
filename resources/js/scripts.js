@@ -2,8 +2,8 @@ function initSidebarToggle() {
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (!sidebarToggle || sidebarToggle.dataset.bound) return;
 
-    // Jangan reset localStorage di mobile, langsung baca status
-    if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
+    // Baca status dari localStorage, hanya jika bukan mobile
+    if (window.innerWidth >= 768 && localStorage.getItem('sb|sidebar-toggle') === 'true') {
         document.body.classList.add('sb-sidenav-toggled');
     } else {
         document.body.classList.remove('sb-sidenav-toggled');
@@ -12,7 +12,11 @@ function initSidebarToggle() {
     sidebarToggle.addEventListener('click', event => {
         event.preventDefault();
         document.body.classList.toggle('sb-sidenav-toggled');
-        localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+
+        // Simpan status ke localStorage hanya jika bukan mobile
+        if (window.innerWidth >= 768) {
+            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+        }
     });
 
     sidebarToggle.dataset.bound = 'true';
@@ -23,14 +27,21 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('livewire:navigated', () => {
-    setTimeout(initSidebarToggle, 50);
+    setTimeout(() => {
+        initSidebarToggle();
+
+        // Jika mobile, otomatis tutup sidebar setelah navigasi
+        if (window.innerWidth < 768) {
+            document.body.classList.remove('sb-sidenav-toggled');
+        }
+    }, 50);
 });
 
 document.addEventListener('livewire:morph-updated', () => {
     setTimeout(initSidebarToggle, 50);
 });
 
-// Optional: handle resize
+// Optional: rebind saat resize
 window.addEventListener('resize', () => {
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) sidebarToggle.dataset.bound = null;

@@ -37,18 +37,19 @@
                 <!-- Select Entries per page -->
                 <div class="d-flex align-items-center">
                     <select class="form-select" aria-label="Select entries per page" wire:model.live="perPage"
-                        style="width: auto;">
+                        style="width:auto;cursor:pointer;">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <label for="perPage" class="ms-2 mb-0">Entries per page</label>
+                    {{-- <span class="d-none d-md-inline ms-1">Entries per page</span> --}}
+                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0">Entries per page</label>
                 </div>
 
                 <!-- Search Input with Icon -->
                 <div class="position-relative" style="width: 30ch;">
                     <input type="text" class="form-control ps-5" placeholder="Search"
-                        wire:model.live.debounce.100ms="search" />
+                        wire:model.live.debounce.100ms="search"  />
                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                 </div>
             </div>

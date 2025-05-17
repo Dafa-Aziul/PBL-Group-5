@@ -37,12 +37,12 @@
                 <!-- Select Entries per page -->
                 <div class="d-flex align-items-center">
                     <select class="form-select" aria-label="Select entries per page" wire:model.live="perPage"
-                        style="width: auto;">
+                        style="width:auto;cursor:pointer;" >
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <label for="perPage" class="ms-2 mb-0">Entries per page</label>
+                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0">Entries per page</label>
                 </div>
 
                 <!-- Search Input with Icon -->
@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <div x-data x-on:redirect-to-detail.window="Livewire.navigate(`/pelanggan/${$event.detail.id}`)">
+            <div>
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead class="table-primary">

@@ -9,16 +9,16 @@ use Livewire\WithPagination;
 
 class Index extends Component
 {
-   
+
     use WithPagination, WithoutUrlPagination;
     protected $paginationTheme = 'bootstrap';
-      
+
     public $perPage = 5;
-    public $search ='';
+    public $search = '';
     public array $stokInput = [];
 
 
-     
+
     public function updatingSearch()
     {
         $this->resetPage(); // Kembali ke halaman 1 saat pencarian berubah
@@ -31,33 +31,16 @@ class Index extends Component
         }
     }
 
-    public function updateStok($id)
-    {
-        $this->validate([
-            "stokInput.$id" => 'required|integer|min:0',
-        ]);
-
-        $sparepart = Sparepart::findOrFail($id);
-        $sparepart->stok = $this->stokInput[$id];
-        $sparepart->save();
-
-        session()->flash('success', 'Stok berhasil diperbarui.');
-    }
-
     public function render()
     {
         $spareparts = Sparepart::search($this->search)->paginate($this->perPage);
         return view('livewire.sparepart.index', compact('spareparts'));
+    }
 
-        
-    } 
-    
     public function delete($id)
     {
-        $sparepart= Sparepart::findOrFail($id);
+        $sparepart = Sparepart::findOrFail($id);
         $sparepart->delete();
         return session()->flash('success', 'sparepart berhasil dihapus.');
     }
-
-
 }

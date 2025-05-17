@@ -1,6 +1,6 @@
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
-    <a class="navbar-brand ps-3 d-flex align-items-center gap-2" href="{{ route('dashboard') }}">
+    <a class="navbar-brand ps-3 d-flex align-items-center gap-2" href="{{ route('dashboard') }}" wire:navigate>
       <img src="/images/kopcv.jpg"  width="28" alt="Logo CV Razka Pratama">
       <span class="fw-semibold fs-6 d-none d-sm-inline">CV. Razka Pratama</span>
     </a>   
