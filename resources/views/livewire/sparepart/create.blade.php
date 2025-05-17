@@ -20,8 +20,8 @@
             <form wire:submit.prevent="submit">
                 <div class="mb-3">
                     <label>Nama Sparepart</label>
-                    <input type="text" class="form-control" wire:model="form.nama">
-                    @error('form.nama_jasa') <span class="text-danger">{{ $message }}</span> @enderror
+                    <input type="text" class="form-control" wire:model.="form.nama">
+                    @error('form.nama') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">
@@ -58,28 +58,74 @@
 
                 <div class="mb-3">
                     <label>Stok</label>
-                    <input type="number" class="form-control" wire:model="form.stok">
+                    <input type="number" class="form-control" wire:model.defer="form.stok" min="0" value="0"
+                        oninput="formatStok(this)">
                     @error('form.stok') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
+                @push('scripts')
+                <script>
+                    function formatStok(el) {
+                        // Hilangkan nol di depan (kecuali jika cuma '0')
+                        let value = el.value.replace(/^0+(?!$)/, '');
+
+                        // Kalau kosong, set jadi 0
+                        if (value === '') {
+                            value = '0';
+                        }
+
+                        el.value = value;
+
+                        // Update Livewire secara manual (optional jika butuh)
+                        let rootEl = el.closest('[wire\\:id]');
+                        if (rootEl) {
+                            let component = Livewire.find(rootEl.getAttribute('wire:id'));
+                            if (component) {
+                                component.set('form.stok', parseInt(value));
+                            }
+                        }
+                    }
+                </script>
+                @endpush
+
 
                 <div class="mb-3">
                     <label>Harga</label>
-                    <input type="text" id="harga" class="form-control" oninput="formatHargaLivewire(this)">
-                    @error('form.harga') <span class="text-danger">{{ $message }}</span> @enderror
+                    <input type="text" id="harga" class="form-control" wire:model.defer="form.harga"
+                        oninput="formatHargaLivewire(this)">
+                    @error('form.harga')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 @push('scripts')
                 <script>
                     function formatHargaLivewire(el) {
-                        let value = el.value.replace(/[^0-9]/g, ''); // hanya angka
+                        let rawValue = el.value.replace(/[^0-9]/g, '');
+                        if (!rawValue) {
+                            el.value = 'Rp 0';
+                            updateLivewireHarga(0);
+                            return;
+                        }
+                        let value = rawValue.replace(/^0+(?!$)/, '');
                         let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                        el.value = value ? 'Rp ' + formatted : '';
+                        el.value = 'Rp ' + formatted;
+                        updateLivewireHarga(parseFloat(value));
+                    }
 
-                        // Update ke Livewire (akses wire:id terdekat)
-                        Livewire.find(el.closest('[wire\\:id]').getAttribute('wire:id')).set('form.harga', value);
+                    function updateLivewireHarga(value) {
+                        let rootEl = document.getElementById('harga').closest('[wire\\:id]');
+                        if (rootEl) {
+                            let component = Livewire.find(rootEl.getAttribute('wire:id'));
+                            if (component) {
+                                // Kirim angka, bukan string berformat, default 0 jika NaN
+                                component.set('harga', Number.isNaN(value) ? 0 : value);
+                            }
+                        }
                     }
                 </script>
                 @endpush
+
+
 
                 <div class="mb-3">
                     <label>Model Kendaraan</label>

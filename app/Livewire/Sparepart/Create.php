@@ -24,7 +24,7 @@ class Create extends Component
 
         // Gabungkan hasil validasi (jika diperlukan)
         $data = array_merge(
-            ['kode' => $this->kode],
+            ['kode' => $validatedKode],
             $validatedForm
         );
 

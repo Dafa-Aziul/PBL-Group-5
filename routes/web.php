@@ -20,6 +20,9 @@ use App\Livewire\Pelanggan\Show as PelangganDetail;
 use App\Livewire\Sparepart\Index as SparepartIndex;
 use App\Livewire\Sparepart\Create as SparepartCreate;
 use App\Livewire\Sparepart\Edit as SparepartEdit; 
+use App\Livewire\Jasa\Index as JasaIndex;
+use App\Livewire\Jasa\Create as JasaCreate;
+use App\Livewire\Jasa\Edit as JasaEdit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +51,10 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/pelanggan/{id}/edit', PelangganEdit::class)->name('pelanggan.edit');
     Route::get('/pelanggan/{id}', PelangganDetail::class)->name('pelanggan.detail');
     Route::get('/pelanggan/{id}/kendaraan/create', KendaraanCreate::class)->name('kendaraan.create');
+
+    Route::get('/jasa',JasaIndex::class)->name('jasa.view');
+    Route::get('/jasa/create',JasaCreate::class)->name('jasa.create');
+    Route::get('/jasa/{id}/edit',JasaEdit::class)->name('jasa.edit');
 
 
     Route::get('/sparepart', SparepartIndex::class)->name('sparepart.view');

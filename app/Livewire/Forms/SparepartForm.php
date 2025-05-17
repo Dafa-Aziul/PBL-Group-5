@@ -21,7 +21,7 @@ class SparepartForm extends Form
     public int $stok = 0;
 
     #[Validate('required|numeric|min:0')]
-    public float $harga = 0.0;
+    public ?float $harga = 0.0;
 
     #[Validate('required|string|max:255')]
     public string $model_kendaraan = '';
