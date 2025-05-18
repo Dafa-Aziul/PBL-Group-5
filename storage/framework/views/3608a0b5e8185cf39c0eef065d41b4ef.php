@@ -17,7 +17,12 @@
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="<?php echo e(asset('storage/' . $karyawan->foto)); ?>" alt="Foto Karyawan" width="30" height="30" class="rounded-circle">
+                <?php
+                    $foto = $karyawan?->foto ? asset('storage/' . $karyawan->foto) : asset('images/default.png');
+                ?>
+
+                <img src="<?php echo e($foto); ?>" alt="Foto Karyawan" width="30" height="30" class="rounded-circle">
+
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li><a class="dropdown-item" href="#!">Settings</a></li>

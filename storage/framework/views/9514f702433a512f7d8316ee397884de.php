@@ -1,10 +1,11 @@
 <?php
     $id = $attributes->get('id', '');
     $target = $attributes->get('target', '');
+    $action = $attributes->get('action', '');
 ?>
 <div class="modal fade" id="<?php echo e($id); ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" wire:ignore.self>
     <div class="modal-dialog">
-        <form wire:submit.prevent="<?php echo e($target); ?>" id="form-confirm-password">
+        <form wire:submit.prevent="<?php echo e($target); ?>">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Konfirmasi Password</h5>
@@ -12,7 +13,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Masukkan password akun Anda untuk konfirmasi.</p>
-                    <input type="password" class="form-control" wire:model="password_confirmation" placeholder="Password">
+                    <input type="password" class="form-control" wire:model="password_confirmation" placeholder="Password"  autocomplete="new-password">
                     <!--[if BLOCK]><![endif]--><?php if(Session::has('message')): ?>
                     <small class="text-danger">
                         <?php echo e(session('message')); ?>
@@ -22,7 +23,7 @@
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
                     <div>
-                        <div wire:loading.delay wire:target="submit">
+                        <div wire:loading.delay wire:targ   et="submit">
                             <span class="spinner-border spinner-border-sm" role="status"></span>
                             <span wire:loading.delay >Loading...</span>
                         </div>
@@ -35,6 +36,4 @@
             </div>
         </form>
     </div>
-</div>    
-
-<?php /**PATH D:\Bengkel Proyek\resources\views/components/modal/confirmPassword.blade.php ENDPATH**/ ?>
+</div>    <?php /**PATH D:\Bengkel Proyek\resources\views/components/modal/confirmPassword.blade.php ENDPATH**/ ?>

@@ -70,7 +70,9 @@
                             <tr>
                                 
                                 <td class="text-center"><?php echo e($karyawans->firstItem() + $loop->index); ?></td>
-                                <td><?php echo e($karyawan->user->name); ?></td>
+                                <!-- <td><?php echo e($karyawan->user->name); ?></td> -->
+                                 <td><?php echo e($karyawan->user->name ?? 'Tidak Ada User'); ?></td>
+
                                 <td><?php echo e($karyawan->jabatan); ?></td>
                                 <td><?php echo e($karyawan->no_hp); ?></td>
                                 <td><?php echo e($karyawan->alamat); ?></td>
@@ -83,12 +85,21 @@
                                     <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                                 </td>
                                 <td class="text-center">
-                                    <!--[if BLOCK]><![endif]--><?php if($karyawan->foto): ?>
-                                        <img src="<?php echo e(asset('storage/' . $karyawan->foto)); ?>" alt="Foto Karyawan" width="50" height="50" class="rounded-circle">
-                                    <?php else: ?>
-                                        <span class="text-muted">-</span>
-                                    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                                    <img src="<?php echo e($karyawan->foto ? asset('storage/foto/' . $karyawan->foto) : asset('storage/foto/default.png')); ?>"
+                                        alt="Foto Karyawan"
+                                        width="30"
+                                        height="30"
+                                        class="rounded-circle">
+
                                 </td>
+
+                                <!-- <td class="text-center">
+                                    <img src="<?php echo e($karyawan->foto ? asset('storage/' . $karyawan->foto) : asset('images/default.png')); ?>"
+                                        alt="Foto Karyawan"
+                                        width="50"
+                                        height="50"
+                                        class="rounded-circle">
+                                </td> -->
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center">
                                         <a href="<?php echo e(route('karyawan.edit', ['id' => $karyawan->id])); ?>" class="btn btn-warning btn-sm me-1">

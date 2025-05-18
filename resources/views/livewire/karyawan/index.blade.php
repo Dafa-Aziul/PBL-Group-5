@@ -68,7 +68,9 @@
                             <tr>
                                 {{-- Gunakan nomor dengan pagination --}}
                                 <td class="text-center">{{ $karyawans->firstItem() + $loop->index }}</td>
-                                <td>{{ $karyawan->user->name }}</td>
+                                <!-- <td>{{ $karyawan->user->name }}</td> -->
+                                 <td>{{ $karyawan->user->name ?? 'Tidak Ada User' }}</td>
+
                                 <td>{{ $karyawan->jabatan }}</td>
                                 <td>{{ $karyawan->no_hp }}</td>
                                 <td>{{ $karyawan->alamat }}</td>
@@ -81,12 +83,21 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if ($karyawan->foto)
-                                        <img src="{{ asset('storage/' . $karyawan->foto) }}" alt="Foto Karyawan" width="50" height="50" class="rounded-circle">
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
+                                    <img src="{{ $karyawan->foto ? asset('storage/foto/' . $karyawan->foto) : asset('storage/foto/default.png') }}"
+                                        alt="Foto Karyawan"
+                                        width="30"
+                                        height="30"
+                                        class="rounded-circle">
+
                                 </td>
+
+                                <!-- <td class="text-center">
+                                    <img src="{{ $karyawan->foto ? asset('storage/' . $karyawan->foto) : asset('images/default.png') }}"
+                                        alt="Foto Karyawan"
+                                        width="50"
+                                        height="50"
+                                        class="rounded-circle">
+                                </td> -->
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center">
                                         <a href="{{ route('karyawan.edit', ['id' => $karyawan->id]) }}" class="btn btn-warning btn-sm me-1">
