@@ -5,6 +5,7 @@ namespace App\Livewire\Karyawan;
 use App\Livewire\Forms\KaryawanForm;
 use App\Models\Karyawan;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -41,12 +42,18 @@ class Edit extends Component
 
         if ($this->form->foto) {
             // Simpan file baru
-            $filename = $this->form->foto->store('foto', 'public');
+            // Simpan file dengan nama yang di-hash ke folder 'foto'
+            $path = $this->form->foto->store('images/profile', 'public');
+            
+            // Ambil hanya nama file-nya saja (tanpa folder 'foto/')
+            $filename = basename($path);
+
+            // Simpan ke database hanya nama file-nya
             $validated['foto'] = $filename;
 
             // Hapus foto lama jika ada
             if ($this->karyawan->foto) {
-                \Storage::disk('public')->delete($this->karyawan->foto);
+                Storage::disk('public')->delete($this->karyawan->foto);
             }
         } else {
             unset($validated['foto']); // Jangan update kalau tidak ada foto baru

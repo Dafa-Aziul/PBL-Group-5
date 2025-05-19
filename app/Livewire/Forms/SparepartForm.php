@@ -21,7 +21,7 @@ class SparepartForm extends Form
     public int $stok = 0;
 
     #[Validate('required|numeric|min:0')]
-    public float $harga = 0.0;
+    public ?float $harga = 0.0;
 
     #[Validate('required|string|max:255')]
     public string $model_kendaraan = '';
@@ -36,7 +36,7 @@ class SparepartForm extends Form
         $this->merk = $sparepart->merk;
         $this->satuan = $sparepart->satuan;
         $this->stok = $sparepart->stok;
-        $this->harga = $sparepart->harga;
+        $this->harga = (float) ($sparepart->harga ?? 0);
         $this->model_kendaraan = $sparepart->model_kendaraan;
         $this->ket = $sparepart->ket;
     }

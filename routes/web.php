@@ -22,7 +22,10 @@ use App\Livewire\Pelanggan\Index as PelangganIndex;
 use App\Livewire\Pelanggan\Show as PelangganDetail;
 use App\Livewire\Sparepart\Index as SparepartIndex;
 use App\Livewire\Sparepart\Create as SparepartCreate;
-use App\Livewire\Sparepart\Edit as SparepartEdit; 
+use App\Livewire\Sparepart\Edit as SparepartEdit;
+use App\Livewire\Sparepart\Show as SparepartShow;
+use App\Livewire\Gudang\Create as GudangCreate;
+
 use App\Livewire\Jasa\Index as JasaIndex;
 use App\Livewire\Jasa\Create as JasaCreate;
 use App\Livewire\Jasa\Edit as JasaEdit;
@@ -61,12 +64,14 @@ Route::middleware('auth', 'verified')->group(function () {
 
     Route::get('/jasa',JasaIndex::class)->name('jasa.view');
     Route::get('/jasa/create',JasaCreate::class)->name('jasa.create');
-    Route::get('/jasa/{id}/edit',JasaEdit::class)->name('jasa.edit');
+    Route::get('/jasa/{id}/edit',JasaEdit::class)->name('jasa.edit');   
 
-
-    Route::get('/sparepart', SparepartIndex::class)->name('sparepart.view');
-    Route::get('/sparepart/create', SparepartCreate::class)->name('sparepart.create');
-    Route::get('/sparepart/{id}/edit', SparepartEdit::class)->name('sparepart.edit');
+   //sparepart
+    Route::get('/sparepart',SparepartIndex::class)->name('sparepart.view');
+    Route::get('/sparepart/create',SparepartCreate::class)->name('sparepart.create');
+    Route::get('/sparepart/{id}/edit',SparepartEdit::class)->name('sparepart.edit');
+    Route::get('/sparepart/{id}/detail',SparepartShow::class)->name('sparepart.show');
+    Route::get('/sparepart/{id}/gudang/create',GudangCreate::class)->name('gudang.create');
 });
 
 Route::middleware('auth')->group(function () {

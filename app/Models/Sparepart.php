@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Gudang;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +22,7 @@ class Sparepart extends Model
         'model_kendaraan',
         'ket',
     ];
+    
     public function scopeSearch($query, $value)
     {
         $query->where('kode', 'like', "%{$value}%")
@@ -32,4 +34,9 @@ class Sparepart extends Model
             ->orWhere('model_kendaraan', 'like', "%{$value}%")
             ->orWhere('ket', 'like', "%{$value}%");
     }
+
+    public function gudangs()
+{
+    return $this->hasMany(Gudang::class);
+}
 }

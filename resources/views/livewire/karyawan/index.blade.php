@@ -83,7 +83,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <img src="{{ $karyawan->foto ? asset('storage/foto/' . $karyawan->foto) : asset('storage/foto/default.png') }}"
+                                    <img src="{{ $karyawan->foto ? asset('storage/images/profile/' . $karyawan->foto) : asset('storage/foto/default.png') }}"
                                         alt="Foto Karyawan"
                                         width="30"
                                         height="30"
