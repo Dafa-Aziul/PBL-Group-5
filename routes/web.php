@@ -9,6 +9,9 @@ use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Dashboard;
 use \App\Livewire\User\Create;
 use App\Livewire\User\Index as UserIndex;
+use App\Livewire\Karyawan\Index as karyawanIndex;
+use App\Livewire\Karyawan\Create as karyawanCreate;
+use App\Livewire\Karyawan\Edit as karyawanEdit;
 use App\Livewire\JenisKendaraan\Create as JenisKendaraanCreate;
 use App\Livewire\JenisKendaraan\Edit as JenisKendaraanEdit;
 use App\Livewire\JenisKendaraan\Index as JenisKendaraanIndex;
@@ -41,6 +44,10 @@ Route::middleware('auth', 'verified')->group(function () {
     
     Route::get('/user', UserIndex::class)->name('user.view');
     Route::get('/user/create', Create::class)->name('user.create');
+
+    Route::get('/karyawan', KaryawanIndex::class)->name('karyawan.view');
+    Route::get('/karyawan/create', KaryawanCreate::class)->name('karyawan.create');
+    Route::get('/karyawan/{id}/edit', KaryawanEdit::class)->name('karyawan.edit');
     
     Route::get('/jenis_kendaraan', JenisKendaraanIndex::class)->name('jenis_kendaraan.view');
     Route::get('/jenis_kendaraan/create', JenisKendaraanCreate::class)->name('jenis_kendaraan.create');
