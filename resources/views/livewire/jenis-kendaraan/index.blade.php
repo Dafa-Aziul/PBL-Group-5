@@ -70,7 +70,7 @@
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>{{ $jenis->nama_jenis }}</td>
-                            <td>{{ $jenis->tipe_kendaraan }}</td>
+                            <td>{{ $jenis->model_kendaraan }}</td>
                             <td>{{ $jenis->deskripsi }}</td>
                             <td class="text-center">
                                     <a href="{{ route('jenis_kendaraan.edit', ['id' => $jenis->id]) }}"

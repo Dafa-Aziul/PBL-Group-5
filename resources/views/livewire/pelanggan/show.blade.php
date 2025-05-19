@@ -74,7 +74,7 @@
                                         <td class="text-center">{{ $index + 1 }}</td>
                                         <td>{{ $kendaraan->no_polisi }}</td>
                                         <td>{{ $kendaraan->jenis_kendaraan->nama_jenis ?? '-' }}</td>
-                                        <td>{{ $kendaraan->tipe_kendaraan }}</td>
+                                        <td>{{ $kendaraan->model_kendaraan }}</td>
                                         <td>{{ $kendaraan->odometer }} km</td>
                                         <td class="text-center">
                                             <a href="" class="btn btn-warning btn-sm" wire:navigate>

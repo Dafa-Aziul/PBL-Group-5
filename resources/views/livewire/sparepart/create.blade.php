@@ -90,37 +90,19 @@
 
                 <div class="mb-3">
                     <label>Harga</label>
-                    <input type="text" id="harga" class="form-control" wire:model.defer="form.harga"
-                        oninput="formatHargaLivewire(this)">
-                    @error('form.harga')
-                    <span class="text-danger">{{ $message }}</span>
-                    @enderror
+                    <input type="text" id="harga" class="form-control" oninput="formatHargaLivewire(this)">
+                    @error('form.harga') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 @push('scripts')
                 <script>
                     function formatHargaLivewire(el) {
-                        let rawValue = el.value.replace(/[^0-9]/g, '');
-                        if (!rawValue) {
-                            el.value = 'Rp 0';
-                            updateLivewireHarga(0);
-                            return;
-                        }
-                        let value = rawValue.replace(/^0+(?!$)/, '');
+                        let value = el.value.replace(/[^0-9]/g, ''); // hanya angka
                         let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                        el.value = 'Rp ' + formatted;
-                        updateLivewireHarga(parseFloat(value));
-                    }
+                        el.value = value ? 'Rp ' + formatted : '';
 
-                    function updateLivewireHarga(value) {
-                        let rootEl = document.getElementById('harga').closest('[wire\\:id]');
-                        if (rootEl) {
-                            let component = Livewire.find(rootEl.getAttribute('wire:id'));
-                            if (component) {
-                                // Kirim angka, bukan string berformat, default 0 jika NaN
-                                component.set('harga', Number.isNaN(value) ? 0 : value);
-                            }
-                        }
+                        // Update ke Livewire (akses wire:id terdekat)
+                        Livewire.find(el.closest('[wire\\:id]').getAttribute('wire:id')).set('form.harga', value);
                     }
                 </script>
                 @endpush
