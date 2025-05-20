@@ -71,7 +71,8 @@
                     </tfoot>
                     <tbody>
                         @forelse ($spareparts as $sparepart)
-                        <tr>
+                        <tr style="cursor: pointer;" x-data
+                            @click="Livewire.navigate(`/sparepart/{{ $sparepart->id }}/detail`)">
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>{{ $sparepart->kode}}</td>
                             <td>{{ $sparepart->nama}}</td>
@@ -84,7 +85,7 @@
                             <td>{{ $sparepart->model_kendaraan}}</td>
                             <td>{{ $sparepart->ket}}</td>
 
-                            <td class="text-center">
+                            <td class="text-center" @click.stop>
                                 <a href="{{ route('sparepart.edit', ['id' => $sparepart->id]) }}"
                                     class="btn btn-warning">
                                     <i class="fa-solid fa-pen-to-square"></i>

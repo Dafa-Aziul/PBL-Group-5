@@ -36,7 +36,7 @@ class SparepartForm extends Form
         $this->merk = $sparepart->merk;
         $this->satuan = $sparepart->satuan;
         $this->stok = $sparepart->stok;
-        $this->harga = $sparepart->harga;
+        $this->harga = (float) ($sparepart->harga ?? 0);
         $this->model_kendaraan = $sparepart->model_kendaraan;
         $this->ket = $sparepart->ket;
     }

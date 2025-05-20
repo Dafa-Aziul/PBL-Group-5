@@ -13,18 +13,19 @@ class Create extends Component
     
     #[Validate('required|unique:spareparts,kode|string|max:255')]
     public string $kode = '';
+   
 
 
     public function submit(){
-        // Validasi hanya properti kode di komponen ini
+        // Validasi hanya properti kode di komponen ini 
+        $this->form->harga = $this->form->harga ?? 0;
         $validatedForm = $this->form->validate();
         $validatedKode = $this->validateOnly('kode');
-
         // Validasi form object (jika kamu punya field lain di $form)
 
         // Gabungkan hasil validasi (jika diperlukan)
         $data = array_merge(
-            ['kode' => $validatedKode],
+            ['kode' => $this->kode],
             $validatedForm
         );
 

@@ -11,11 +11,14 @@ class Edit extends Component
     public $sparepart;
     public SparepartForm $form;
 
-    public function mount($id)
+   public function mount($id)
     {
         $this->sparepart = Sparepart::findOrFail($id);
         $this->form->fillFormModel($this->sparepart);
+        $this->form->harga = $this->form->harga ?? 0; // <-- aman
+        // $this->dispatchBrowserEvent('formatHargaAwal', ['harga' => $sparepart->harga]);
     }
+
 
     public function update()
     {
