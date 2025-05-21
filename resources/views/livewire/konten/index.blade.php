@@ -1,7 +1,7 @@
     <div>
     <h1 class="mt-4">Kelola Konten</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('konten.view') }}">Manajemen Konten</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('konten.view') }}">Manajemen Konten</a></li>
         <li class="breadcrumb-item active">Daftar Konten</li>
     </ol>
     @if (session()->has('success'))

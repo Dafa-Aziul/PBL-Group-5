@@ -46,20 +46,20 @@ Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('logout', App\Livewire\Action\Logout::class)->name('logout');
-    
+
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-    
+
     Route::get('/user', UserIndex::class)->name('user.view');
     Route::get('/user/create', Create::class)->name('user.create');
 
     Route::get('/karyawan', KaryawanIndex::class)->name('karyawan.view');
     Route::get('/karyawan/create', KaryawanCreate::class)->name('karyawan.create');
     Route::get('/karyawan/{id}/edit', KaryawanEdit::class)->name('karyawan.edit');
-    
+
     Route::get('/jenis_kendaraan', JenisKendaraanIndex::class)->name('jenis_kendaraan.view');
     Route::get('/jenis_kendaraan/create', JenisKendaraanCreate::class)->name('jenis_kendaraan.create');
     Route::get('/jenis_kendaraan/{id}/edit', JenisKendaraanEdit::class)->name('jenis_kendaraan.edit');
-    
+
     Route::get('/pelanggan', PelangganIndex::class)->name('pelanggan.view');
     Route::get('/pelanggan/create', PelangganCreate::class)->name('pelanggan.create');
     Route::get('/pelanggan/{id}/edit', PelangganEdit::class)->name('pelanggan.edit');
@@ -68,7 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/jasa',JasaIndex::class)->name('jasa.view');
     Route::get('/jasa/create',JasaCreate::class)->name('jasa.create');
-    Route::get('/jasa/{id}/edit',JasaEdit::class)->name('jasa.edit');   
+    Route::get('/jasa/{id}/edit',JasaEdit::class)->name('jasa.edit');
 
    //sparepart
     Route::get('/sparepart',SparepartIndex::class)->name('sparepart.view');

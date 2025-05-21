@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Karyawan</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('karyawan.view') }}">Karyawan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('karyawan.view') }}">Karyawan</a></li>
         <li class="breadcrumb-item active">Edit Karyawan</li>
     </ol>
     <div class="card mb-4">
@@ -18,7 +18,7 @@
         </div>
         <div class="card-body">
             <form wire:submit.prevent="update">
-                {{-- <div class="mb-3">
+                <div class="mb-3">
                     <label>User</label>
                     <select class="form-select" wire:model="form.user_id">
                         <option value="">-- Pilih User --</option>
@@ -27,7 +27,7 @@
                         @endforeach
                     </select>
                     @error('form.user_id') <span class="text-danger">{{ $message }}</span> @enderror
-                </div> --}}
+                </div>
 
                 <div class="mb-3">
                     <label>Nama</label>

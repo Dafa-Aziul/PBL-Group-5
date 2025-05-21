@@ -10,14 +10,14 @@ use Livewire\Component;
 class Create extends Component
 {
     public SparepartForm $form;
-    
+
     #[Validate('required|unique:spareparts,kode|string|max:255')]
     public string $kode = '';
-   
+
 
 
     public function submit(){
-        // Validasi hanya properti kode di komponen ini 
+        // Validasi hanya properti kode di komponen ini
         $this->form->harga = $this->form->harga ?? 0;
         $validatedForm = $this->form->validate();
         $validatedKode = $this->validateOnly('kode');
@@ -34,7 +34,7 @@ class Create extends Component
         session()->flash('success', 'Sparepart berhasil ditambahkan!');
         return redirect()->route('sparepart.view')->with('wire:navigate', true);
     }
-    
+
     public function render()
     {
         return view('livewire.sparepart.create');

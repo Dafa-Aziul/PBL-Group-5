@@ -41,7 +41,7 @@ class Create extends Component
         $sparepart->save();
 
         session()->flash('success', 'Monitoring berhasil ditambahkan dan stok diperbarui!');
-        return redirect()->route('sparepart.view')->with('wire:navigate', true);
+        return redirect()->route('sparepart.show', ['id'=>$sparepart->id])->with('wire:navigate', true);
     }
 
     public function render()

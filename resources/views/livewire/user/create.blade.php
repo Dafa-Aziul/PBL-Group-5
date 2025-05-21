@@ -2,7 +2,7 @@
 <div>
     <h1 class="mt-4">Manajemen User</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('user.view') }}">User</a></li>      
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('user.view') }}">User</a></li>
         <li class="breadcrumb-item active">Tambah User</li>
     </ol>
     <div class="card mb-4">
@@ -51,7 +51,7 @@
         </form>
         @if ($showModal)
             <x-modal.confirmPassword id="confirmPassword" target="submit"></x-modal.confirmPassword>
-        @endif            
+        @endif
         </div>
     </div>
 </div>

@@ -29,8 +29,11 @@ class Edit extends Component
                 Storage::disk('public')->delete('konten/gambar/' . $this->form->gambar_lama);
             }
 
-            $path = $this->form->foto_konten->store('konten/gambar', 'public');
-            $validated['foto_konten'] = basename($path);
+            $gambarPath = $this->form->foto_konten->store('konten/gambar', 'public');
+            $validated['foto_konten'] = basename($gambarPath);
+        } else {
+            // Pakai gambar lama jika tidak ada upload baru
+            $validated['foto_konten'] = $this->form->gambar_lama;
         }
 
         if ($this->form->video_konten) {
@@ -38,8 +41,11 @@ class Edit extends Component
                 Storage::disk('public')->delete('konten/video/' . $this->form->video_lama);
             }
 
-            $path = $this->form->video_konten->store('konten/video', 'public');
-            $validated['video_konten'] = basename($path);
+            $videoPath = $this->form->video_konten->store('konten/video', 'public');
+            $validated['video_konten'] = basename($videoPath);
+        } else {
+            // Pakai video lama jika tidak ada upload baru
+            $validated['video_konten'] = $this->form->video_lama;
         }
 
         $this->konten->update($validated);

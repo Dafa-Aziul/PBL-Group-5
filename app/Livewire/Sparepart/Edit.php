@@ -25,7 +25,7 @@ class Edit extends Component
         $validated = $this->form->validate();
         $this->sparepart->update($validated);
 
-        return redirect()->route('sparepart.view')->with('succes','Data berhasil diperbarui');
+        return redirect()->route('sparepart.view')->with('success','Data berhasil diperbarui');
     }
 
     public function render()

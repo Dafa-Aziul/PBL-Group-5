@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Sparepart</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('sparepart.view') }}">Sparepart</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('sparepart.view') }}">Sparepart</a></li>
         <li class="breadcrumb-item active">Edit Sparepart</li>
     </ol>
     <div class="card mb-4">

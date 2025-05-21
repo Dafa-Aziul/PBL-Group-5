@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Jenis Kendaraan</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('jenis_kendaraan.view') }}">Jenis Kendaraan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" class="text-primary text-decoration-none" href="{{ route('jenis_kendaraan.view') }}">Jenis Kendaraan</a></li>
         <li class="breadcrumb-item active">Update Jenis Kendaraan</li>
     </ol>
     <div class="card mb-4">
@@ -20,7 +20,7 @@
             <form wire:submit.prevent="update">
                 <div class="mb-3">
                     <label>Nama Jenis</label>
-                    <input type="text" class="form-control" wire:model="form.nama_jenis"  
+                    <input type="text" class="form-control" wire:model="form.nama_jenis"
                     @error('form.nama_jenis') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

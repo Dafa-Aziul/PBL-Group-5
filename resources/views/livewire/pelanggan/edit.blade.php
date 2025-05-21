@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Pelanggan</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate  class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
         <li class="breadcrumb-item active">Edit Pelanggan</li>
     </ol>
     <div class="card mb-4">
@@ -32,7 +32,7 @@
                 <div class="mb-3">
                     <label>No.Hp</label>
                     <input type="text" class="form-control" wire:model="form.no_hp"  value="{{ old('form.no_hp', $pelanggan->no_hp)}}">
-                    @error('form.no_hp') 
+                    @error('form.no_hp')
                     <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

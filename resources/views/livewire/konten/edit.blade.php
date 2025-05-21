@@ -1,7 +1,7 @@
 <div class="p-6">
     <h1 class="mt-4">Manajemen Kontent</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('konten.view') }}">Kontent</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('konten.view') }}">Kontent</a></li>
         <li class="breadcrumb-item active">Update Data Konten</li>
     </ol>
     <div class="card mb-4">
@@ -39,50 +39,94 @@
                 <!-- Input dan preview Gambar -->
                 <div class="mb-3">
                     <label>Gambar</label>
-                    <input type="file" class="form-control" wire:model="form.foto_konten">
+                    <input type="file" class="form-control" wire:model="form.foto_konten" accept="image/*">
                     @error('form.foto_konten') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                @if (is_object($form->foto_konten))
-                <!-- Preview Gambar Baru -->
-                <div class="mt-2">
-                    <img src="{{ $form->foto_konten->temporaryUrl() }}" alt="Preview Gambar"
-                        style="max-width: 300px; max-height: 200px;">
-                </div>
-                @elseif (!empty($form->gambar_lama))
-                <!-- Preview Gambar Lama dari Database -->
-                <div class="mt-2">
-                    <img src="{{ asset('storage/konten/gambar/' . $form->gambar_lama) }}" alt="Gambar Lama"
-                        style="max-width: 300px; max-height: 200px;">
-                </div>
-                @endif
+                <div class="row mt-3">
+                    <!-- Kolom Gambar Lama -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Gambar Lama</label>
+                        @if (!empty($form->gambar_lama))
+                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa;">
+                            <img src="{{ asset('storage/konten/gambar/' . $form->gambar_lama) }}" alt="Gambar Lama"
+                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                        </div>
+                        @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 220px; background: #f8f9fa;">
+                            <span>Tidak ada gambar lama</span>
+                        </div>
+                        @endif
+                    </div>
 
+                    <!-- Kolom Preview Gambar Baru -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Preview Gambar Baru</label>
+                        @if (is_object($form->foto_konten))
+                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa;">
+                            <img src="{{ $form->foto_konten->temporaryUrl() }}" alt="Preview Gambar Baru"
+                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                        </div>
+                        @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 220px; background: #f8f9fa;">
+                            <span>Belum ada gambar baru</span>
+                        </div>
+                        @endif
+                    </div>
+                </div>
 
 
                 <!-- Input dan preview Video -->
                 <div class="mb-3">
                     <label>Video</label>
-                    <input type="file" class="form-control" wire:model="form.video_konten">
+                    <input type="file" class="form-control" wire:model.live="form.video_konten" accept="video/*">
                     @error('form.video_konten') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                <!-- Preview Video Baru -->
-                @if ($form->video_lama)
-                <div class="mt-2">
-                    <video width="320" height="240" controls>
-                        <source src="{{ $form->video_lama->temporaryUrl() }}">
-                        Browser Anda tidak mendukung tag video.
-                    </video>
+                <div class="row mt-3">
+                    <!-- Kolom Video Lama -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Video Lama</label>
+                        @if (!empty($form->video_lama))
+                        <div class="border rounded p-2 text-center" style="min-height: 260px; background: #f8f9fa;">
+                            <video width="100%" height="240" controls>
+                                <source src="{{ asset('storage/konten/video/' . $form->video_lama) }}" type="video/mp4">
+                                Browser Anda tidak mendukung tag video.
+                            </video>
+                        </div>
+                        @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 260px; background: #f8f9fa;">
+                            <span>Tidak ada video lama</span>
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- Kolom Preview Video Baru -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Preview Video Baru</label>
+                        @if (is_object($form->video_konten))
+                        <div class="border rounded p-2 text-center" style="min-height: 260px; background: #f8f9fa;">
+                            <video width="100%" height="240" controls>
+                                <source src="{{ $form->video_konten->temporaryUrl() }}"
+                                    type="{{ $form->video_konten->getMimeType() }}">
+                                Browser Anda tidak mendukung tag video.
+                            </video>
+                        </div>
+                        @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 260px; background: #f8f9fa;">
+                            <span>Belum ada video baru</span>
+                        </div>
+                        @endif
+                    </div>
                 </div>
-                @elseif (!empty($form->video_lama))
-                <!-- Preview Video Lama dari Database -->
-                <div class="mt-2">
-                    <video width="320" height="240" controls>
-                        <source src="{{ asset('storage/' . $form->video_lama) }}">
-                        Browser Anda tidak mendukung tag video.
-                    </video>
-                </div>
-                @endif
+
+
+
+
 
 
                 <button type="submit" class="btn btn-success">Updates</button>
