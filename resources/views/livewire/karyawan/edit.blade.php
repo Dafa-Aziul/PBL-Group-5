@@ -18,7 +18,7 @@
         </div>
         <div class="card-body">
             <form wire:submit.prevent="update">
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label>User</label>
                     <select class="form-select" wire:model="form.user_id">
                         <option value="">-- Pilih User --</option>
@@ -27,7 +27,7 @@
                         @endforeach
                     </select>
                     @error('form.user_id') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
+                </div> --}}
 
                 <div class="mb-3">
                     <label>Nama</label>

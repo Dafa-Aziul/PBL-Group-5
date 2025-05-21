@@ -7,8 +7,8 @@ use Livewire\Form;
 
 class KaryawanForm extends Form
 {
-    #[Validate('required|int|max:255')]
-    public $user_id = '';
+    // #[Validate('required|int|max:255')]
+    // public $user_id = '';
 
     #[Validate('required|string|max:255')]
     public $nama = '';
@@ -41,7 +41,7 @@ class KaryawanForm extends Form
      */
     public function fillFormModel($karyawan)
     {
-        $this->user_id = $karyawan->user_id;
+        // $this->user_id = $karyawan->user_id;
         $this->nama = $karyawan->nama;
         $this->jabatan = $karyawan->jabatan;
         $this->no_hp = $karyawan->no_hp;

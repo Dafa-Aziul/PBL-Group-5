@@ -26,7 +26,7 @@
 
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email" class="form-control" wire:model="email" value="{{ old('email', $pelanggan->email)}}" disabled>
+                    <input type="email" class="form-control" wire:model="email" value="{{ old('email', $pelanggan->email)}}" readonly>
                     @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
                 <div class="mb-3">

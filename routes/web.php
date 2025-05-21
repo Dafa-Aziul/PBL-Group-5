@@ -26,6 +26,10 @@ use App\Livewire\Sparepart\Edit as SparepartEdit;
 use App\Livewire\Sparepart\Show as SparepartShow;
 use App\Livewire\Gudang\Create as GudangCreate;
 
+use App\Livewire\Konten\Index as KontenIndex;
+use App\Livewire\Konten\Create as KontenCreate;
+use App\Livewire\Konten\Edit as KontenEdit;
+
 use App\Livewire\Jasa\Index as JasaIndex;
 use App\Livewire\Jasa\Create as JasaCreate;
 use App\Livewire\Jasa\Edit as JasaEdit;
@@ -40,7 +44,7 @@ Route::get('/', function () {
 
 Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 
-Route::middleware('auth', 'verified')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('logout', App\Livewire\Action\Logout::class)->name('logout');
     
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
@@ -72,16 +76,21 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('/sparepart/{id}/edit',SparepartEdit::class)->name('sparepart.edit');
     Route::get('/sparepart/{id}/detail',SparepartShow::class)->name('sparepart.show');
     Route::get('/sparepart/{id}/gudang/create',GudangCreate::class)->name('gudang.create');
+
+    //konten
+    Route::get('/konten', KontenIndex::class)->name('konten.view');
+    Route::get('/konten/create', KontenCreate::class)->name('konten.create');
+    Route::get('/konten/{id}/edit', KontenEdit::class)->name('konten.edit');
+
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('verify-email', VerifyEmail::class)
-        ->name('verification.notice');
-
+    Route::get('verify-email', VerifyEmail::class)->name('verification.notice');
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 });
+
 
 
 Route::middleware('guest')->group(function () {

@@ -28,7 +28,7 @@
                 <div class="mb-3">
                     <label>Kode</label>
                     <input type="text" id="kode" class="form-control" value="{{ old ('form.kode', $sparepart->kode) }}"
-                        disabled>
+                        readonly>
                     @error('form.kode') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
@@ -49,7 +49,7 @@
                 <div class="mb-3">
                     <label>Stok</label>
                     <input type="number" class="form-control" wire:model="form.stok"
-                        value="{{ old ('form.stok', $sparepart->stok) }}" disabled>
+                        value="{{ old ('form.stok', $sparepart->stok) }}" readonly>
                     @error('form.stok') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

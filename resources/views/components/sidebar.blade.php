@@ -6,7 +6,7 @@
             
             <x-nav-link wire:current.exact href="{{ route('user.view') }}" icon="fas fa-solid fa-user p-2">User</x-nav-link>
 
-            <x-nav-link wire:current.exact href="{{ route('karyawan.view') }}" icon="fas fa-solid fa-user p-2">Karyawan</x-nav-link>
+            <x-nav-link wire:current.exact href="{{ route('karyawan.view') }}" icon="fas fa-solid fa-id-badge p-2">Karyawan</x-nav-link>
 
             <x-nav-link wire:current.exact href="{{ route('jenis_kendaraan.view') }}" icon="fas fa-solid fa-car p-2">Jenis Kendaraan</x-nav-link>
 
@@ -15,6 +15,10 @@
             <x-nav-link wire:current.exact href="{{ route('jasa.view') }}" icon="fa-solid fa-briefcase p-2">Jasa</x-nav-link>
 
             <x-nav-link wire:current.exact href="{{ route('sparepart.view') }}" icon="fa-solid fa-boxes-stacked p-2 ">Sparepart</x-nav-link>
+
+            <x-nav-link wire:current.exact href="{{ route('konten.view') }}" icon="fa-solid fa-newspaper p-2 ">Konten</x-nav-link>
+
+
         </div>
     </div>
     <div class="sb-sidenav-footer">

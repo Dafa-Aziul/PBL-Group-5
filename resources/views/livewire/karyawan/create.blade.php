@@ -20,7 +20,7 @@
             <form wire:submit.prevent="submit">
                 <div class="mb-3">
                     <label>User</label>
-                    <select class="form-select" wire:model="form.user_id">
+                    <select class="form-select" wire:model.live="form.user_id">
                         <option value="">-- Pilih User --</option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -31,7 +31,7 @@
 
                 <div class="mb-3">
                     <label>Nama</label>
-                    <input type="text" class="form-control" wire:model="form.nama" readonly>
+                    <input type="text" class="form-control" wire:model.defer="form.nama" value="" readonly>
                     @error('form.nama') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

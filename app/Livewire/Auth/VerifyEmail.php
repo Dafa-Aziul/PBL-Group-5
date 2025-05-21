@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\RedirectResponse;
 
 #[Layout('layouts.guest')]
 class VerifyEmail extends Component
@@ -34,11 +31,11 @@ class VerifyEmail extends Component
     /**
      * Log the current user out of the application.
      */
-    public function logout(Logout $logout): void
+    public function logout()
     {
-        $logout();
+        Auth::logout(); // logout user
 
-        $this->redirect('/', navigate: true);
+        return redirect('/'); // arahkan ke halaman utama
     }
     public function render()
     {
