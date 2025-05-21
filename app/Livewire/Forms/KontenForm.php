@@ -16,23 +16,22 @@ class KontenForm extends Form
     #[Validate('required')]
     public $isi = '';
 
-    // #[Validate('required|string|max:100')]
-    // public $penulis_id = '';
-
-    #[Validate('nullable|image|max:2048')]
+    #[Validate('required|image|max:2048')]
     public $foto_konten;
 
     #[Validate('nullable|mimes:mp4,mov,avi|max:10000')]
     public $video_konten;
 
-    public $gambar_lama = null;
-    public $video_lama = null;
+    public $gambar_lama = null ;
+    public $video_lama = null ; 
+
 
     public function fillFromModel($konten)
     {
         $this->judul = $konten->judul ?? '';
         $this->kategori = $konten->kategori ?? '';
         $this->isi = $konten->isi ?? '';
+        
         // Jangan isi properti upload file langsung,
         // tapi simpan nama file gambar/video lama jika perlu
         $this->gambar_lama = $konten->foto_konten ?? null;

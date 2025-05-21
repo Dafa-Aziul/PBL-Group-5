@@ -13,8 +13,8 @@ class Create extends Component
     use WithFileUploads;
 
     public KontenForm $form;
-    
-    public function submit()        
+
+    public function submit()
     {
         $validated = $this->form->validate();
 
@@ -23,16 +23,18 @@ class Create extends Component
 
         if ($this->form->foto_konten) {
             $gambarPath = $this->form->foto_konten->store('konten/gambar', 'public');
+            $gambarPath = basename($gambarPath);
         }
 
         if ($this->form->video_konten) {
             $videoPath = $this->form->video_konten->store('konten/video', 'public');
+            $videoPath = basename($videoPath);
         }
 
         Konten::create([
             ...$validated,
-            'gambar_path' => $gambarPath,
-            'video_path' => $videoPath,
+            'foto_konten' => $gambarPath,
+            'video_konten' => $videoPath,
             'penulis_id' => Auth::id(),
         ]);
 
