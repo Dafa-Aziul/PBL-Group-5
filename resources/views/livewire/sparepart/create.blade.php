@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="card-body">
-            <form wire:submit.prevent="submit">
+            <form wire:submit.prevent="submit"enctype="multipart/form-data">
                 <div class="mb-3">
                     <label>Nama Sparepart</label>
                     <input type="text" class="form-control" wire:model.="form.nama">
@@ -140,6 +140,22 @@
                     <input type="text" class="form-control" wire:model="form.model_kendaraan">
                     @error('form.model_kendaraan') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
+
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Foto</label>
+                    <input type="file" class="form-control" id="foto" wire:model="form.foto" accept="image/png, image/jpeg">
+                    @error('form.foto') <span class="text-danger">{{ $message }}</span> @enderror
+
+                   @if ($form->foto)
+                        <div class="mt-3">
+                            <label class="form-label">Preview Foto:</label><br>
+                            <img src="{{ $form->foto->temporaryUrl() }}" class="img-thumbnail rounded shadow" width="150" onerror="this.style.display='none'">
+
+                        </div>
+                    @endif
+                </div>
+
+
 
 
 

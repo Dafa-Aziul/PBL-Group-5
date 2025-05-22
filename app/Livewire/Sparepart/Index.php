@@ -24,18 +24,18 @@ class Index extends Component
         $this->resetPage(); // Kembali ke halaman 1 saat pencarian berubah
     }
 
-    public function mount()
-    {
-        foreach (Sparepart::all() as $s) {
-            $this->stokInput[$s->id] = $s->stok;
-        }
-    }
+//     public function mount()
+//     {
+//         foreach (Sparepart::all() as $s) {
+//             $this->stokInput[$s->id] = $s->stok;
+//         }
+//     }
 
 
-    public function goToShow($id)
-{
-    return redirect()->route('sparepart.show', ['id' => $id]);
-}
+//     public function goToShow($id)
+// {
+//     return redirect()->route('sparepart.show', ['id' => $id]);
+// }
 
     public function render()
     {

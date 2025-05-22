@@ -54,7 +54,7 @@
   --bs-black-rgb: 0, 0, 0;
   --bs-body-color-rgb: 33, 37, 41;
   --bs-body-bg-rgb: 255, 255, 255;
-  --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --bs-font-sans-serif: Geologica, Helvetica, sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --bs-body-font-family: var(--bs-font-sans-serif);
@@ -112,6 +112,19 @@ hr {
   opacity: 0.25;
 }
 
+.bold {
+  font-weight: bold;
+}
+
+.medium {
+  font-weight: 500;
+}
+
+.semibold {
+  font-weight: 600;
+}
+
+
 h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -121,6 +134,8 @@ h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
 
 h1, .h1 {
   font-size: calc(1.375rem + 1.5vw);
+  font-weight: bold;
+  
 }
 @media (min-width: 1200px) {
   h1, .h1 {
@@ -130,6 +145,8 @@ h1, .h1 {
 
 h2, .h2 {
   font-size: calc(1.325rem + 0.9vw);
+  
+
 }
 @media (min-width: 1200px) {
   h2, .h2 {
@@ -139,6 +156,7 @@ h2, .h2 {
 
 h3, .h3 {
   font-size: calc(1.3rem + 0.6vw);
+  
 }
 @media (min-width: 1200px) {
   h3, .h3 {
@@ -354,7 +372,7 @@ select,
 optgroup,
 textarea {
   margin: 0;
-  font-family: inherit;
+  font-family: "Geologica-SemiBold", Helvetica, sans-serif;
   font-size: inherit;
   line-height: inherit;
 }
@@ -1963,9 +1981,55 @@ progress {
     -webkit-overflow-scrolling: touch;
   }
 }
-.form-label {
-  margin-bottom: 0.5rem;
+form{
+  font-family: "Geologica-SemiBold", Helvetica, sans-serif;
 }
+label {
+  margin-bottom: 0.5rem;
+  display: block;
+  color: #373390;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+input[type="text"] {
+    background-color: #ffffff;
+    border-radius: 10px;
+    /* border: 1px solid #09005d80; */
+    /* box-shadow: 0px 4px 4px #00000040; */
+}
+
+input[type="text"]:focus {
+    border-color: #373390;
+    box-shadow: 0 0 6px #37339055;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.radio-group input[type="radio"] {
+    transform: scale(1.5); /* ukuran diperbesar */
+    margin-right: 8px;
+    accent-color: #373390; /* warna ungu sesuai style kamu */
+}
+
+.radio-group label {
+    font-size: 14px;
+    color: #373390;
+    font-family: "Geologica-SemiBold", Helvetica, sans-serif;
+    display: flex;
+    align-items: center;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
 
 .col-form-label {
   padding-top: calc(0.375rem + 1px);
@@ -2865,10 +2929,10 @@ textarea.form-control-lg {
 
 .btn-primary {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #0d6efd;
-  --bs-btn-border-color: #0d6efd;
+  --bs-btn-bg: #1a0f91;
+  --bs-btn-border-color: #1a0f91;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #0b5ed7;
+  --bs-btn-hover-bg: #373390;
   --bs-btn-hover-border-color: #0a58ca;
   --bs-btn-focus-shadow-rgb: 49, 132, 253;
   --bs-btn-active-color: #fff;
@@ -2878,6 +2942,8 @@ textarea.form-control-lg {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #0d6efd;
   --bs-btn-disabled-border-color: #0d6efd;
+  font-weight: 600;
+  font-family: "Geologica-SemiBold", Helvetica, sans-serif;
 }
 
 .btn-secondary {
@@ -2912,6 +2978,29 @@ textarea.form-control-lg {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #198754;
   --bs-btn-disabled-border-color: #198754;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-lihat{
+  border-radius: 10px;
+  border: 1px solid #373390;
+  box-sizing: border-box;
+  font-size: 16px;
+  color: #373390;
+  font-weight: 600;
+
+}
+
+.btn-lihat:hover{
+  border-radius: 10px;
+  background-color: #373390;
+  border: 1px solid #373390;
+  box-sizing: border-box;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+
 }
 
 .btn-info {
@@ -2929,6 +3018,8 @@ textarea.form-control-lg {
   --bs-btn-disabled-color: #000;
   --bs-btn-disabled-bg: #0dcaf0;
   --bs-btn-disabled-border-color: #0dcaf0;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .btn-warning {
@@ -2946,6 +3037,8 @@ textarea.form-control-lg {
   --bs-btn-disabled-color: #000;
   --bs-btn-disabled-bg: #ffc107;
   --bs-btn-disabled-border-color: #ffc107;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .btn-danger {
@@ -2963,6 +3056,8 @@ textarea.form-control-lg {
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #dc3545;
   --bs-btn-disabled-border-color: #dc3545;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .btn-light {
@@ -3048,6 +3143,8 @@ textarea.form-control-lg {
   --bs-btn-disabled-bg: transparent;
   --bs-btn-disabled-border-color: #198754;
   --bs-gradient: none;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .btn-outline-info {
@@ -3880,6 +3977,7 @@ textarea.form-control-lg {
   .navbar-expand-sm {
     flex-wrap: nowrap;
     justify-content: flex-start;
+    color: 
   }
   .navbar-expand-sm .navbar-nav {
     flex-direction: row;
@@ -4195,11 +4293,19 @@ textarea.form-control-lg {
   background-color: var(--bs-card-bg);
   background-clip: border-box;
   border: var(--bs-card-border-width) solid var(--bs-card-border-color);
-  border-radius: var(--bs-card-border-radius);
+  //border-radius: var(--bs-card-border-radius);
+  border-radius: 15px;
 }
 .card > hr {
   margin-right: 0;
   margin-left: 0;
+
+}
+
+.card-hover:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    transition: 0.3s ease;
 }
 .card > .list-group {
   border-top: inherit;
@@ -4228,6 +4334,9 @@ textarea.form-control-lg {
 
 .card-title {
   margin-bottom: var(--bs-card-title-spacer-y);
+  font-weight: 600;
+  font-size: 25px;
+  color: #09005d;
 }
 
 .card-subtitle {
@@ -4521,19 +4630,19 @@ textarea.form-control-lg {
   --bs-pagination-padding-x: 0.75rem;
   --bs-pagination-padding-y: 0.375rem;
   --bs-pagination-font-size: 1rem;
-  --bs-pagination-color: var(--bs-link-color);
+  --bs-pagination-color: #1a0f91;
   --bs-pagination-bg: #fff;
   --bs-pagination-border-width: 1px;
-  --bs-pagination-border-color: #dee2e6;
+  --bs-pagination-border-color: #1a0f91;
   --bs-pagination-border-radius: 0.375rem;
-  --bs-pagination-hover-color: var(--bs-link-hover-color);
+  --bs-pagination-hover-color: #1a0f91;
   --bs-pagination-hover-bg: #e9ecef;
   --bs-pagination-hover-border-color: #dee2e6;
-  --bs-pagination-focus-color: var(--bs-link-hover-color);
+  --bs-pagination-focus-color: #1a0f91;
   --bs-pagination-focus-bg: #e9ecef;
   --bs-pagination-focus-box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
   --bs-pagination-active-color: #fff;
-  --bs-pagination-active-bg: #0d6efd;
+  --bs-pagination-active-bg: #1a0f91;
   --bs-pagination-active-border-color: #0d6efd;
   --bs-pagination-disabled-color: #6c757d;
   --bs-pagination-disabled-bg: #fff;
@@ -10866,11 +10975,21 @@ body {
   display: flex;
 }
 #layoutSidenav #layoutSidenav_nav {
+  width: 291px;
   flex-basis: 225px;
   flex-shrink: 0;
-  transition: transform 0.15s ease-in-out;
+  transition: transform 0.10s ease-in-out;
   z-index: 1038;
   transform: translateX(-225px);
+  padding: 10px 10px;
+  border-radius: 9px;
+  background: #dae3fe;
+  font-family: "Geologica-SemiBold", Helvetica, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  color: #373390;
 }
 #layoutSidenav #layoutSidenav_content {
   position: relative;
@@ -10881,6 +11000,32 @@ body {
   flex-grow: 1;
   min-height: calc(100vh - 56px);
   margin-left: -225px;
+  padding: 5px;
+}
+
+#layoutSidenav_nav .nav-link {
+    color: #373390;
+    font-size: 15px;
+    padding: 10px 5px;
+    border-radius: 8px;
+    transition: 0.1s;
+    display: block;
+}
+
+#layoutSidenav_nav .nav-link:hover{
+  background-color: #ebf1f8;
+  color: #212529;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  padding: 10px 3px;
+  
+  
+}
+
+
+#layoutSidenav_nav .nav-link.active {
+    background-color: #ffffff;
+    color: #212529;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {
@@ -10961,19 +11106,22 @@ body {
 
 .sb-topnav {
   padding-left: 0;
-  height: 56px;
   z-index: 1039;
+  height: 60px;
+  flex-shrink: 0;
+  background : #EDF3FF;
+  
 }
 .sb-topnav .navbar-brand {
   width: 225px;
   margin: 0;
 }
-.sb-topnav.navbar-dark #sidebarToggle {
+/*  .sb-topnav.navbar-dark #sidebarToggle {
   color: rgba(255, 255, 255, 0.5);
-}
+} */
 .sb-topnav.navbar-light #sidebarToggle {
-  color: #212529;
-}
+  color: #1a0f91;
+} 
 
 .sb-sidenav {
   display: flex;

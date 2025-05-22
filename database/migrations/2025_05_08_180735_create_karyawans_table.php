@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('alamat');
             $table->date('tgl_masuk');
             $table->enum('status', ['aktif','tidak aktif']);
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

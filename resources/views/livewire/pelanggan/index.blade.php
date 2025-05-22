@@ -22,7 +22,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1">Daftar Pelanggan</span>
+                <span class="d-none d-md-inline ms-1 semibold">Daftar Pelanggan</span>
             </div>
             <div>
                 <a class="btn btn-primary float-end" href="{{ route('pelanggan.create') }}" wire:navigate><i
@@ -42,7 +42,7 @@
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0">Entries per page</label>
+                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0 text-muted">Entries per page</label>
                 </div>
 
                 <!-- Search Input with Icon -->
@@ -77,8 +77,8 @@
                                 <td>{{ $pelanggan->no_hp }}</td>
                                 <td>{{ $pelanggan->alamat }}</td>
                                 <td>{{ $pelanggan->keterangan }}</td>
-                                <td class="text-center">
-                                    <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }} " class="btn btn-warning" wire:navigate @click.stop>
+                                <td class="text-center" @click.stop>
+                                    <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }} " class="btn btn-warning" wire:navigate >
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>

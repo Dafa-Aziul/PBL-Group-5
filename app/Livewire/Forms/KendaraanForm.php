@@ -14,7 +14,7 @@ class KendaraanForm extends Form
     public $no_polisi = '';
 
     #[Validate('required|string|max:50')]
-    public $tipe_kendaraan = '';
+    public $model_kendaraan = '';
 
     #[Validate('required|integer|min:0')]
     public $odometer = '';  

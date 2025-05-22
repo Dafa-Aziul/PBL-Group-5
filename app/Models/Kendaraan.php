@@ -17,7 +17,7 @@ class Kendaraan extends Model
         'pelanggan_id',
         'jenis_kendaraan_id',
         'no_polisi',
-        'tipe_kendaraan',
+        'model_kendaraan',
         'odometer',
     ];
 

@@ -22,7 +22,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1">Daftar sparepart</span>
+                <span class="d-none d-md-inline ms-1 semibold">Daftar sparepart</span>
             </div>
             <div>
                 <a class="btn btn-primary float-end" href="{{ route('sparepart.create') }}" wire:navigate><i
@@ -42,7 +42,7 @@
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0">Entries per page</label>
+                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0 text-muted ">Entries per page</label>
                 </div>
 
                 <!-- Search Input with Icon -->
@@ -65,6 +65,7 @@
                             <th>Harga</th>
                             <th>Model Kendaraan</th>
                             <th>Keterangan</th>
+                            <th>Foto</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -84,23 +85,40 @@
                             <td>Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
                             <td>{{ $sparepart->model_kendaraan}}</td>
                             <td>{{ $sparepart->ket}}</td>
+                            <td class="text-center">
+                                    <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('foto/default.png') }}"
+                                    alt="Foto Sparepart"
+                                    width="100"
+                                    height="100">
+
+
+                            </td>
 
                             <td class="text-center" @click.stop>
                                 <a href="{{ route('sparepart.edit', ['id' => $sparepart->id]) }}"
-                                    class="btn btn-warning">
+                                    class="btn btn-warning" wire:navigate>
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="d-none d-md-inline ms-1">Edit</span>
                                 </a>
-                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm"> <i
-                                        class="fas fa-trash-can"></i><span
-                                        class="d-none d-md-inline ms-1">Delete</span></button>
-                                <x-modal.confirm id="confirm" action="modal" target="delete({{ $sparepart->id }})"
+
+                                <!-- Button delete yang trigger modal unik -->
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm-{{ $sparepart->id }}">
+                                    <i class="fas fa-trash-can"></i>
+                                    <span class="d-none d-md-inline ms-1">Delete</span>
+                                </button>
+
+                                <!-- Modal confirm unik per item -->
+                                <x-modal.confirm
+                                    id="confirm-{{ $sparepart->id }}"
+                                    action="modal"
+                                    target="delete({{ $sparepart->id }})"
                                     content="Apakah anda yakin untuk menghapus data ini?" />
                             </td>
+
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="10" class="text-center text-muted">Tidak ada data yang ditemukan.</td>
+                            <td colspan="11" class="text-center text-muted">Tidak ada data yang ditemukan.</td>
                         </tr>
                         @endforelse
                 </table>

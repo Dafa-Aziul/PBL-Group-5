@@ -25,9 +25,9 @@
                 </div>
 
                 <div class="mb-3">
-                    <label>Tipe Kendaraan</label>
-                    <input type="text" class="form-control" wire:model="form.tipe_kendaraan">
-                    @error('form.tipe_kendaraan') <span class="text-danger">{{ $message }}</span> @enderror
+                    <label>Model Kendaraan</label>
+                    <input type="text" class="form-control" wire:model="form.model_kendaraan">
+                    @error('form.model_kendaraan') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">

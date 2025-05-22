@@ -19,7 +19,8 @@ class Sparepart extends Model
         'satuan',
         'stok',
         'harga',
-        'model_kendaraan',
+        'model_kendaraan', 
+        'foto',
         'ket',
     ];
     

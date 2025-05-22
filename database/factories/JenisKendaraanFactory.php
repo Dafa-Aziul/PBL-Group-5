@@ -18,7 +18,7 @@ class JenisKendaraanFactory extends Factory
     {
         return [
             'nama_jenis' => $this->faker->word,  // Nama jenis kendaraan, misalnya: "Mobil"
-            'tipe_kendaraan' => $this->faker->word, // Tipe kendaraan, misalnya: "SUV"
+            'model_kendaraan' => $this->faker->word, // Tipe kendaraan, misalnya: "SUV"
             'deskripsi' => $this->faker->paragraph, // Deskripsi kendaraan
         ];
     }

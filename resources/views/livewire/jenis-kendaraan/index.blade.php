@@ -22,7 +22,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1">Daftar Jenis Kendaraan</span>
+                <span class="d-none d-md-inline ms-1 semibold">Daftar Jenis Kendaraan</span>
             </div>
             <div>
                 <a class="btn btn-primary float-end" href="{{ route('jenis_kendaraan.create') }}" wire:navigate><i
@@ -42,7 +42,7 @@
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0">Entries per page</label>
+                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0 text-muted">Entries per page</label>
                 </div>
 
                 <!-- Search Input with Icon -->
@@ -70,7 +70,7 @@
                         <tr>
                             <td class="text-center">{{ $loop->iteration }}</td>
                             <td>{{ $jenis->nama_jenis }}</td>
-                            <td>{{ $jenis->tipe_kendaraan }}</td>
+                            <td>{{ $jenis->model_kendaraan }}</td>
                             <td>{{ $jenis->deskripsi }}</td>
                             <td class="text-center">
                                     <a href="{{ route('jenis_kendaraan.edit', ['id' => $jenis->id]) }}"
