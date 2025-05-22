@@ -70,7 +70,7 @@
                     <tbody>
                         @forelse ($jasas as $jasa)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td class="text-center">{{ $jasas->firstItem() +$loop->iteration }}</td>
                             <td>{{ $jasa->kode}}</td>
                             <td>{{ $jasa->nama_jasa}}</td>
                             <td>{{ $jasa->jenisKendaraan->nama_jenis ?? '-' }}</td>

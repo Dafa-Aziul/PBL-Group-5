@@ -73,7 +73,7 @@
                         @forelse ($spareparts as $sparepart)
                         <tr style="cursor: pointer;" x-data
                             @click="Livewire.navigate(`/sparepart/{{ $sparepart->id }}/detail`)">
-                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td class="text-center">{{ $spareparts->firstItem() + $loop->iteration }}</td>
                             <td>{{ $sparepart->kode}}</td>
                             <td>{{ $sparepart->nama}}</td>
                             <td>{{ $sparepart->merk}}</td>

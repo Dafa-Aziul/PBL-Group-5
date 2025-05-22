@@ -66,7 +66,7 @@
                     <tbody>
                         @forelse ($kontens as $konten)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td class="text-center">{{ $kontens->firstItem() +$loop->iteration }}</td>
                             <td>{{ $konten->judul }}</td>
                             <td>{{ $konten->kategori }}</td>
                             <td>{{ $konten->isi }}</td>
