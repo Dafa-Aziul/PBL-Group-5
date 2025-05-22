@@ -70,7 +70,7 @@
                         @forelse ($karyawans as $karyawan)
                         <tr>
                             {{-- Gunakan nomor dengan pagination --}}
-                            <td class="text-center">{{ ($karyawans->firstItem() + $loop->index) - 1}}</td>
+                            <td class="text-center">{{ ($karyawans->firstItem() + $loop->index)}}</td>
                             <!-- <td>{{ $karyawan->user->name }}</td> -->
                             <td>{{ $karyawan->user->name ?? 'Tidak Ada User' }}</td>
 

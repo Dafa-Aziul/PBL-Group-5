@@ -73,7 +73,7 @@
 
                 <div class="mb-3">
                     <label for="foto" class="form-label">Foto</label>
-                    <input type="file" class="form-control" id="foto" wire:model="form.foto" type="image/*">
+                    <input type="file" class="form-control" id="foto" wire:model="form.foto" accept="image/*">
                     @error('form.foto') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
                 <div class="col-md-4 mb-3">
