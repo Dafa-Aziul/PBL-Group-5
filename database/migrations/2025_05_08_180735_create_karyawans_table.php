@@ -16,10 +16,10 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->string('nama');
             $table->string('jabatan');
-            $table->string('no_hp');
-            $table->string('alamat');
-            $table->date('tgl_masuk');
-            $table->enum('status', ['aktif','tidak aktif']);
+            $table->string('no_hp')->nullable();
+            $table->string('alamat')->nullable();
+            $table->date('tgl_masuk')->nullable();
+            $table->enum('status', ['aktif', 'tidak aktif']);
             $table->string('foto')->nullable();
             $table->timestamps();
         });

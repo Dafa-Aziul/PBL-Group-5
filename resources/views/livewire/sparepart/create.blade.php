@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Sparepart</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('sparepart.view') }}">Sparepart</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('sparepart.view') }}">Sparepart</a></li>
         <li class="breadcrumb-item active">Tambah Sparepart</li>
     </ol>
     <div class="card mb-4">
@@ -146,18 +146,34 @@
                     <input type="file" class="form-control" id="foto" wire:model="form.foto" accept="image/png, image/jpeg">
                     @error('form.foto') <span class="text-danger">{{ $message }}</span> @enderror
 
-                   @if ($form->foto)
-                        <div class="mt-3">
-                            <label class="form-label">Preview Foto:</label><br>
-                            <img src="{{ $form->foto->temporaryUrl() }}" class="img-thumbnail rounded shadow" width="150" onerror="this.style.display='none'">
+                    {{-- Loading saat upload gambar --}}
+                    <div wire:loading wire:target="form.foto" class="text-muted mt-2">
+                        Memuat gambar...
+                    </div>
+                </div>
 
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Preview Gambar</label>
+
+                    @if (is_object($form->foto))
+                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa; position: relative;">
+                            {{-- Loading indicator di atas preview --}}
+                            <div wire:loading wire:target="form.foto" class="position-absolute top-50 start-50 translate-middle text-primary">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                <span class="ms-2">Memuat preview...</span>
+                            </div>
+
+                            <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Gambar Baru"
+                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;"
+                                wire:loading.remove>
+                        </div>
+                    @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 220px; background: #f8f9fa;">
+                            <span>Belum ada foto diupload</span>
                         </div>
                     @endif
                 </div>
-
-
-
-
 
                 <div class="mb-3">
                     <label>Keterangan</label>

@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Jenis Jasa</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('jasa.view') }}">Jenis Kendaraan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('jasa.view') }}">Jenis Kendaraan</a></li>
         <li class="breadcrumb-item active">Daftar Jenis Jasa Service</li>
     </ol>
     @if (session()->has('success'))
@@ -70,7 +70,7 @@
                     <tbody>
                         @forelse ($jasas as $jasa)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td class="text-center">{{ ($jasas->firstItem() +$loop->iteration) - 1 }}</td>
                             <td>{{ $jasa->kode}}</td>
                             <td>{{ $jasa->nama_jasa}}</td>
                             <td>{{ $jasa->jenisKendaraan->nama_jenis ?? '-' }}</td>

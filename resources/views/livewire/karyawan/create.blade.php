@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Karyawan</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('karyawan.view') }}">Karyawan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('karyawan.view') }}">Karyawan</a></li>
         <li class="breadcrumb-item active">Tambah Karyawan</li>
     </ol>
     <div class="card mb-4">
@@ -20,18 +20,18 @@
             <form wire:submit.prevent="submit">
                 <div class="mb-3">
                     <label>User</label>
-                    <select class="form-select" wire:model="form.user_id">
+                    <select class="form-select" wire:model.live="user_id">
                         <option value="">-- Pilih User --</option>
                         @foreach($users as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
-                    @error('form.user_id') <span class="text-danger">{{ $message }}</span> @enderror
+                    @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">
                     <label>Nama</label>
-                    <input type="text" class="form-control" wire:model="form.nama" readonly>
+                    <input type="text" class="form-control" wire:model.defer="form.nama" value="" readonly>
                     @error('form.nama') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
@@ -73,14 +73,35 @@
 
                 <div class="mb-3">
                     <label for="foto" class="form-label">Foto</label>
-                    <input type="file" class="form-control" id="foto" wire:model="form.foto">
+                    <input type="file" class="form-control" id="foto" wire:model="form.foto" accept="image/*">
                     @error('form.foto') <span class="text-danger">{{ $message }}</span> @enderror
-
-                    @if ($form->foto instanceof \Livewire\TemporaryUploadedFile)
-                        <img src="{{ $form->foto->temporaryUrl() }}" class="mt-2" width="100">
-                    @endif
-                    
+                    <div wire:loading wire:target="form.foto" class="text-muted mt-2">
+                        Memuat gambar...
+                    </div>
                 </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Preview Gambar</label>
+
+                    @if (is_object($form->foto))
+                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa; position: relative;">
+                            {{-- Loading indicator di atas preview --}}
+                            <div wire:loading wire:target="form.foto" class="position-absolute top-50 start-50 translate-middle text-primary">
+                                <div class="spinner-border spinner-border-sm" role="status"></div>
+                                <span class="ms-2">Memuat preview...</span>
+                            </div>
+
+                            <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Gambar Baru"
+                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;"
+                                wire:loading.remove>
+                        </div>
+                    @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 220px; background: #f8f9fa;">
+                            <span>Belum ada foto diupload</span>
+                        </div>
+                    @endif
+                </div>
+                
 
                 <button type="submit" class="btn btn-success">Simpan</button>
                 <button type="button" class="btn btn-warning" wire:click="resetForm">Reset</button>

@@ -42,9 +42,8 @@ class Edit extends Component
 
     $this->sparepart->update($validated);
 
-    return redirect()->route('sparepart.view')->with('success', 'Data berhasil diperbarui');
-}
-
+        return redirect()->route('sparepart.view')->with('success','Data berhasil diperbarui');
+    }
 
     public function render()
     {

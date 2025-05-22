@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola sparepart</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('sparepart.view') }}">Jenis Sparepart</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('sparepart.view') }}">Jenis Sparepart</a></li>
         <li class="breadcrumb-item active">Daftar Sparepart</li>
     </ol>
     @if (session()->has('success'))
@@ -74,7 +74,7 @@
                         @forelse ($spareparts as $sparepart)
                         <tr style="cursor: pointer;" x-data
                             @click="Livewire.navigate(`/sparepart/{{ $sparepart->id }}/detail`)">
-                            <td class="text-center">{{ $loop->iteration }}</td>
+                            <td class="text-center">{{ ($spareparts->firstItem() + $loop->iteration) - 1 }}</td>
                             <td>{{ $sparepart->kode}}</td>
                             <td>{{ $sparepart->nama}}</td>
                             <td>{{ $sparepart->merk}}</td>
@@ -85,13 +85,14 @@
                             <td>Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
                             <td>{{ $sparepart->model_kendaraan}}</td>
                             <td>{{ $sparepart->ket}}</td>
-                            <td class="text-center">
-                                    <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('foto/default.png') }}"
+                            <td class="text-center" @click.stop>
+                                <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('foto/default.png') }}"
                                     alt="Foto Sparepart"
-                                    width="100"
-                                    height="100">
-
-
+                                    class="img-thumbnail"
+                                    style="max-width: 150px; max-height: 150px; object-fit: contain;"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#fotoModal{{ $sparepart->id }}"
+                                    style="cursor: zoom-in;">
                             </td>
 
                             <td class="text-center" @click.stop>
@@ -122,6 +123,24 @@
                         </tr>
                         @endforelse
                 </table>
+
+                <!-- Modal Preview Gambar -->
+                <div class="modal fade" id="fotoModal{{ $sparepart->id }}" tabindex="-1" aria-labelledby="fotoModalLabel{{ $sparepart->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- modal-lg untuk besar -->
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="fotoModalLabel{{ $sparepart->id }}">Preview Foto Sparepart</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('foto/default.png') }}"
+                            alt="Preview Gambar"
+                            class="img-fluid rounded shadow">
+                    </div>
+                    </div>
+                </div>
+                </div>
+
             </div>
 
             {{ $spareparts->links() }}

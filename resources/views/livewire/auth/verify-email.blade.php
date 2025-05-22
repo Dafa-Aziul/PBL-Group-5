@@ -13,15 +13,13 @@
     @endif
 
     <div class="d-flex flex-column align-items-center mt-4 gap-3">
-        <form method="POST" action="{{ route('verification.resend') }}">
-            @csrf
+        <form wire:submit='sendVerification'>
             <button type="submit" class="btn btn-primary">
                 {{ __('Kirim Ulang Email Verifikasi') }}
             </button>
         </form>
 
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
+        <form wire:submit='logout'>
             <button type="submit" class="btn btn-link text-danger">
                 {{ __('Logout') }}
             </button>

@@ -17,9 +17,9 @@ class Create extends Component
     #[Validate('required|unique:spareparts,kode|string|max:255')]
     public string $kode = '';
 
-    public function submit()
-    {
-        // Validasi harga default
+
+    public function submit(){
+        // Validasi hanya properti kode di komponen ini
         $this->form->harga = $this->form->harga ?? 0;
 
         // Validasi form (SparepartForm)

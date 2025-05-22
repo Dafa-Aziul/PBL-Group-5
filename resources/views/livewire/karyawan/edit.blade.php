@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Karyawan</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('karyawan.view') }}">Karyawan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('karyawan.view') }}">Karyawan</a></li>
         <li class="breadcrumb-item active">Edit Karyawan</li>
     </ol>
     <div class="card mb-4">
@@ -69,29 +69,52 @@
                     <label for="tidakaktif">Tidak Aktif</label>
 
                     @error('form.status') <span class="text-danger">{{ $message }}</span> @enderror
+
                 </div>
 
 
                 <div class="mb-3">
-                    <label for="foto" class="form-label">Foto</label><br>
-
-                    {{-- Foto lama --}}
-                    @if ($karyawan->foto && !($form->foto instanceof \Livewire\TemporaryUploadedFile))
-                        <div class="mb-2">
-                            <img src="{{ asset('storage/' . $karyawan->foto) }}" alt="Foto Karyawan" width="100">
-                        </div>
-                    @endif
-
-                    {{-- Upload file baru --}}
-                    <input type="file" id="foto" class="form-control" wire:model="form.foto">
+                    <label for="foto" class="form-label">Foto</label>
+                    <input type="file" class="form-control" id="foto" wire:model="form.foto" accept="image/png, image/jpeg">
                     @error('form.foto') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div wire:loading wire:target="form.foto" class="text-muted mt-2">
+                        Memuat gambar...
+                    </div>
 
-                    {{-- Preview foto baru --}}
-                    @if ($form->foto instanceof \Livewire\TemporaryUploadedFile)
-                        <div class="mt-2">
-                            <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Foto Baru" width="100">
+                </div>
+
+                <div class="row mt-3">
+                    <!-- Kolom Gambar Lama -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Gambar Lama</label>
+                        @if (!empty($form->foto_lama))
+                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa;">
+                            <img src="{{ asset('storage/images/profile/' . $form->foto_lama) }}" alt="Gambar Lama"
+                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
                         </div>
-                    @endif
+                        @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 220px; background: #f8f9fa;">
+                            <span>Tidak ada gambar lama</span>
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- Kolom Preview Gambar Baru -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Preview Gambar Baru</label>
+                        @if (is_object($form->foto))
+                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa;">
+                            <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Gambar Baru"
+                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                        </div>
+                        @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 220px; background: #f8f9fa;">
+                            <span>Belum ada gambar baru</span>
+                        </div>
+                        @endif
+                    </div>
                 </div>
 
 

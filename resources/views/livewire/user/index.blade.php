@@ -1,8 +1,8 @@
 <div>
     <h1 class="mt-4">Manajemen User</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('user.view') }}">User</a></li>
-        <li class="breadcrumb-item active ">Daftar User</li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('user.view') }}">User</a></li>
+        <li class="breadcrumb-item active">Daftar User</li>
     </ol>
     @if (session()->has('success'))
     <div class="        ">
@@ -72,8 +72,7 @@
                     <tbody>
                         @forelse ($users as $user)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration + ($users->currentPage() - 1) *
-                                $users->perPage() }}</td>
+                            <td class="text-center">{{ ($users->firstItem() + $loop->iteration) - 1}}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->role }}</td>

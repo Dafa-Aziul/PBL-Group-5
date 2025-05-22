@@ -39,12 +39,11 @@ class Edit extends Component
     public function update()
     {
         $validated = $this->form->validate();
-
         if ($this->form->foto) {
             // Simpan file baru
             // Simpan file dengan nama yang di-hash ke folder 'foto'
             $path = $this->form->foto->store('images/profile', 'public');
-            
+
             // Ambil hanya nama file-nya saja (tanpa folder 'foto/')
             $filename = basename($path);
 

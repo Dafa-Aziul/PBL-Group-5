@@ -1,7 +1,7 @@
 <div>
     <h1 class="mt-4">Kelola Sparepart</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate href="{{ route('sparepart.view') }}">Sparepart</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('sparepart.view') }}">Sparepart</a></li>
         <li class="breadcrumb-item active">Edit Sparepart</li>
     </ol>
     <div class="card mb-4">
@@ -28,7 +28,7 @@
                 <div class="mb-3">
                     <label>Kode</label>
                     <input type="text" id="kode" class="form-control" value="{{ old ('form.kode', $sparepart->kode) }}"
-                        disabled>
+                        readonly>
                     @error('form.kode') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
@@ -49,7 +49,7 @@
                 <div class="mb-3">
                     <label>Stok</label>
                     <input type="number" class="form-control" wire:model="form.stok"
-                        value="{{ old ('form.stok', $sparepart->stok) }}" disabled>
+                        value="{{ old ('form.stok', $sparepart->stok) }}" readonly>
                     @error('form.stok') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
@@ -112,18 +112,47 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="foto" class="form-label">Foto</label><br>
-
-                    {{-- Upload file baru --}}
-                    <input type="file" id="foto" class="form-control" wire:model="form.foto">
+                    <label for="foto" class="form-label">Foto</label>
+                    <input type="file" class="form-control" id="foto" wire:model="form.foto" accept="image/png, image/jpeg">
                     @error('form.foto') <span class="text-danger">{{ $message }}</span> @enderror
+                    <div wire:loading wire:target="form.foto" class="text-muted mt-2">
+                        Memuat gambar...
+                    </div>
 
-                    {{-- Preview foto baru --}}
-                    @if ($form->foto)
-                        <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Foto Baru" width="150">
-                    @elseif ($form->foto_lama)
-                        <img src="{{ asset('storage/' . $form->foto_lama) }}" alt="Foto Lama" width="150">
-                    @endif
+                </div>
+
+                <div class="row mt-3">
+                    <!-- Kolom Gambar Lama -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Gambar Lama</label>
+                        @if (!empty($form->foto_lama))
+                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa;">
+                            <img src="{{ asset('storage/' . $form->foto_lama) }}" alt="Gambar Lama"
+                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                        </div>
+                        @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 220px; background: #f8f9fa;">
+                            <span>Tidak ada gambar lama</span>
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- Kolom Preview Gambar Baru -->
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Preview Gambar Baru</label>
+                        @if (is_object($form->foto))
+                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa;">
+                            <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Gambar Baru"
+                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                        </div>
+                        @else
+                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                            style="min-height: 220px; background: #f8f9fa;">
+                            <span>Belum ada gambar baru</span>
+                        </div>
+                        @endif
+                    </div>
                 </div>
 
 

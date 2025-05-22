@@ -17,5 +17,5 @@ class KendaraanForm extends Form
     public $model_kendaraan = '';
 
     #[Validate('required|integer|min:0')]
-    public $odometer = '';  
+    public $odometer = '';
 }

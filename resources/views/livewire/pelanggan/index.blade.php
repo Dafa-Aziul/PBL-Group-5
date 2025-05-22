@@ -71,7 +71,7 @@
                         <tbody>
                             @forelse ($pelanggans as $pelanggan)
                             <tr style="cursor:pointer;"  x-data @click="Livewire.navigate(`/pelanggan/{{ $pelanggan->id }}`)">
-                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center">{{($pelanggans->firstItem() + $loop->iteration) - 1}}</td>
                                 <td>{{ $pelanggan->nama }}</td>
                                 <td>{{ $pelanggan->email }}</td>
                                 <td>{{ $pelanggan->no_hp }}</td>
