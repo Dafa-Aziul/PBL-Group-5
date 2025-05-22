@@ -68,7 +68,7 @@
                     <tbody>
                         @forelse ($jenis_kendaraans as $jenis)
                         <tr>
-                            <td class="text-center">{{ $jenis_kendaraans->firstItem() +$loop->iteration }}</td>
+                            <td class="text-center">{{ ($jenis_kendaraans->firstItem() +$loop->iteration) - 1 }}</td>
                             <td>{{ $jenis->nama_jenis }}</td>
                             <td>{{ $jenis->model_kendaraan }}</td>
                             <td>{{ $jenis->deskripsi }}</td>

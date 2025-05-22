@@ -98,7 +98,8 @@
                     @error('form.penulis_id') <span class="text-danger">{{ $message }}</span> @enderror
                 </div> --}}
 
-                <button type="submit" class="btn btn-success">Simpan</button>
+                <button type="submit" class="btn btn-success">Updates</button>
+                <button type="reset" class="btn btn-warning">Reset</button>
             </form>
         </div>
     </div>

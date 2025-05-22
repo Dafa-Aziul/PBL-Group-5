@@ -34,6 +34,7 @@ class KontenForm extends Form
         $this->judul = $konten->judul ?? '';
         $this->kategori = $konten->kategori ?? '';
         $this->isi = $konten->isi ?? '';
+        $this->status = $konten->status?? '';
 
         // Jangan isi properti upload file langsung,
         // tapi simpan nama file gambar/video lama jika perlu

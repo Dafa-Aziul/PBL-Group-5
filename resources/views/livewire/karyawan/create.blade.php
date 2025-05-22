@@ -73,11 +73,21 @@
 
                 <div class="mb-3">
                     <label for="foto" class="form-label">Foto</label>
-                    <input type="file" class="form-control" id="foto" wire:model="form.foto">
+                    <input type="file" class="form-control" id="foto" wire:model="form.foto" type="image/*">
                     @error('form.foto') <span class="text-danger">{{ $message }}</span> @enderror
-
-                    @if ($form->foto instanceof \Livewire\TemporaryUploadedFile)
-                        <img src="{{ $form->foto->temporaryUrl() }}" class="mt-2" width="100">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold">Preview Gambar</label>
+                    @if (is_object($form->foto))
+                    <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa;">
+                        <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Gambar Baru"
+                            class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
+                    </div>
+                    @else
+                    <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                        style="min-height: 220px; background: #f8f9fa;">
+                        <span>Belum ada gambar diupload</span>
+                    </div>
                     @endif
                 </div>
 

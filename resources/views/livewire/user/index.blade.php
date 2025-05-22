@@ -72,7 +72,7 @@
                     <tbody>
                         @forelse ($users as $user)
                         <tr>
-                            <td class="text-center">{{ $users->firstItem() + $loop->iteration }}</td>
+                            <td class="text-center">{{ ($users->firstItem() + $loop->iteration) - 1}}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->role }}</td>
