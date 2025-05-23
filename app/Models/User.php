@@ -51,12 +51,12 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function karyawans (): HasOne { 
+    public function karyawans (): HasOne {
         return $this->hasOne(Karyawan::class);
     }
 
     public function scopeSearch($query, $value)
-    { 
+    {
         $query->where('name', 'like', "%{$value}%")
             ->orWhere('email', 'like',"%{$value}%")
             ->orWhere('role', 'like', "%{$value}%")

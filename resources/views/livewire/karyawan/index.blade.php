@@ -68,7 +68,7 @@
                     </thead>
                     <tbody>
                         @forelse ($karyawans as $karyawan)
-                        <tr>
+                        <tr class="align-middle">
                             {{-- Gunakan nomor dengan pagination --}}
                             <td class="text-center">{{ ($karyawans->firstItem() + $loop->index)}}</td>
                             <!-- <td>{{ $karyawan->user->name }}</td> -->
@@ -86,9 +86,8 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <img src="{{ $karyawan->foto ? asset('storage/images/profile/' . $karyawan->foto) : asset('foto/default.png') }}"
+                                <img src="{{ $karyawan->foto ? asset('storage/images/profile/' . $karyawan->foto) : asset('storage/foto/default.png') }}"
                                     alt="Foto Karyawan" width="80" height="80" class="rounded-circle">
-
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center">
