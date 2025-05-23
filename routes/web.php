@@ -6,9 +6,12 @@ use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 use App\Livewire\Dashboard;
-use \App\Livewire\User\Create;
 use App\Livewire\User\Index as UserIndex;
+use \App\Livewire\User\Create as UserCreate;
 use App\Livewire\Karyawan\Index as karyawanIndex;
 use App\Livewire\Karyawan\Create as karyawanCreate;
 use App\Livewire\Karyawan\Edit as karyawanEdit;
@@ -35,8 +38,9 @@ use App\Livewire\Konten\Edit as KontenEdit;
 use App\Livewire\Jasa\Index as JasaIndex;
 use App\Livewire\Jasa\Create as JasaCreate;
 use App\Livewire\Jasa\Edit as JasaEdit;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+
+//service
+use App\Livewire\Service\Index as ServiceIndex;
 
 
 
@@ -52,7 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
     Route::get('/user', UserIndex::class)->name('user.view');
-    Route::get('/user/create', Create::class)->name('user.create');
+    Route::get('/user/create', UserCreate::class)->name('user.create');
 
     Route::get('/karyawan', KaryawanIndex::class)->name('karyawan.view');
     Route::get('/karyawan/create', KaryawanCreate::class)->name('karyawan.create');
@@ -85,6 +89,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/konten', KontenIndex::class)->name('konten.view');
     Route::get('/konten/create', KontenCreate::class)->name('konten.create');
     Route::get('/konten/{id}/edit', KontenEdit::class)->name('konten.edit');
+
+    //service
+    Route::get('/service', ServiceIndex::class)->name('service.view');
 
 });
 
