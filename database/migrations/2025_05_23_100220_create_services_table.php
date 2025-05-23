@@ -24,7 +24,7 @@ return new class extends Migration
                 'dalam antrian',
                 'dianalisis',
                 'analisis selesai',
-                'dalam_proses',
+                'dalam proses',
                 'selesai',
                 'batal'
             ])->default('dalam antrian');

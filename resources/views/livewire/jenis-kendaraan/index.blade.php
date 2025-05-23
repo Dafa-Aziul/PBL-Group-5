@@ -59,7 +59,7 @@
                         <tr>
                             <th>No.</th>
                             <th>Nama Jenis</th>
-                            <th>Tipe Kendaraan</th>
+                            <th>Model Kendaraan</th>
                             <th>Deskripsi</th>
                             <th>Aksi</th>
                         </tr>

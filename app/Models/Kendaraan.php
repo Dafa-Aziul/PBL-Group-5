@@ -25,7 +25,8 @@ class Kendaraan extends Model
     {
         return $this->belongsTo(Pelanggan::class);
     }
+
     public function jenis_kendaraan(){
         return $this->belongsTo(JenisKendaraan::class, 'jenis_kendaraan_id');
-    }    
+    }
 }

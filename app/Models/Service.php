@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Karyawan;
+use App\Models\Kendaraan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -39,4 +41,25 @@ class Service extends Model
             ->orWhere('tanggal_selesai_service', 'like', "%{$value}%")
             ->orWhere('keterangan', 'like', "%{$value}%");
     }
+
+    public function kendaraan()
+    {
+        return $this->belongsTo(Kendaraan::class);
+    }
+
+    public function montir()
+    {
+        return $this->belongsTo(Karyawan::class, 'montir_id');
+    }
+
+    public function spareparts()
+    {
+        return $this->hasMany(ServiceSparepart::class);
+    }
+
+    public function jasas()
+    {
+        return $this->hasMany(ServiceJasa::class);
+    }
+
 }

@@ -41,6 +41,7 @@ use App\Livewire\Jasa\Edit as JasaEdit;
 
 //service
 use App\Livewire\Service\Index as ServiceIndex;
+use App\Livewire\Service\Create as ServiceCreate;
 
 
 
@@ -92,7 +93,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //service
     Route::get('/service', ServiceIndex::class)->name('service.view');
-
+    Route::get('/service/create', ServiceCreate::class)->name('service.create');
 });
 
 Route::middleware('auth')->group(function () {

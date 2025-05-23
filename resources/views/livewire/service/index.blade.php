@@ -1,7 +1,8 @@
 <div>
-    <h1 class="mt-4">Kelola service</h1>
+    <h1 class="mt-4">Kelola Service</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('service.view') }}">service</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('service.view') }}">service</a></li>
         <li class="breadcrumb-item active">Daftar service</li>
     </ol>
     @if (session()->has('success'))
@@ -25,7 +26,7 @@
                 <span class="d-none d-md-inline ms-1 semibold">Daftar service</span>
             </div>
             <div>
-                <a class="btn btn-primary float-end" href="" wire:navigate><i
+                <a class="btn btn-primary float-end" href="{{ route('service.create') }}" wire:navigate><i
                         class="fas fa-plus"></i>
                     <span class="d-none d-md-inline ms-1">Tambah service</span>
                 </a>
@@ -37,7 +38,7 @@
                 <!-- Select Entries per page -->
                 <div class="d-flex align-items-center">
                     <select class="form-select" aria-label="Select entries per page" wire:model.live="perPage"
-                        style="width:auto;cursor:pointer;" >
+                        style="width:auto;cursor:pointer;">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
@@ -63,23 +64,50 @@
                                 <th>Nomor Polisi</th>
                                 <th>Model Kendaraan</th>
                                 <th>status</th>
-                                <th>keterangan</th>
                                 <th>Tanggal Mulai</th>
                                 <th>tanggal Selesai</th>
+                                <th>keterangan</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         </tfoot>
                         <tbody>
                             @forelse ($services as $service)
-                            <tr style="cursor:pointer;"  x-data @click="Livewire.navigate(`/service/{{ $service->id }}`)">
-                                <td class="text-center">{{($services->firstItem() + $loop->iteration) - 1}}</td>
-                                <td>{{ $service->nama }}</td>
-                                <td>{{ $service->email }}</td>
-                                <td>{{ $service->no_hp }}</td>
-                                <td>{{ $service->alamat }}</td>
+                            <tr style="cursor:pointer;" x-data
+                                @click="Livewire.navigate(`/service/{{ $service->id }}`)">
+                                <td class="text-center">{{ ($services->firstItem() + $loop->iteration) - 1 }}</td>
+                                <td>{{ $service->kode_service }}</td>
+                                <td>{{ $service->no_polisi }}</td>
+                                <td>{{ $service->model_kendaraan }}</td>
+                                <td @click.stop class="d-flex justify-content-center">
+                                    <form wire:submit.prevent="updateStatus({{ $service->id }})" class="d-flex align-items-center gap-2">
+                                        <select wire:model="statuses.{{ $service->id }}" name="status" id="status" class="form-select" style="width: 160px;">
+                                            <option value="">-- Pilih Status --</option>
+                                            <option value="dalam antrian" {{ $service->status == 'dalam antrian' ?
+                                                'selected' : '' }}>dalam antrian</option>
+                                            <option value="dianalisis" {{ $service->status == 'dianalisis' ? 'selected'
+                                                : '' }}>dianalisis</option>
+                                            <option value="analisis selesai" {{ $service->status == 'analisis selesai' ?
+                                                'selected' : '' }}>analisis selesai</option>
+                                            <option value="dalam proses" {{ $service->status == 'dalam proses' ?
+                                                'selected' : '' }}>dalam proses</option>
+                                            <option value="selesai" {{ $service->status == 'selesai' ? 'selected' : ''
+                                                }}>selesai</option>
+                                            <option value="batal" {{ $service->status == 'batal' ? 'selected' : ''
+                                                }}>batal</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+
+                                </td>
+                                <td>{{ $service->tanggal_mulai_service }}</td>
+                                <td>{{ $service->tanggal_selesai_service ? $service->tanggal_selesai_service : "Service
+                                    belum selesai" }}</td>
                                 <td>{{ $service->keterangan }}</td>
                                 <td class="text-center" @click.stop>
-                                    <a href="{{ route('service.edit', ['id' => $service->id]) }} " class="btn btn-warning" wire:navigate >
+                                    <a href="" class="btn btn-warning" wire:navigate>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>
@@ -87,7 +115,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted">Tidak ada data yang ditemukan.</td>
+                                <td colspan="9" class="text-center text-muted">Tidak ada data yang ditemukan.</td>
                             </tr>
                             @endforelse
                     </table>

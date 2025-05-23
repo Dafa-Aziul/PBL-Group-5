@@ -63,7 +63,7 @@
                                         <th>No.</th>
                                         <th>No Polisi</th>
                                         <th>Jenis Kendaraan</th>
-                                        <th>Tipe</th>
+                                        <th>Model</th>
                                         <th>Odometer</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>

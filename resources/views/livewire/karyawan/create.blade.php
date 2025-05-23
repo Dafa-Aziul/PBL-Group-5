@@ -101,7 +101,7 @@
                         </div>
                     @endif
                 </div>
-                
+
 
                 <button type="submit" class="btn btn-success">Simpan</button>
                 <button type="button" class="btn btn-warning" wire:click="resetForm">Reset</button>
