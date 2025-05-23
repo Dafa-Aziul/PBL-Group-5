@@ -76,7 +76,7 @@
                     @error('form.deskripsi_keluhan') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                     <label>Status</label>
                     <select wire:model="form.status" class="form-select">
                         <option value="" >-- Pilih Status --</option>
@@ -89,7 +89,7 @@
                     </select>
 
                     @error('form.status') <span class="text-danger">{{ $message }}</span> @enderror
-                </div>
+                </div> --}}
 
                 {{-- <div class="mb-3">
                     <label>Estimasi Harga</label>

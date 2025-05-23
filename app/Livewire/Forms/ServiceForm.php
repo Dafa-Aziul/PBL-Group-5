@@ -22,8 +22,8 @@ class ServiceForm extends Form
     #[Validate('required|string')]
     public $deskripsi_keluhan;
 
-    #[Validate('required|in:dalam antrian,dianalisis,analisis selesai,dalam proses,selesai,batal')]
-    public $status;
+    // #[Validate('required|in:dalam antrian,dianalisis,analisis selesai,dalam proses,selesai,batal')]
+    // public $status;
 
 
     // #[Validate('nullable|numeric')]
