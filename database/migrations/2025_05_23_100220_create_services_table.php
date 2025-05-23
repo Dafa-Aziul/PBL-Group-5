@@ -29,7 +29,6 @@ return new class extends Migration
                 'batal'
             ])->default('dalam antrian');
             $table->decimal('estimasi_harga', 12, 2)->nullable();
-            $table->date('tanggal_keluhan')->nullable();
             $table->dateTime('tanggal_mulai_service')->nullable();
             $table->dateTime('tanggal_selesai_service')->nullable();
             $table->text('keterangan')->nullable();
