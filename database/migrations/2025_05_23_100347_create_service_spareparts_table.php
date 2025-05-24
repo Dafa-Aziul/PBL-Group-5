@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_sparparts', function (Blueprint $table) {
+        Schema::create('service_spareparts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('service_id')->constrained('services');
             $table->foreignId('sparepart_id')->constrained('spareparts');
-            $table->decimal('harga');
+            $table->decimal('harga',10,2);
             $table->integer('jumlah');
-            $table->decimal('subtotal');
+            $table->decimal('subtotal', 10,2);
             $table->timestamps();
         });
     }
