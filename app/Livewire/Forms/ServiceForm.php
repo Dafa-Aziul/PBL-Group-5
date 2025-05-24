@@ -23,7 +23,7 @@ class ServiceForm extends Form
     public $deskripsi_keluhan;
 
     #[Validate('nullable|in:dalam antrian,dianalisis,analisis selesai,dalam proses,selesai,batal')]
-    public $status;
+    public $status = 'dalam antrian';
 
 
     // #[Validate('nullable|numeric')]

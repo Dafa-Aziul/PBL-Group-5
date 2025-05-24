@@ -43,9 +43,7 @@ use App\Livewire\Jasa\Edit as JasaEdit;
 use App\Livewire\Service\Index as ServiceIndex;
 use App\Livewire\Service\Create as ServiceCreate;
 use App\Livewire\Service\Edit as ServiceEdit;
-
-
-
+use App\Livewire\Service\ServiceDetail;
 
 Route::get('/', function () {
     return view('welcome');
@@ -85,7 +83,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/sparepart',SparepartIndex::class)->name('sparepart.view');
     Route::get('/sparepart/create',SparepartCreate::class)->name('sparepart.create');
     Route::get('/sparepart/{id}/edit',SparepartEdit::class)->name('sparepart.edit');
-    Route::get('/sparepart/{id}/detail',SparepartShow::class)->name('sparepart.show');
+    Route::get('/sparepart/{id}/',SparepartShow::class)->name('sparepart.show');
     Route::get('/sparepart/{id}/gudang/create',GudangCreate::class)->name('gudang.create');
 
     //konten
@@ -95,6 +93,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //service
     Route::get('/service', ServiceIndex::class)->name('service.view');
+    Route::get('/service/create', ServiceCreate::class)->name('service.create');
+    Route::get('/service/create/{id}/detail', ServiceDetail::class)->name('service.detail');
     Route::get('/service/create', ServiceCreate::class)->name('service.create');
     Route::get('/service/{id}/edit', ServiceEdit::class)->name('service.edit');
 });

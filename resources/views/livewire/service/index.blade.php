@@ -126,6 +126,10 @@
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>
+                                    <a href="{{ route('service.detail', ['id' => $service->id]) }}" class="btn btn-info" wire:navigate>
+                                        <i class="fa-solid fa-plus"></i>
+                                        <span class="d-none d-md-inline ms-1">detail</span>
+                                    </a>
                                 </td>
                             </tr>
                             @empty

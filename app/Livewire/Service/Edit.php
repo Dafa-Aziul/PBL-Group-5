@@ -24,8 +24,8 @@ class Edit extends Component
     {
         $this->service = Service::findOrFail($id);
         $this->form->fillFormModel($this->service);
-        $kendaraan = Kendaraan::findOrFail($this->form->kendaraan_id);
-        $this->pelanggan_id = $kendaraan->pelanggan_id;
+        $this->kendaraan = Kendaraan::findOrFail($this->form->kendaraan_id);
+        $this->pelanggan_id = $this->kendaraan->pelanggan_id;
         $this->pelanggans = Pelanggan::all();
         $this->montirs = Karyawan::where('jabatan', 'mekanik')->get();
     }
@@ -42,7 +42,7 @@ class Edit extends Component
     {
         $validated = $this->form->validate();
         $this->service->update($validated);
-
+        $this->kendaraan->update(['odometer' => $validated['odometer']]);
         return redirect()->route('service.view')->with('success','Data berhasil diperbarui');
     }
 

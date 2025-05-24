@@ -63,6 +63,7 @@ class Create extends Component
             'tanggal_mulai_service' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'),
         ]);
 
+        $this->selectedKendaraan->update(['odometer' => $data['odometer']]);
         Service::create($data);
 
         session()->flash('success', 'Data service berhasil disimpan!');
