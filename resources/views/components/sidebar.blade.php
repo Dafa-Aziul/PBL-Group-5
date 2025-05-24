@@ -17,9 +17,9 @@
             <x-nav-link wire:current.exact href="{{ route('pelanggan.view') }}" icon="fas fa-users  p-2">Pelanggan
             </x-nav-link>
             <a class="nav-link d-flex align-items-center collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts" wire:current.exact>
-                <i class="fas fa-receipt px-3"></i>
+                <i class="fas fa-receipt px-3 py-2"></i>
                 <span class="ml-2">Transaksi</span>
-                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                <div class="sb-sidenav-collapse-arrow me-2"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" >
                 <nav class="sb-sidenav-menu-nested nav">
