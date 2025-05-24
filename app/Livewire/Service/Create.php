@@ -41,7 +41,7 @@ class Create extends Component
     {
         $this->selectedKendaraan = Kendaraan::find($value);
     }
-    
+
 
     public function store()
     {

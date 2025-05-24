@@ -22,8 +22,8 @@ class ServiceForm extends Form
     #[Validate('required|string')]
     public $deskripsi_keluhan;
 
-    // #[Validate('required|in:dalam antrian,dianalisis,analisis selesai,dalam proses,selesai,batal')]
-    // public $status;
+    #[Validate('nullable|in:dalam antrian,dianalisis,analisis selesai,dalam proses,selesai,batal')]
+    public $status;
 
 
     // #[Validate('nullable|numeric')]
@@ -34,4 +34,18 @@ class ServiceForm extends Form
 
     #[Validate('nullable|string')]
     public $keterangan;
+
+    public function fillFormModel($service)
+    {
+        // $this->kode = $sparepart->kode;
+        $this->kendaraan_id = $service->kendaraan_id;
+        $this->montir_id = $service->montir_id;
+        $this->odometer = $service->odometer;
+        $this->deskripsi_keluhan = $service->deskripsi_keluhan;
+        $this->tanggal_mulai_service = $service->tanggal_mulai_service;
+        $this->status = $service->status;
+        $this->keterangan = $service->keterangan;
+        // $this-> = $service->ket;
+        // $this->foto_lama = $service->foto;
+    }
 }

@@ -73,39 +73,47 @@
                         </tfoot>
                         <tbody>
                             @forelse ($services as $service)
-                            <tr style="cursor:pointer;" x-data
-                                @click="Livewire.navigate(`/service/{{ $service->id }}`)" class="align-middle">
+                            <tr style="cursor:pointer;" x-data @click="Livewire.navigate(`/service/{{ $service->id }}`)"
+                                class="align-middle">
                                 <td class="text-center">{{ ($services->firstItem() + $loop->iteration) - 1 }}</td>
                                 <td>{{ $service->kode_service }}</td>
                                 <td>{{ $service->no_polisi }}</td>
                                 <td>{{ $service->model_kendaraan }}</td>
                                 <td @click.stop class="text-center">
                                     @if(in_array($service->status, ['selesai', 'batal']))
-                                        @if($service->status == 'selesai')
-                                        <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
-                                            <i class="fas fa-check-circle me-1"></i> Selesai
-                                        </div>
-                                        @elseif($service->status == 'batal')
-                                        <div class="badge bg-danger d-inline-flex align-items-center py-2 px-3 fs-7">
-                                            <i class="fas fa-times-circle me-1"></i> Batal
-                                        </div>
-                                        @endif
+                                    @if($service->status == 'selesai')
+                                    <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
+                                        <i class="fas fa-check-circle me-1"></i> Selesai
+                                    </div>
+                                    @elseif($service->status == 'batal')
+                                    <div class="badge bg-danger d-inline-flex align-items-center py-2 px-3 fs-7">
+                                        <i class="fas fa-times-circle me-1"></i> Batal
+                                    </div>
+                                    @endif
                                     @else
                                     <form wire:submit.prevent="updateStatus({{ $service->id }})"
-                                        class="d-flex align-items-center">
-                                        <select wire:model="statuses.{{ $service->id }}" class="form-select me-2"
-                                            style="width: 200px;">
-                                            <option value="">-- Pilih Status --</option>
-                                            <option value="dalam antrian">dalam antrian</option>
-                                            <option value="dianalisis">dianalisis</option>
-                                            <option value="analisis selesai">analisis selesai</option>
-                                            <option value="dalam proses">dalam proses</option>
-                                            <option value="selesai">selesai</option>
-                                            <option value="batal">batal</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-success"><i
-                                                class="fas fa-check"></i></button>
+                                        class="d-flex flex-column align-items-start">
+                                        <div class="d-flex align-items-center">
+                                            <select wire:model="statuses.{{ $service->id }}" class="form-select me-2"
+                                                style="width: 160px;">
+                                                <option value="">-- Pilih Status --</option>
+                                                <option value="dalam antrian">dalam antrian</option>
+                                                <option value="dianalisis">dianalisis</option>
+                                                <option value="analisis selesai">analisis selesai</option>
+                                                <option value="dalam proses">dalam proses</option>
+                                                <option value="selesai">selesai</option>
+                                                <option value="batal">batal</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </div>
+                                        @error('statuses.' . $service->id)
+                                        <small class="text-danger small mt-1">{{ $message }}</small>
+                                        @enderror
                                     </form>
+
+
                                     @endif
                                 </td>
 
@@ -114,7 +122,7 @@
                                     belum selesai" }}</td>
                                 <td>{{ $service->keterangan }}</td>
                                 <td class="text-center" @click.stop>
-                                    <a href="" class="btn btn-warning" wire:navigate>
+                                    <a href="{{ route('service.edit', ['id' => $service->id]) }}" class="btn btn-warning" wire:navigate>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>
