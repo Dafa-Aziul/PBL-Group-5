@@ -1,5 +1,5 @@
 <div>
-    <h1 class="mt-4">Detail Pengunaan Service</h1>
+    <h1 class="mt-4">Kelola Service</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('service.view') }}">Service</a></li>
@@ -47,7 +47,8 @@
                         </div>
 
                         <div class="form-control bg-light mb-1">
-                            <strong>Jenis Kendaraan:</strong> {{ optional($service->kendaraan)->jenis ?? '-' }}
+                            <strong>Jenis Kendaraan:</strong> {{
+                            optional($service->kendaraan->jenis_kendaraan)->nama_jenis ?? '-' }}
                         </div>
                     </div>
 
@@ -85,27 +86,41 @@
                 <div class="card mb-4">
                     <div class="card-header">Penggunaan Jasa</div>
                     <div class="card-body">
-                        <div class="row align-items-end mb-3">
-                            <div class="col-md-6">
-                                <select wire:model.live="selectedJasaId" class="form-select">
-                                    <option value="">-- Pilih Jasa --</option>
-                                    @foreach($jasas as $jasa)
-                                    <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}</option>
-                                    @endforeach
-                                </select>
+                        <div class="mb-3">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-md-11">
+                                    <select wire:model.live="selectedJasaId" class="form-select">
+                                        <option value="">-- Pilih Jasa --</option>
+                                        @foreach($jasas as $jasa)
+                                        <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <button wire:click="addJasa" type="button" class="btn btn-primary w-100">
+                                        Tambah
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <button wire:click="addJasa" type="button" class="btn btn-primary w-100">Tambah</button>
+                            <div class="row mt-1">
+                                <div class="col-md-6 offset-md-0">
+                                    @error('selectedJasaId')
+                                    <div class="text-danger" style="font-size: 0.875em;">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                         </div>
+
+
+
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr class="table-secondary">
                                         <th>No</th>
                                         <th>Nama Jasa</th>
                                         <th>Harga</th>
-                                        <th>Aksi</th>
+                                        <th style="width: 40px; padding: 0.2rem; text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -114,9 +129,12 @@
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $jasa['nama_jasa'] }}</td>
                                         <td>Rp {{ number_format($jasa['harga'], 0, ',', '.') }}</td>
-                                        <td>
+                                        <td style="width: 40px; padding: 0.2rem; text-align: center;">
                                             <button wire:click="removeJasa({{ $index }})" type="button"
-                                                class="btn btn-danger btn-sm">Hapus</button>
+                                                class="btn btn-outline-danger p-0" style="width: 28px; height: 28px;"
+                                                title="Hapus">
+                                                <i class="fas fa-trash-alt fa-xs"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                     @empty
@@ -124,8 +142,17 @@
                                         <td colspan="4" class="text-center">Belum ada jasa yang ditambahkan</td>
                                     </tr>
                                     @endforelse
+                                    @if(count($jasaList) > 0)
+                                    <tr class="table-light">
+                                        <th colspan="2" class="text-start">Total Jasa</th>
+                                        <td colspan="2">Rp {{ number_format($totalJasa, 0, ',', '.') }}</td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
+                            @error('jasaList')
+                            <div class="text-danger mb-2">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -133,25 +160,43 @@
                 <div class="card mb-4">
                     <div class="card-header">Penggunaan Sparepart</div>
                     <div class="card-body row align-items-end">
-                        <div class="col-md-6">
-                            <select wire:model="selectedSparepartId" class="form-select">
-                                <option value="">-- Pilih Sparepart --</option>
-                                @foreach($spareparts as $sparepart)
-                                <option value="{{ $sparepart->id }}">
-                                    {{ $sparepart->nama }} - Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
-                                </option>
-                                @endforeach
-                            </select>
-                            @error('selectedSparepartId') <span class="text-danger">{{ $message }}</span> @enderror
+                        <div class="row align-items-end">
+                            <div class="col-md-9">
+                                <select wire:model="selectedSparepartId" class="form-select">
+                                    <option value="">-- Pilih Sparepart --</option>
+                                    @foreach($spareparts as $sparepart)
+                                    <option value="{{ $sparepart->id }}">
+                                        {{ $sparepart->nama }} - Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="col-md-2">
+                                <input wire:model="jumlahSparepart" type="number" min="1" class="form-control"
+                                    placeholder="Jumlah">
+                            </div>
+
+                            <div class="col-md-1">
+                                <button wire:click="addSparepart" type="button"
+                                    class="btn btn-primary w-100">Tambah</button>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <input wire:model="jumlahSparepart" type="number" min="1" class="form-control"
-                                placeholder="Jumlah">
-                            @error('jumlahSparepart') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-                        <div class="col-md-3">
-                            <button wire:click="addSparepart" type="button"
-                                class="btn btn-primary w-100">Tambah</button>
+
+                        <div class="row mt-1">
+                            <div class="col-md-9">
+                                @error('selectedSparepartId')
+                                <div class="text-danger" style="font-size: 0.875em;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-2">
+                                @error('jumlahSparepart')
+                                <div class="text-danger" style="font-size: 0.875em;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-1">
+                                <!-- Kosong, untuk keseimbangan kolom -->
+                            </div>
                         </div>
                         <div class="table-responsive mt-3">
                             <table class="table table-bordered">
@@ -162,7 +207,7 @@
                                         <th>Jumlah</th>
                                         <th>Harga</th>
                                         <th>Subtotal</th>
-                                        <th>Aksi</th>
+                                        <th style="width: 40px; padding: 0.2rem; text-align: center;">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -170,12 +215,19 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $sparepart['nama'] }}</td>
-                                        <td>{{ $sparepart['jumlah'] }}</td>
+                                        <td wire:click="openEditModal({{ $index }})" data-bs-toggle="modal" data-bs-target="#editJumlahModal" style="cursor: pointer;">
+                                            {{ $sparepart['jumlah'] }}
+
+                                        </td>
                                         <td>Rp {{ number_format($sparepart['harga'], 0, ',', '.') }}</td>
                                         <td>Rp {{ number_format($sparepart['subtotal'], 0, ',', '.') }}</td>
-                                        <td>
+                                        <td style="width: 40px; padding: 0.2rem; text-align: center;">
                                             <button wire:click="removeSparepart({{ $index }})" type="button"
-                                                class="btn btn-danger btn-sm">Hapus</button>
+                                                class="btn btn-outline-danger p-0" style="width: 28px; height: 28px;"
+                                                title="Hapus">
+                                                <i class="fas fa-trash-alt fa-xs"></i>
+                                            </button>
+
                                         </td>
                                     </tr>
                                     @empty
@@ -183,17 +235,73 @@
                                         <td colspan="6" class="text-center">Belum ada sparepart yang ditambahkan</td>
                                     </tr>
                                     @endforelse
+                                    @if(count($sparepartList) > 0)
+                                    <tr class="table-light">
+                                        <th colspan="4" class="text-start">Total Sparepart</th>
+                                        <td colspan="2">Rp {{ number_format($totalSparepart, 0, ',', '.') }}</td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
+                @if($totalJasa > 0 || $totalSparepart > 0)
+                <div class="card mb-4">
+                    <div class="card-header">Estimasi Total Biaya</div>
+                    <div class="card-body">
+                        <h5>Total Keseluruhan: <strong>Rp {{ number_format($totalSemua, 0, ',', '.') }}</strong></h5>
+                    </div>
+                </div>
+                @endif
                 {{-- Tombol Submit --}}
                 <div class="text-end mb-4">
                     <button type="submit" class="btn btn-success">💾 Simpan Service & Detail</button>
                 </div>
             </form>
+            <!-- Modal Edit Jumlah -->
+            <div wire:ignore.self class="modal fade" id="editJumlahModal" tabindex="-1"
+                aria-labelledby="editJumlahModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    {{-- <div class="modal-dialog">
+                        <form wire:submit.prevent="updateJumlah" class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editJumlahModalLabel">Edit Jumlah Sparepart</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Tutup"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="number" wire:model.defer="editJumlah" class="form-control" min="1">
+                                @error('editJumlah') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
+                    </div> --}}
+                    <form wire:submit.prevent="updateJumlah" class="modal-content">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editJumlahModalLabel">Edit Jumlah Sparepart</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Tutup"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <input type="number" wire:model.defer="editJumlah" class="form-control" min="1">
+                                @error('editJumlah') <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Simpan</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
         </div>
     </div>
+</div>

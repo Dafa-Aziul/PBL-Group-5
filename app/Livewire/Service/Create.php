@@ -7,9 +7,10 @@ use App\Models\Karyawan;
 use App\Models\Kendaraan;
 use App\Models\Pelanggan;
 use App\Models\Service;
+use App\Models\StatusService;
+use Carbon\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use Carbon\Carbon;
 
 class Create extends Component
 {
@@ -64,7 +65,33 @@ class Create extends Component
         ]);
 
         $this->selectedKendaraan->update(['odometer' => $data['odometer']]);
-        Service::create($data);
+
+        $service = Service::create($data);
+        if ($service) {
+            $namaMontir = $service->montir->nama ?? 'montir';
+
+            $keterangan = match ($validated['status']) {
+                'dalam antrian'     => 'Service telah masuk ke dalam antrian.',
+                'dianalisis'        => 'Service sedang dalam proses analisis oleh ' . $namaMontir . '.',
+                'analisis selesai'  => 'Analisis telah selesai dilakukan oleh ' . $namaMontir . '.',
+                'dalam proses'      => 'Service sedang dikerjakan oleh ' . $namaMontir . '.',
+                'selesai'           => 'Service telah selesai dan siap diambil.',
+                'batal'             => 'Service dibatalkan oleh pelanggan atau admin.',
+                default             => null,
+            };
+
+            StatusService::create([
+                'service_id' => $service->id,
+                'kode_service' => $service->kode_service,
+                'status' => $validated['status'],
+                'keterangan' => $keterangan,
+                'changed_at' => Carbon::now('Asia/Jakarta'),
+            ]);
+
+            session()->flash('success', 'Status berhasil diperbarui.');
+        } else {
+            session()->flash('error', 'Gagal memperbarui status service.');
+        }
 
         session()->flash('success', 'Data service berhasil disimpan!');
 

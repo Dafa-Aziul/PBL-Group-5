@@ -62,4 +62,9 @@ class Service extends Model
         return $this->hasMany(ServiceJasa::class);
     }
 
+    public function statuses()
+    {
+        return $this->hasMany(StatusService::class);
+    }
+
 }

@@ -43,6 +43,7 @@ use App\Livewire\Jasa\Edit as JasaEdit;
 use App\Livewire\Service\Index as ServiceIndex;
 use App\Livewire\Service\Create as ServiceCreate;
 use App\Livewire\Service\Edit as ServiceEdit;
+use App\Livewire\Service\Show as ServiceShow;
 use App\Livewire\Service\ServiceDetail;
 
 Route::get('/', function () {
@@ -95,7 +96,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/service', ServiceIndex::class)->name('service.view');
     Route::get('/service/create', ServiceCreate::class)->name('service.create');
     Route::get('/service/create/{id}/detail', ServiceDetail::class)->name('service.detail');
-    Route::get('/service/create', ServiceCreate::class)->name('service.create');
+    Route::get('/service/{id}', ServiceShow::class)->name('service.show');
     Route::get('/service/{id}/edit', ServiceEdit::class)->name('service.edit');
 });
 
