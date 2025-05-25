@@ -17,8 +17,6 @@
         </div>
     </div>
     @endif
-
-
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
