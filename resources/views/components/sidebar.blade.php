@@ -23,7 +23,7 @@
             </a>
             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" >
                 <nav class="sb-sidenav-menu-nested nav">
-                    {{-- <x-nav-link wire:current.exact href="#" icon="fa-solid fa-money-bill-transfer  p-2">Aktifitas Transaksi</x-nav-link> --}}
+                    <x-nav-link wire:current.exact href="{{ route('transaksi.view') }}" icon="fa-solid fa-money-bill-transfer  p-2">Aktifitas Transaksi</x-nav-link>
                     <x-nav-link wire:current.exact href="{{ route('service.view') }}" icon="fas fa-tools  p-2">Service</x-nav-link>
                     {{-- <x-nav-link wire:current.exact href="#" icon="fas fa-shopping-cart  p-2">Penjualan</x-nav-link> --}}
                 </nav>

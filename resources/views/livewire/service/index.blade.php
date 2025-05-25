@@ -1,3 +1,20 @@
+@push('scripts')
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('tampilkanModalTransaksi', (serviceId) => {
+            console.log('Menerima event tampilkanModalTransaksi:', serviceId); // Debug cek event sampai
+            const modalEl = document.getElementById(`modalTransaksi-${serviceId}`);
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            } else {
+                console.warn('Modal dengan ID modalTransaksi-' + serviceId + ' tidak ditemukan.');
+            }
+        });
+    });
+</script>
+@endpush
+
 <div>
     <h1 class="mt-4">Kelola Service</h1>
     <ol class="breadcrumb mb-4">
@@ -17,7 +34,17 @@
         </div>
     </div>
     @endif
-
+    <div class="modal fade" id="modalTest" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal Test</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">Ini modal test</div>
+            </div>
+        </div>
+    </div>
 
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
@@ -61,6 +88,7 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Kode service</th>
+                                <th>Pelanggan</th>
                                 <th>Nomor Polisi</th>
                                 <th>Model Kendaraan</th>
                                 <th>status</th>
@@ -77,6 +105,7 @@
                                 class="align-middle">
                                 <td class="text-center">{{ ($services->firstItem() + $loop->iteration) - 1 }}</td>
                                 <td>{{ $service->kode_service }}</td>
+                                <td>{{ $service->kendaraan->pelanggan->nama }}</td>
                                 <td>{{ $service->no_polisi }}</td>
                                 <td>{{ $service->model_kendaraan }}</td>
                                 <td @click.stop class="text-center">
@@ -112,25 +141,67 @@
                                         <small class="text-danger small mt-1">{{ $message }}</small>
                                         @enderror
                                     </form>
-
-
+                                    <!-- Modal Konfirmasi Transaksi -->
+                                    <div wire:ignore.self class="modal fade" id="modalTransaksi-{{ $service->id }}"
+                                        tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="modalTransaksiLabel-{{ $service->id }}">
+                                                        Konfirmasi Transaksi</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Tutup"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Service telah selesai. Apakah Anda ingin melanjutkan ke transaksi
+                                                    pembayaran?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Nanti Saja</button>
+                                                    <a href="{{ route('transaksi.service', ['id' => $service->id]) }}"
+                                                        class="btn btn-primary">Lanjutkan</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     @endif
                                 </td>
 
-                                <td>{{ $service->tanggal_mulai_service }}</td>
-                                <td>{{ $service->tanggal_selesai_service ? $service->tanggal_selesai_service : "Service
-                                    belum selesai" }}</td>
+                                <td>{{ \Carbon\Carbon::parse($service->tanggal_mulai_service)->translatedFormat('d F Y
+                                    H:i') }}</td>
+                                <td>{{
+                                    $service->status === 'batal'
+                                    ? 'Service dibatalkan'
+                                    : ($service->tanggal_selesai_service
+                                    ? \Carbon\Carbon::parse($service->tanggal_selesai_service)->translatedFormat('d F Y
+                                    H:i')
+                                    : 'Service belum selesai')
+                                    }}
+                                </td>
                                 <td>{{ $service->keterangan }}</td>
                                 <td class="text-center" @click.stop>
-                                    <a href="{{ route('service.edit', ['id' => $service->id]) }}" class="btn btn-warning" wire:navigate>
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                        <span class="d-none d-md-inline ms-1">Edit</span>
-                                    </a>
+                                    @if (!in_array($service->status, ['selesai', 'batal']))
+                                        <a href="{{ route('service.edit', ['id' => $service->id]) }}"
+                                            class="btn btn-warning" wire:navigate>
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            <span class="d-none d-md-inline ms-1">Edit</span>
+                                        </a>
+                                    @endif
                                     @if ($service->status == 'analisis selesai' || $service->status == 'dalam proses' )
-                                    <a href="{{ route('service.detail', ['id' => $service->id]) }}" class="btn btn-info" wire:navigate >
-                                        <i class="fa-solid fa-plus"></i>
-                                        <span class="d-none d-md-inline ms-1">detail</span>
-                                    </a>
+                                        <a href="{{ route('service.detail', ['id' => $service->id]) }}" class="btn btn-info"
+                                            wire:navigate>
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span class="d-none d-md-inline ms-1">detail</span>
+                                        </a>
+                                    @endif
+
+                                    @if (is_null($service->serviceDetail)&& $service->status == 'selesai')
+                                        <a href="{{ route('transaksi.service', ['id' => $service->id]) }}" class="btn btn-info"
+                                            wire:navigate>
+                                            <i class="fa-solid fa-receipt"></i>
+                                            <span class="d-none d-md-inline ms-1">Catat Transaksi</span>
+                                        </a>
                                     @endif
                                 </td>
                             </tr>

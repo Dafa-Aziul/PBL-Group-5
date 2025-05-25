@@ -7,8 +7,6 @@ use Livewire\Form;
 
 class ServiceForm extends Form
 {
-    // #[Validate('required|exists:pelanggans,id')]
-    // public $pelanggan_id;
 
     #[Validate('required|exists:kendaraans,id')]
     public $kendaraan_id;
@@ -24,10 +22,6 @@ class ServiceForm extends Form
 
     #[Validate('nullable|in:dalam antrian,dianalisis,analisis selesai,dalam proses,selesai,batal')]
     public $status = 'dalam antrian';
-
-
-    // #[Validate('nullable|numeric')]
-    // public $estimasi_harga;
 
     #[Validate('nullable|date')]
     public $tanggal_mulai_service;

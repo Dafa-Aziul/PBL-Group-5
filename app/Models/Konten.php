@@ -24,16 +24,6 @@ class Konten extends Model
     ];
 
     /**
-     * Scope untuk pencarian data berdasarkan kata kunci
-     */
-    public function scopeSearch($query, $value)
-    {
-        return $query->where('judul', 'like', "%{$value}%")
-            ->orWhere('kategori', 'like', "%{$value}%")
-            ->orWhere('status', 'like', "%{$value}%");
-    }
-
-    /**
      * Relasi ke model Karyawan sebagai penulis
      */
     public function penulis()

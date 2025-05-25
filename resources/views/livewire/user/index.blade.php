@@ -1,3 +1,28 @@
+@push('scripts')
+<script>
+    document.addEventListener('livewire:load', () => {
+        // Buka modal
+        Livewire.on('showConfirmPasswordModal', (userId) => {
+            const modalEl = document.getElementById(`confirmPassword-${userId}`);
+            if (modalEl) {
+                const modal = new bootstrap.Modal(modalEl);
+                modal.show();
+            }
+        });
+
+        // Tutup modal
+        Livewire.on('closeConfirmPasswordModal', (userId) => {
+            const modalEl = document.getElementById(`confirmPassword-${userId}`);
+            if (modalEl) {
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            }
+        });
+    });
+</script>
+@endpush
 <div>
     <h1 class="mt-4">Manajemen User</h1>
     <ol class="breadcrumb mb-4">

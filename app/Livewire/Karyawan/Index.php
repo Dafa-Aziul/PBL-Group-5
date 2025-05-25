@@ -52,9 +52,7 @@ class Index extends Component
             })
             ->paginate($this->perPage);
 
-        return view('livewire.karyawan.index', [
-            'karyawans' => $karyawans,
-        ]);
+        return view('livewire.karyawan.index', compact('karyawans'));
     }
 
 

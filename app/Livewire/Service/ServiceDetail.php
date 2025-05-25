@@ -104,6 +104,8 @@ class ServiceDetail extends Component
         $this->totalJasa = collect($this->jasaList)->sum('harga');
         $this->totalSparepart = collect($this->sparepartList)->sum('subtotal');
         $this->totalSemua = $this->totalJasa + $this->totalSparepart;
+
+        $this->service->update(['estimasi_harga' => $this->totalSemua]);
     }
 
     public function addJasa()

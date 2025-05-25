@@ -50,7 +50,7 @@ class ResetPassword extends Component
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return redirect()->route('login')->with('status', __($status))->with('wire:navigate', true); 
+            return redirect()->route('login')->with('status', __($status))->with('wire:navigate', true);
         } else {
             $this->addError('email', __($status));
         }

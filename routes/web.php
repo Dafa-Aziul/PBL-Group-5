@@ -45,6 +45,8 @@ use App\Livewire\Service\Create as ServiceCreate;
 use App\Livewire\Service\Edit as ServiceEdit;
 use App\Livewire\Service\Show as ServiceShow;
 use App\Livewire\Service\ServiceDetail;
+use App\Livewire\Transaksi\Index as TransaksiIndex;
+use App\Livewire\Transaksi\TambahService as TransaksiService;
 
 Route::get('/', function () {
     return view('welcome');
@@ -92,6 +94,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/konten/create', KontenCreate::class)->name('konten.create');
     Route::get('/konten/{id}/edit', KontenEdit::class)->name('konten.edit');
 
+    //transaksi
+    Route::get('/transaksi/', TransaksiIndex::class)->name('transaksi.view');
+    Route::get('/transaksi/service/{id}/create', TransaksiService::class)->name('transaksi.service');
+
+
     //service
     Route::get('/service', ServiceIndex::class)->name('service.view');
     Route::get('/service/create', ServiceCreate::class)->name('service.create');
@@ -101,7 +108,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('verify-email', VerifyEmail::class)->name('verification.notice');
+    Route::get('verify-email', VerifyEmail::class)
+        ->name('verification.notice');
+
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');

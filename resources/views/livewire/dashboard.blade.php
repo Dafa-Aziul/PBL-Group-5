@@ -90,7 +90,7 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
                         </a>
 
                     </div>
-                    
+
                 </div>
             </div>
         </div>

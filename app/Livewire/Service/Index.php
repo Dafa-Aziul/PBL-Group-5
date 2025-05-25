@@ -20,22 +20,6 @@ class Index extends Component
     // Array untuk menyimpan status masing-masing service by id
     public $statuses = [];
 
-    public function render()
-    {
-        $services = Service::search($this->search)->paginate($this->perPage);
-
-        // Pastikan setiap service punya nilai status di $statuses, supaya select terisi otomatis
-        foreach ($services as $service) {
-            if (!isset($this->statuses[$service->id])) {
-                $this->statuses[$service->id] = $service->status;
-            }
-        }
-
-        return view('livewire.service.index', [
-            'services' => $services,
-        ]);
-    }
-
     public function updateStatus($id)
     {
         $validStatuses = [
@@ -47,41 +31,49 @@ class Index extends Component
             'batal' => 6,
         ];
 
-        if (!isset($this->statuses[$id]) || !array_key_exists($this->statuses[$id], $validStatuses)) {
+        // Cek status baru dari input user
+        if (!isset($this->statuses[$id]) || !isset($validStatuses[$this->statuses[$id]])) {
             session()->flash('error', 'Status tidak valid.');
             return;
         }
 
-        $newStatus = $this->statuses[$id];
+        $newStatus = strtolower($this->statuses[$id]);
 
-        // Ambil data service sekarang
-        $service = Service::with('montir')->find($id);
+        // Ambil data service dengan relasi yang dibutuhkan
+        $service = Service::with(['montir', 'jasas'])->find($id);
         if (!$service) {
             session()->flash('error', 'Data service tidak ditemukan.');
             return;
         }
 
-        // Cek urutan status lama dan baru
-        $oldStatus = $service->status;
+        $oldStatus = strtolower($service->status);
 
+        // Cek validitas status lama
         if (!isset($validStatuses[$oldStatus])) {
             $this->addError('statuses.' . $service->id, 'Status lama tidak dikenali.');
             return;
         }
 
+        // Cek apakah status baru adalah mundur dari status lama
         if ($validStatuses[$newStatus] < $validStatuses[$oldStatus]) {
             $this->addError('statuses.' . $service->id, 'Tidak bisa mengubah status ke tahap sebelumnya.');
             return;
         }
 
+        // Cek jasa detail sebelum pindah ke "dalam proses"
+        if (
+            in_array($newStatus, ['dalam proses', 'selesai']) &&
+            $service->jasas->isEmpty()
+        ) {
+            $this->addError('statuses.' . $service->id, 'Tidak dapat mengubah status ke "' . $newStatus . '" karena detail jasa belum ditambahkan.');
+            return;
+        }
 
         // Siapkan data update
         $dataUpdate = ['status' => $newStatus];
 
-        // Jika statusnya selesai, isi tanggal_selesai_service dengan tanggal sekarang (waktu Indonesia)
         if ($newStatus === 'selesai') {
-            $tanggalSelesai = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
-            $dataUpdate['tanggal_selesai_service'] = $tanggalSelesai;
+            $dataUpdate['tanggal_selesai_service'] = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
         } else {
             $dataUpdate['tanggal_selesai_service'] = null;
         }
@@ -109,9 +101,39 @@ class Index extends Component
                 'changed_at' => Carbon::now('Asia/Jakarta'),
             ]);
 
+            if ($newStatus === 'selesai') {
+                $this->dispatch('tampilkanModalTransaksi', $service->id);
+            }
+
             session()->flash('success', 'Status berhasil diperbarui.');
         } else {
             session()->flash('error', 'Gagal memperbarui status service.');
         }
+    }
+
+    public function render()
+    {
+        $services = Service::with(['kendaraan.pelanggan'])
+            ->where(function ($query) {
+                $query->where('kode_service', 'like', '%' . $this->search . '%')
+                    ->orWhereHas('kendaraan', function ($q) {
+                        $q->where('no_polisi', 'like', '%' . $this->search . '%')
+                            ->orWhere('model_kendaraan', 'like', '%' . $this->search . '%')
+                            ->orWhereHas('pelanggan', function ($sub) {
+                                $sub->where('nama', 'like', '%' . $this->search . '%');
+                            });
+                    })
+                    ->orWhere('keterangan', 'like', '%' . $this->search . '%');
+            })
+            ->orderByDesc('created_at')
+            ->paginate($this->perPage);
+
+        foreach ($services as $service) {
+            if (!isset($this->statuses[$service->id])) {
+                $this->statuses[$service->id] = $service->status;
+            }
+        }
+
+        return view('livewire.service.index', compact('services'));
     }
 }

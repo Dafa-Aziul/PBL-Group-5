@@ -41,6 +41,13 @@ class Edit extends Component
     public function update()
     {
         $validated = $this->form->validate();
+        $odometerLama = $this->kendaraan->odometer;
+
+        // Validasi odometer baru tidak boleh lebih kecil
+        if ($this->form->odometer < $odometerLama) {
+            $this->addError('form.odometer', 'Odometer tidak boleh lebih kecil dari sebelumnya (' . $odometerLama . ' Km).');
+            return;
+        }
         $this->service->update($validated);
         $this->kendaraan->update(['odometer' => $validated['odometer']]);
         return redirect()->route('service.view')->with('success','Data berhasil diperbarui');

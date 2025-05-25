@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Karyawan;
 use App\Models\Kendaraan;
+use App\Models\ServiceDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -67,4 +68,12 @@ class Service extends Model
         return $this->hasMany(StatusService::class);
     }
 
+    public function serviceDetail()
+    {
+        return $this->hasOne(ServiceDetail::class);
+    }
+
+    // public function transaksi(){
+    //     return $this->belongsTo(ServiceDetail::class);
+    // }
 }

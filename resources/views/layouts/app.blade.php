@@ -16,7 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     --}}
-    @vite(['resources/sass/app.scss','resources/js/app.js'])
+    @vite(['resources/sass/app.scss'])
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
 
@@ -43,7 +43,8 @@
     </div>
     @livewireScripts
     @stack('scripts')
-    {{-- @vite('resources/js/app.js') --}}
+    @vite('resources/js/app.js')
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> --}}
     {{-- <script src="{{ asset('js/scripts.js') }}"></script> --}}
 </body>
 

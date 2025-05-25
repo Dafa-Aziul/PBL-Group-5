@@ -50,9 +50,19 @@ class Create extends Component
 
         $validated = $this->form->validate();
 
+
         // Cek apakah kendaraan terpilih ada
         if (!$this->selectedKendaraan) {
             session()->flash('error', 'Pilih kendaraan terlebih dahulu!');
+            return;
+        }
+
+        // Ambil odometer lama dari kendaraan
+        $odometerLama = $this->selectedKendaraan->odometer;
+
+        // Validasi odometer baru tidak boleh lebih kecil
+        if ($this->form->odometer < $odometerLama) {
+            $this->addError('form.odometer', 'Odometer tidak boleh lebih kecil dari sebelumnya (' . $odometerLama . ' Km).');
             return;
         }
 

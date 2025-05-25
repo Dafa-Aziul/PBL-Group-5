@@ -27,8 +27,7 @@ class Index extends Component
     }
     public function render()
     {
-        return view('livewire.pelanggan.index',  [
-            'pelanggans' => Pelanggan::search($this->search)->paginate($this->perPage),
-        ]);
+        $pelanggans = Pelanggan::search($this->search)->paginate($this->perPage);
+        return view('livewire.pelanggan.index',  compact('pelanggans'));
     }
 }
