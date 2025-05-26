@@ -15,6 +15,12 @@ class Index extends Component
     public $perPage = 5;
     public $search = '';
 
+    public function mount()
+    {
+        $this->resetPage(); // reset pagination saat mount
+        $this->search = ''; // reset pencarian juga jika diperlukan
+    }
+
     public function updatingSearch()
     {
         $this->resetPage(); // Kembali ke halaman 1 saat pencarian berubah
@@ -32,6 +38,7 @@ class Index extends Component
                     ->orWhere('keterangan', 'like', '%' . $this->search . '%');
             })
             ->paginate($this->perPage);
+
         return view('livewire.transaksi.index', compact('transaksis'));
     }
 }
