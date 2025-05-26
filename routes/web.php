@@ -8,44 +8,57 @@ use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
 use App\Livewire\Dashboard;
+
+// user
 use App\Livewire\User\Index as UserIndex;
 use \App\Livewire\User\Create as UserCreate;
-use App\Livewire\Karyawan\Index as karyawanIndex;
-use App\Livewire\Karyawan\Create as karyawanCreate;
-use App\Livewire\Karyawan\Edit as karyawanEdit;
+
+// jasa
+use App\Livewire\Jasa\Create as JasaCreate;
+use App\Livewire\Jasa\Edit as JasaEdit;
+use App\Livewire\Jasa\Index as JasaIndex;
+
+// jenis kendaraan
 use App\Livewire\JenisKendaraan\Create as JenisKendaraanCreate;
 use App\Livewire\JenisKendaraan\Edit as JenisKendaraanEdit;
 use App\Livewire\JenisKendaraan\Index as JenisKendaraanIndex;
-use App\Livewire\Kendaraan\Create as KendaraanCreate;
+
+// karyawan
+use App\Livewire\Karyawan\Create as karyawanCreate;
+use App\Livewire\Karyawan\Edit as karyawanEdit;
+use App\Livewire\Karyawan\Index as karyawanIndex;
+
+// konten
+use App\Livewire\Konten\Index as KontenIndex;
+use App\Livewire\Konten\Create as KontenCreate;
+use App\Livewire\Konten\Edit as KontenEdit;
+
 //pelanggan
 use App\Livewire\Pelanggan\Create as PelangganCreate;
 use App\Livewire\Pelanggan\Edit as PelangganEdit;
 use App\Livewire\Pelanggan\Index as PelangganIndex;
 use App\Livewire\Pelanggan\Show as PelangganDetail;
+use App\Livewire\Kendaraan\Create as KendaraanCreate;
+use App\Livewire\Kendaraan\show as KendaraanDetail;
+
+//service
+use App\Livewire\Service\Create as ServiceCreate;
+use App\Livewire\Service\Edit as ServiceEdit;
+use App\Livewire\Service\Index as ServiceIndex;
+use App\Livewire\Service\ServiceDetail;
+use App\Livewire\Service\Show as ServiceShow;
+
 //sparepart
-use App\Livewire\Sparepart\Index as SparepartIndex;
 use App\Livewire\Sparepart\Create as SparepartCreate;
 use App\Livewire\Sparepart\Edit as SparepartEdit;
+use App\Livewire\Sparepart\Index as SparepartIndex;
 use App\Livewire\Sparepart\Show as SparepartShow;
 use App\Livewire\Gudang\Create as GudangCreate;
 
-use App\Livewire\Konten\Index as KontenIndex;
-use App\Livewire\Konten\Create as KontenCreate;
-use App\Livewire\Konten\Edit as KontenEdit;
-
-use App\Livewire\Jasa\Index as JasaIndex;
-use App\Livewire\Jasa\Create as JasaCreate;
-use App\Livewire\Jasa\Edit as JasaEdit;
-
-//service
-use App\Livewire\Service\Index as ServiceIndex;
-use App\Livewire\Service\Create as ServiceCreate;
-use App\Livewire\Service\Edit as ServiceEdit;
-use App\Livewire\Service\Show as ServiceShow;
-use App\Livewire\Service\ServiceDetail;
+//transaksi
 use App\Livewire\Transaksi\Index as TransaksiIndex;
+use App\Livewire\Transaksi\Show as TransaksiShow;
 use App\Livewire\Transaksi\TambahService as TransaksiService;
 
 Route::get('/', function () {
@@ -76,6 +89,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/pelanggan/{id}/edit', PelangganEdit::class)->name('pelanggan.edit');
     Route::get('/pelanggan/{id}', PelangganDetail::class)->name('pelanggan.detail');
     Route::get('/pelanggan/{id}/kendaraan/create', KendaraanCreate::class)->name('kendaraan.create');
+    Route::get('/pelanggan/{pelanggan}/kendaraan/{kendaraan}', KendaraanDetail::class)
+    ->name('kendaraan.show');
+
 
     //jasa
     Route::get('/jasa',JasaIndex::class)->name('jasa.view');
@@ -96,6 +112,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //transaksi
     Route::get('/transaksi/', TransaksiIndex::class)->name('transaksi.view');
+    Route::get('/transaksi/{id}', TransaksiShow::class)->name('transaksi.show');
     Route::get('/transaksi/service/{id}/create', TransaksiService::class)->name('transaksi.service');
 
 
@@ -105,6 +122,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/service/create/{id}/detail', ServiceDetail::class)->name('service.detail');
     Route::get('/service/{id}', ServiceShow::class)->name('service.show');
     Route::get('/service/{id}/edit', ServiceEdit::class)->name('service.edit');
+
 });
 
 Route::middleware('auth')->group(function () {

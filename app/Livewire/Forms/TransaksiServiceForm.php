@@ -15,7 +15,7 @@ class TransaksiServiceForm extends Form
     public $kasir_id;
 
     #[Validate('required|in:service,penjualan')]
-    public $jenis_transaksi = 'penjualan';
+    public $jenis_transaksi = 'service';
 
     #[Validate('required|string|unique:transaksis,kode_transaksi')]
     public $kode_transaksi;
@@ -43,7 +43,6 @@ class TransaksiServiceForm extends Form
         $this->pelanggan_id = $service->kendaraan->pelanggan_id;
         $this->kasir_id = Auth::id();
         $this->sub_total = $service->estimasi_harga;
-        // $this->pajak = round(0.11 * $this->total, 2);
-        // $this->diskon = $service->diskon;
+        $this->jenis_transaksi = 'service';
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Service;
 
+use App\Livewire\Kendaraan\RiwayatService;
 use App\Models\Service;
 use App\Models\StatusService;
 use Livewire\Component;

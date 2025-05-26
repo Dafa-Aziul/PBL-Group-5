@@ -16,6 +16,7 @@ class Create extends Component
 
     public function submit()
     {
+        // dd($this->form);
         $validated = $this->form->validate();
 
         $gambarPath = null;

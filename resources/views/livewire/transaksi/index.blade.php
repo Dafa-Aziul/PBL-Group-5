@@ -59,14 +59,14 @@
                     <tbody>
                         @forelse ($transaksis as $transaksi)
                         <tr style="cursor: pointer;" x-data
-                            @click="Livewire.navigate(`/transaksi/{{ $transaksi->id }}/detail`)">
+                            @click="Livewire.navigate(`/transaksi/{{ $transaksi->id }}`)">
                             <td class="text-center">{{ ($transaksis->firstItem() + $loop->iteration) - 1 }}</td>
                             <td>{{ $transaksi->kode_transaksi }}</td>
                             <td>{{ $transaksi->kasir->nama ?? '-' }}</td>
                             <td>{{ $transaksi->pelanggan->nama ?? '-' }}</td>
                             <td>{{ ucfirst($transaksi->jenis_transaksi) }}</td>
                             <td>Rp {{ number_format($transaksi->sub_total, 0, ',', '.') }}</td>
-                            <td>{{ $transaksi->pajak }}%</td>
+                            <td>{{ number_format($transaksi->pajak, 0, ',', '.') }}</td>
                             <td>{{ $transaksi->diskon }}%</td>
                             <td>Rp {{ number_format($transaksi->total, 0, ',', '.') }}</td>
                             <td>
@@ -74,8 +74,6 @@
                                 <span class="badge bg-success">Lunas</span>
                                 @elseif ($transaksi->status_pembayaran == 'pending')
                                 <span class="badge bg-warning text-dark">Pending</span>
-                                @else
-                                <span class="badge bg-danger">Batal</span>
                                 @endif
                             </td>
                             <td>{{ $transaksi->keterangan }}</td>

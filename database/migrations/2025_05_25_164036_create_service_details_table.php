@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('transaksi_id')->constrained('transaksis');
             $table->foreignId('service_id')->constrained('services');
-            $table->decimal('sub_total');
+            $table->decimal('sub_total', 10, 2);
             $table->timestamps();
         });
     }

@@ -1,3 +1,20 @@
+@push('scripts')
+<script>
+    window.addEventListener('open-edit-modal', event => {
+        var myModal = new bootstrap.Modal(document.getElementById('editJumlahModal'));
+        myModal.show();
+    });
+
+    window.addEventListener('hide-edit-jumlah-modal', event => {
+        var myModalEl = document.getElementById('editJumlahModal');
+        var modal = bootstrap.Modal.getInstance(myModalEl);
+        if (modal) {
+            modal.hide();
+        }
+    });
+</script>
+
+@endpush
 <div>
     <h1 class="mt-4">Kelola Service</h1>
     <ol class="breadcrumb mb-4">
@@ -212,12 +229,11 @@
                                 </thead>
                                 <tbody>
                                     @forelse($sparepartList as $index => $sparepart)
-                                    <tr>
+                                    <tr wire:key="sparepart-{{ $sparepart['sparepart_id'] ?? 'new-'.$index }}">
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $sparepart['nama'] }}</td>
-                                        <td wire:click="openEditModal({{ $index }})" data-bs-toggle="modal" data-bs-target="#editJumlahModal" style="cursor: pointer;">
+                                        <td wire:click="openEditModal({{ $index }})" style="cursor: pointer;">
                                             {{ $sparepart['jumlah'] }}
-
                                         </td>
                                         <td>Rp {{ number_format($sparepart['harga'], 0, ',', '.') }}</td>
                                         <td>Rp {{ number_format($sparepart['subtotal'], 0, ',', '.') }}</td>
@@ -227,7 +243,6 @@
                                                 title="Hapus">
                                                 <i class="fas fa-trash-alt fa-xs"></i>
                                             </button>
-
                                         </td>
                                     </tr>
                                     @empty
@@ -235,13 +250,13 @@
                                         <td colspan="6" class="text-center">Belum ada sparepart yang ditambahkan</td>
                                     </tr>
                                     @endforelse
-                                    @if(count($sparepartList) > 0)
+
                                     <tr class="table-light">
                                         <th colspan="4" class="text-start">Total Sparepart</th>
                                         <td colspan="2">Rp {{ number_format($totalSparepart, 0, ',', '.') }}</td>
                                     </tr>
-                                    @endif
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -259,43 +274,26 @@
                     <button type="submit" class="btn btn-success">💾 Simpan Service & Detail</button>
                 </div>
             </form>
-            <!-- Modal Edit Jumlah -->
+            <!-- Modal Edit Jumlah Sparepart -->
             <div wire:ignore.self class="modal fade" id="editJumlahModal" tabindex="-1"
                 aria-labelledby="editJumlahModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    {{-- <div class="modal-dialog">
-                        <form wire:submit.prevent="updateJumlah" class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editJumlahModalLabel">Edit Jumlah Sparepart</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Tutup"></button>
-                            </div>
-                            <div class="modal-body">
-                                <input type="number" wire:model.defer="editJumlah" class="form-control" min="1">
-                                @error('editJumlah') <span class="text-danger">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
-                        </form>
-                    </div> --}}
-                    <form wire:submit.prevent="updateJumlah" class="modal-content">
+                    <form wire:submit.prevent="updateJumlah">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="editJumlahModalLabel">Edit Jumlah Sparepart</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Tutup"></button>
+                                    aria-label="Close"></button>
                             </div>
-
                             <div class="modal-body">
-                                <input type="number" wire:model.defer="editJumlah" class="form-control" min="1">
-                                @error('editJumlah') <span class="text-danger">{{ $message }}</span>
-                                @enderror
+                                <label for="editJumlah" class="form-label">Jumlah</label>
+                                <input type="number" wire:model.defer="editJumlah" id="editJumlah" min="1"
+                                    class="form-control" required>
+                                @error('editJumlah') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Simpan</button>
+                                <button type="submit" class="btn btn-primary">Update Jumlah</button>
                             </div>
                         </div>
                     </form>

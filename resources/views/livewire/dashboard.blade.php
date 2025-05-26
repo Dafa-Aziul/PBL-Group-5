@@ -13,8 +13,8 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
         <li class="breadcrumb-item active">Dashboard</li>
     </ol>
 
-    <div class="row d-flex align-items-stretch">
-        <div class="col-4">
+    <div class="row g-3">
+        <div class="col-12 col-md-4">
             <div class="card h-100 card-hover">
                 <div class="card-body">
                     <h3 class="card-title">
@@ -25,8 +25,8 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
             </div>
         </div>
 
-        <div class="col-4">
-            <div class="card  h-100 card-hover">
+        <div class="col-12 col-md-4">
+            <div class="card h-100 card-hover">
                 <div class="card-body">
                     <h3 class="card-title text-danger">
                         <i class="fa-solid fa-triangle-exclamation"></i> Sparepart Menipis
@@ -43,7 +43,6 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
                             Kampas Rem
                             <span class="badge bg-danger rounded-pill">2</span>
                         </li>
-                        <!-- Tambahkan item lain jika perlu -->
                     </ul>
 
                     <div class="text-center">
@@ -53,48 +52,46 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
             </div>
         </div>
 
-        <div class="col-4">
-            <div class="card  h-100 card-hover">
+        <div class="col-12 col-md-4">
+            <div class="card h-100 card-hover">
                 <div class="card-body">
                     <h3 class="card-title text-success">
-                        <i class="fa-solid fa-universal-access"></i></i> Quick Acces
+                        <i class="fa-solid fa-universal-access"></i> Quick Acces
                     </h3>
                     <hr class="border border-2 opacity-50">
 
                     <div class="mb-3">
-                        <a class="btn btn-primary float" href="{{ route('sparepart.create') }}" wire:navigate><i
-                                class="fas fa-plus"></i>
-                            <span class="d-none d-md-inline ms-1">Tambah sparepart</span>
+                        <a class="btn btn-primary w-100" href="{{ route('sparepart.create') }}" wire:navigate>
+                            <i class="fas fa-plus"></i>
+                            <span class="ms-1">Tambah Sparepart</span>
                         </a>
-
                     </div>
 
                     <div class="mb-3">
-                        <a class="btn btn-primary float" href="{{ route('pelanggan.create') }}" wire:navigate><i
-                                class="fas fa-plus"></i>
-                            <span class="d-none d-md-inline ms-1">Tambah Pelanggan</span>
+                        <a class="btn btn-primary w-100" href="{{ route('pelanggan.create') }}" wire:navigate>
+                            <i class="fas fa-plus"></i>
+                            <span class="ms-1">Tambah Pelanggan</span>
                         </a>
-
                     </div>
+
                     <div class="mb-3">
-                        <a class="btn btn-primary float" href="{{ route('karyawan.create') }}" wire:navigate><i
-                                class="fas fa-plus"></i>
-                            <span class="d-none d-md-inline ms-1">Tambah Karyawan</span>
+                        <a class="btn btn-primary w-100" href="{{ route('karyawan.create') }}" wire:navigate>
+                            <i class="fas fa-plus"></i>
+                            <span class="ms-1">Tambah Karyawan</span>
                         </a>
-
                     </div>
+
                     <div class="mb-3">
-                        <a class="btn btn-primary float" href="{{ route('jasa.create') }}" wire:navigate><i
-                                class="fas fa-plus"></i>
-                            <span class="d-none d-md-inline ms-1">Tambah Jasa</span>
+                        <a class="btn btn-primary w-100" href="{{ route('jasa.create') }}" wire:navigate>
+                            <i class="fas fa-plus"></i>
+                            <span class="ms-1">Tambah Jasa</span>
                         </a>
-
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+
 
 
 

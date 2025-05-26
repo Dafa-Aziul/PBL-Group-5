@@ -35,5 +35,8 @@ class DatabaseSeeder extends Seeder
         JenisKendaraan::factory(10)->create();
 
         Pelanggan::factory(10)->create();
+
+        $this->call(SparepartsSeeder::class);
+        $this->call(JasasSeeder::class);
     }
 }

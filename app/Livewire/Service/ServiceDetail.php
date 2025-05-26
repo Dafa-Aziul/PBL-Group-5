@@ -7,7 +7,9 @@ use App\Models\Service;
 use App\Models\ServiceJasa;
 use App\Models\ServiceSparepart;
 use App\Models\Sparepart;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+
 
 class ServiceDetail extends Component
 {
@@ -39,6 +41,16 @@ class ServiceDetail extends Component
     //     $this->jasas = Jasa::all();
     //     $this->spareparts = Sparepart::all();
     // }
+
+    public function hitungTotal()
+    {
+        Log::info('Hitung Total dipanggil');
+        $this->totalJasa = collect($this->jasaList)->sum('harga');
+        $this->totalSparepart = collect($this->sparepartList)->sum('subtotal');
+        $this->totalSemua = $this->totalJasa + $this->totalSparepart;
+        $this->service->update(['estimasi_harga' => $this->totalSemua]);
+    }
+
 
 
     public function mount($id)
@@ -75,38 +87,28 @@ class ServiceDetail extends Component
         $this->editIndex = $index;
         $this->editJumlah = $this->sparepartList[$index]['jumlah'];
 
-        $this->dispatch('openModal');
+        // Kirim event ke frontend agar modal dibuka
+        $this->dispatch('open-edit-modal');
     }
 
     public function updateJumlah()
     {
+        // Validasi editJumlah
         $this->validate([
             'editJumlah' => 'required|integer|min:1',
-        ], [
-            'editJumlah.required' => 'Jumlah wajib diisi.',
-            'editJumlah.integer' => 'Jumlah harus berupa angka.',
-            'editJumlah.min' => 'Minimal 1.',
         ]);
 
-        if ($this->editIndex !== null) {
-            $harga = $this->sparepartList[$this->editIndex]['harga'];
-            $this->sparepartList[$this->editIndex]['jumlah'] = $this->editJumlah;
-            $this->sparepartList[$this->editIndex]['subtotal'] = $this->editJumlah * $harga;
+        // Update jumlah di sparepartList
+        $this->sparepartList[$this->editIndex]['jumlah'] = $this->editJumlah;
 
-            $this->hitungTotal();
-        }
+        // Bisa update subtotal juga, misalnya:
+        $this->sparepartList[$this->editIndex]['subtotal'] = $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
 
-        $this->dispatch('closeModal');
+        // $this->emit('sparepartListUpdated', $this->sparepartList); // Jika perlu
+
+        $this->dispatch('hide-edit-jumlah-modal');
     }
 
-    public function hitungTotal()
-    {
-        $this->totalJasa = collect($this->jasaList)->sum('harga');
-        $this->totalSparepart = collect($this->sparepartList)->sum('subtotal');
-        $this->totalSemua = $this->totalJasa + $this->totalSparepart;
-
-        $this->service->update(['estimasi_harga' => $this->totalSemua]);
-    }
 
     public function addJasa()
     {
@@ -144,6 +146,7 @@ class ServiceDetail extends Component
 
     public function addSparepart()
     {
+        Log::info('Fungsi addSparepart dipanggil');
         $this->validate([
             'selectedSparepartId' => 'required|exists:spareparts,id',
             'jumlahSparepart' => 'required|integer|min:1',
