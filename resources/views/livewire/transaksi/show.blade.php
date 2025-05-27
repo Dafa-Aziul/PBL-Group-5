@@ -1,18 +1,43 @@
 @push('scripts')
 <script>
+    // Menangani pemanggilan modal
     window.addEventListener('open-payment-modal', event => {
-        var myModal = new bootstrap.Modal(document.getElementById('paymentModal'));
-        myModal.show();
+        const modalEl = document.getElementById('paymentModal');
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
     });
 
+    // Menangani penutupan modal
     window.addEventListener('hide-payment-modal', event => {
-        var myModalEl = document.getElementById('paymentModal');
-        var modal = bootstrap.Modal.getInstance(myModalEl);
-        if(modal)
-        modal.hide();
+        const modalEl = document.getElementById('paymentModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+
+        if (modal) {
+            modal.hide();
+        }
+
+        // Tambahan: bersihkan backdrop jika tertinggal
+        setTimeout(() => {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        }, 300); // delay kecil untuk pastikan transisi selesai
     });
 
+    // Opsional: Jika pakai Livewire, tambahkan hook
+    document.addEventListener('livewire:load', function () {
+        Livewire.hook('message.processed', () => {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        });
+    });
 </script>
+
 @endpush
 <div>
     <h1 class="mt-4">Kelola Transaksi</h1>
@@ -133,7 +158,8 @@
                         <i class="fas fa-credit-card me-2"></i>
                         <strong>Log Status Pembayaran</strong>
                     </div>
-                    <button wire:click="openPaymentModal" class="btn bg-white text-success btn-success">
+
+                    <button class="btn bg-white text-success btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal">
                         <i class="fas fa-money-bill-wave"></i> Bayar Sekarang
                     </button>
                 </div>
@@ -182,7 +208,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Form Pembayaran</h5>
-                            <button type="button" class="close" wire:click="closePaymentModal" data-bs-dismiss="modal">
+                            <button type="button" class="close" data-bs-dismiss="modal">
                                 <span>&times;</span>
                             </button>
                         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\User;
 
+use App\Models\Karyawan;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -18,7 +19,7 @@ class Index extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $perPage = 5;
-    public $search ='';
+    public $search = '';
     public $attempts = 0; // Counter percobaan password
     public $password_confirmation = '';
 
@@ -61,11 +62,24 @@ class Index extends Component
         // Jika password benar, lanjutkan proses delete
         try {
             $user = User::findOrFail($id);
+
+            // Soft delete user
             $user->delete();
+
+            // Update status karyawan terkait
+            $karyawan = Karyawan::where('user_id', $id)->first();
+            if ($karyawan) {
+                $karyawan->update([
+                    'status' => 'tidak aktif',
+                ]);
+            }
+
+            // Reset Livewire state dan flash message
             session()->flash('success', 'User berhasil dihapus.');
-            sleep(2);
-            $this->password_confirmation = NULL;
+            $this->password_confirmation = null;
             $this->attempts = 0;
+
+            // Tutup modal konfirmasi password
             $this->dispatch('closeConfirmPasswordModal', $id);
         } catch (\Exception $e) {
             session()->flash('error', 'Gagal menghapus user: ' . $e->getMessage());

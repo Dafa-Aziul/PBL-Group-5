@@ -55,7 +55,6 @@ class Index extends Component
         return view('livewire.karyawan.index', compact('karyawans'));
     }
 
-
     // public function render()
     // {
     //     $karyawans = Karyawan::with('user')->get();
