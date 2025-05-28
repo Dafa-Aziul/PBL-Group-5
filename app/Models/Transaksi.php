@@ -48,7 +48,7 @@ class Transaksi extends Model
 
     }
 
-    public function penjualanDetails()
+    public function penjualanDetail()
     {
         return $this->hasMany(Penjualan::class);
     }

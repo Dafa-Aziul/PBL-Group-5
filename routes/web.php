@@ -64,6 +64,7 @@ use App\Livewire\Transaksi\TambahService as TransaksiService;
 
 use App\Livewire\Penjualan\Index as PenjualanIndex;
 use App\Livewire\Penjualan\Create as PenjualanCreate;
+use App\Livewire\Penjualan\Show as PenjualanShow;
 
 Route::get('/', function () {
     return view('welcome');
@@ -130,7 +131,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //penjualan
     Route::get('/penjualan', PenjualanIndex::class)->name('penjualan.view');
     Route::get('/penjualan/create', PenjualanCreate::class)->name('penjualan.create');
-
+    Route::get('/penjualan/{id}', PenjualanShow::class)->name('penjualan.show');
 });
 
 Route::middleware('auth')->group(function () {
