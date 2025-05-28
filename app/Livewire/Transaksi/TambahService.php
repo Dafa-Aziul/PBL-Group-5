@@ -3,7 +3,7 @@
 namespace App\Livewire\Transaksi;
 
 use App\Livewire\Forms\TransaksiServiceForm;
-use App\Livewire\Service\ServiceDetail as ServiceServiceDetail;
+use App\Models\Pembayaran;
 use App\Models\Service;
 use App\Models\ServiceDetail;
 use App\Models\Transaksi;
@@ -72,6 +72,16 @@ class TambahService extends Component
             'sub_total' => $this->form->total,
 
         ]);
+        // Jika status pembayaran lunas, otomatis catat pembayaran penuh
+        if ($validated['status_pembayaran'] === 'lunas') {
+            Pembayaran::create([
+                'transaksi_id' => $transaksi->id,
+                'tanggal_bayar' => now(),
+                'jumlah_bayar' => $transaksi->total,
+                'status_pembayaran' => 'lunas',
+                'ket' => 'Pembayaran otomatis saat transaksi dibuat',
+            ]);
+        }
         session()->flash('success', 'Transaksi berhasil disimpan!');
         return redirect()->route('transaksi.view'); // contoh redirect
     }

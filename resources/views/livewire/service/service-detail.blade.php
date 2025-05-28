@@ -250,11 +250,12 @@
                                         <td colspan="6" class="text-center">Belum ada sparepart yang ditambahkan</td>
                                     </tr>
                                     @endforelse
-
+                                    @if(count($sparepartList))
                                     <tr class="table-light">
                                         <th colspan="4" class="text-start">Total Sparepart</th>
                                         <td colspan="2">Rp {{ number_format($totalSparepart, 0, ',', '.') }}</td>
                                     </tr>
+                                    @endif
                                 </tbody>
 
                             </table>
@@ -266,6 +267,7 @@
                     <div class="card-header">Estimasi Total Biaya</div>
                     <div class="card-body">
                         <h5>Total Keseluruhan: <strong>Rp {{ number_format($totalSemua, 0, ',', '.') }}</strong></h5>
+                        <pre>@json($sparepartList)</pre>
                     </div>
                 </div>
                 @endif

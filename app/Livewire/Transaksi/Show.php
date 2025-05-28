@@ -75,6 +75,10 @@ class Show extends Component
             'ket' => $this->ket,
         ]);
 
+        $this->jumlah_bayar = null; // Reset jumlah bayar setelah simpan
+        $this->tanggal_bayar = now()->format('Y-m-d'); // Reset tanggal bayar ke hari ini
+        $this->ket = ''; // Reset keterangan
+
         $this->transaksi = $this->transaksi->fresh('pembayarans');
         $this->hitungsisaPembayaran();
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Service;
 
+use App\Models\Gudang;
 use App\Models\Jasa;
 use App\Models\Service;
 use App\Models\ServiceJasa;
@@ -146,7 +147,6 @@ class ServiceDetail extends Component
 
     public function addSparepart()
     {
-        Log::info('Fungsi addSparepart dipanggil');
         $this->validate([
             'selectedSparepartId' => 'required|exists:spareparts,id',
             'jumlahSparepart' => 'required|integer|min:1',
@@ -159,6 +159,17 @@ class ServiceDetail extends Component
         ]);
 
         $sparepart = Sparepart::find($this->selectedSparepartId); // aman karena sudah divalidasi exists
+
+        if ($sparepart->stok < 10) {
+            $this->addError('selectedSparepartId', 'Stok sparepart ini kurang dari 10 dan tidak dapat digunakan.');
+            return;
+        }
+
+        // Cek apakah jumlah yang diminta melebihi stok
+        if ($this->jumlahSparepart > $sparepart->stok) {
+            $this->addError('jumlahSparepart', 'Jumlah yang diminta melebihi stok yang tersedia (' . $sparepart->stok . ').');
+            return;
+        }
 
         // Cek jika sparepart sudah ada di daftar (opsional, seperti untuk jasa)
         if (collect($this->sparepartList)->contains('sparepart_id', $sparepart->id)) {
@@ -219,6 +230,17 @@ class ServiceDetail extends Component
                 'harga' => $sparepart['harga'],
                 'jumlah' => $sparepart['jumlah'],
                 'subtotal' => $sparepart['subtotal'],
+            ]);
+
+            Gudang::create([
+                'sparepart_id' => $sparepart['sparepart_id'],
+                'aktivitas' => 'keluar',
+                'jumlah' => $sparepart['jumlah'],
+                'keterangan' => 'Penggunaan sparepart "'
+                    . $sparepart['nama'] . '" sebanyak '
+                    . $sparepart['jumlah'] . ' pcs pada service : #'
+                    . $this->service->kode_service . ' oleh Pelanggn : '
+                    . $this->service->kendaraan->pelanggan->nama . ' (' . $this->service->kendaraan->no_polisi . ')',
             ]);
         }
 

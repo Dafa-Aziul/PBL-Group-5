@@ -4,6 +4,7 @@ use App\Http\Controllers\auth\VerifyEmailController;
 use App\Livewire\About;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
+use App\Livewire\Action\Logout;
 use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Auth\VerifyEmail;
 use Illuminate\Support\Facades\Auth;
@@ -61,6 +62,9 @@ use App\Livewire\Transaksi\Index as TransaksiIndex;
 use App\Livewire\Transaksi\Show as TransaksiShow;
 use App\Livewire\Transaksi\TambahService as TransaksiService;
 
+use App\Livewire\Penjualan\Index as PenjualanIndex;
+use App\Livewire\Penjualan\Create as PenjualanCreate;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -68,7 +72,7 @@ Route::get('/', function () {
 Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('logout', App\Livewire\Action\Logout::class)->name('logout');
+    Route::post('logout', Logout::class)->name('logout');
 
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
@@ -84,13 +88,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/jenis_kendaraan/create', JenisKendaraanCreate::class)->name('jenis_kendaraan.create');
     Route::get('/jenis_kendaraan/{id}/edit', JenisKendaraanEdit::class)->name('jenis_kendaraan.edit');
 
+    //pelanggan
     Route::get('/pelanggan', PelangganIndex::class)->name('pelanggan.view');
     Route::get('/pelanggan/create', PelangganCreate::class)->name('pelanggan.create');
     Route::get('/pelanggan/{id}/edit', PelangganEdit::class)->name('pelanggan.edit');
     Route::get('/pelanggan/{id}', PelangganDetail::class)->name('pelanggan.detail');
     Route::get('/pelanggan/{id}/kendaraan/create', KendaraanCreate::class)->name('kendaraan.create');
-    Route::get('/pelanggan/{pelanggan}/kendaraan/{kendaraan}', KendaraanDetail::class)
-    ->name('kendaraan.show');
+    Route::get('/pelanggan/{pelanggan}/kendaraan/{kendaraan}', KendaraanDetail::class)->name('kendaraan.show');
 
 
     //jasa
@@ -101,8 +105,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
    //sparepart
     Route::get('/sparepart',SparepartIndex::class)->name('sparepart.view');
     Route::get('/sparepart/create',SparepartCreate::class)->name('sparepart.create');
+    Route::get('/sparepart/{id}',SparepartShow::class)->name('sparepart.show');
     Route::get('/sparepart/{id}/edit',SparepartEdit::class)->name('sparepart.edit');
-    Route::get('/sparepart/{id}/',SparepartShow::class)->name('sparepart.show');
     Route::get('/sparepart/{id}/gudang/create',GudangCreate::class)->name('gudang.create');
 
     //konten
@@ -122,6 +126,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/service/create/{id}/detail', ServiceDetail::class)->name('service.detail');
     Route::get('/service/{id}', ServiceShow::class)->name('service.show');
     Route::get('/service/{id}/edit', ServiceEdit::class)->name('service.edit');
+
+    //penjualan
+    Route::get('/penjualan', PenjualanIndex::class)->name('penjualan.view');
+    Route::get('/penjualan/create', PenjualanCreate::class)->name('penjualan.create');
 
 });
 

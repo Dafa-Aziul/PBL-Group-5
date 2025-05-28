@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pelanggan_id')->constrained('pelanggans');
             $table->foreignId('kasir_id')->constrained('karyawans');
-            
+
             $table->enum('jenis_transaksi', [
                 'service',
                 'penjualan',

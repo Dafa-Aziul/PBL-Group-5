@@ -49,7 +49,7 @@
                             <th>Pelanggan</th>
                             <th>Jenis</th>
                             <th>Subtotal</th>
-                            <th>Pajak (%)</th>
+                            <th>Pajak (11%)</th>
                             <th>Diskon (%)</th>
                             <th>Total</th>
                             <th>Status Pembayaran</th>
@@ -66,8 +66,8 @@
                             <td>{{ $transaksi->pelanggan->nama ?? '-' }}</td>
                             <td>{{ ucfirst($transaksi->jenis_transaksi) }}</td>
                             <td>Rp {{ number_format($transaksi->sub_total, 0, ',', '.') }}</td>
-                            <td>{{ number_format($transaksi->pajak, 0, ',', '.') }}</td>
-                            <td>{{ $transaksi->diskon }}%</td>
+                            <td>Rp {{ number_format($transaksi->pajak, 0, ',', '.') }}</td>
+                            <td>{{ number_format($transaksi->diskon, 0, ',', '.')  }} %</td>
                             <td>Rp {{ number_format($transaksi->total, 0, ',', '.') }}</td>
                             <td>
                                 @if ($transaksi->status_pembayaran == 'lunas')

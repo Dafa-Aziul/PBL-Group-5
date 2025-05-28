@@ -72,7 +72,7 @@
                 <tbody>
                     @forelse ($spareparts as $sparepart)
                     <tr style="cursor: pointer;" x-data
-                    @click="Livewire.navigate(`/sparepart/{{ $sparepart->id }}/detail`)">
+                    @click="Livewire.navigate(`/sparepart/{{ $sparepart->id }}`)">
                     <td class="text-center">{{ ($spareparts->firstItem() + $loop->iteration) - 1 }}</td>
                     <td>{{ $sparepart->kode}}</td>
                     <td>{{ $sparepart->nama}}</td>
@@ -131,7 +131,6 @@
                                 </td>
 
                             </tr>
-                            <!-- Modal Preview Gambar -->
                         @empty
                         <tr>
                             <td colspan="11" class="text-center text-muted">Tidak ada data yang ditemukan.</td>

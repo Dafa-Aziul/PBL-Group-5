@@ -159,9 +159,12 @@
                         <strong>Log Status Pembayaran</strong>
                     </div>
 
-                    <button class="btn bg-white text-success btn-success" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                    @if($transaksi->status_pembayaran != 'lunas')
+                    <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
+                        data-bs-target="#paymentModal">
                         <i class="fas fa-money-bill-wave"></i> Bayar Sekarang
                     </button>
+                    @endif
                 </div>
                 <div class="card-body">
                     <!-- Tampilkan sisa pembayaran dengan badge warna -->
@@ -243,135 +246,185 @@
                 </div>
             </div>
 
-            {{-- @if($showPaymentModal)
-            @endif --}}
-        </div>
 
-        <!-- Detail Penggunaan Jasa & Sparepart -->
-        <div class="card mt-4 shadow-sm border-0">
-            <div class="card-header bg-primary text-white d-flex align-items-center">
-                <i class="fas fa-tools me-2"></i>
-                <strong>Detail Penggunaan Jasa & Sparepart</strong>
-            </div>
-            <div class="card-body">
-                {{-- 1. Tabel Jasa --}}
-                <div class="mb-3">
-                    <label class="form-label fw-bold text-uppercase">1. Jasa</label>
-                    @php
-                    // Ambil semua jasa dari relasi transaksi->serviceDetail->service->jasas
-                    $jasas = $transaksi->serviceDetail
-                    ? $transaksi->serviceDetail->service->jasas
-                    : collect();
-                    $totalJasa = $jasas->sum(fn($jasa) => $jasa->harga ?? 0);
-                    @endphp
+            <!-- Detail Penggunaan Jasa & Sparepart -->
+            <div class="card mt-4 shadow-sm border-0">
+                <div class="card-header bg-primary text-white d-flex align-items-center">
+                    <i class="fas fa-tools me-2"></i>
+                    <strong>Detail Penggunaan Jasa & Sparepart</strong>
+                </div>
+                <div class="card-body">
+                    {{-- 1. Tabel Jasa --}}
+                    @if ($transaksi->jenis_transaksi === 'service')
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-uppercase">1. Jasa</label>
+                        @php
+                        // Ambil semua jasa dari relasi transaksi->serviceDetail->service->jasas
+                        $jasas = $transaksi->serviceDetail
+                        ? $transaksi->serviceDetail->service->jasas
+                        : collect();
+                        $totalJasa = $jasas->sum(fn($jasa) => $jasa->harga ?? 0);
+                        @endphp
 
-                    @if ($jasas->isNotEmpty())
-                    <div class="table-responsive">
-                        <table class="table table-bordered align-middle">
-                            <thead class="table-success text-dark">
-                                <tr>
-                                    <th style="width: 50px;">No</th>
-                                    <th>Kode</th>
-                                    <th>Nama Jasa</th>
-                                    <th style="width: 50px;">Qty</th>
-                                    <th style="width: 70px;">Satuan</th>
-                                    <th>Harga</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($jasas as $index => $jasa)
-                                <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td><span class="badge bg-secondary">{{ $jasa->jasa->kode ?? '-' }}</span></td>
-                                    <td class="text-start">{{ $jasa->jasa->nama_jasa }}</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-center">-</td>
-                                    <td class="text-end">Rp {{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</td>
-                                    <td class="text-end">Rp {{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</td>
-                                </tr>
-                                @endforeach
-                                <tr class="table-light fw-bold">
-                                    <td colspan="6">Total Biaya Jasa</td>
-                                    <td class="text-end text-success">Rp {{ number_format($totalJasa, 0, ',', '.')
-                                        }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        @if ($jasas->isNotEmpty())
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-success text-dark">
+                                    <tr>
+                                        <th style="width: 50px;">No</th>
+                                        <th>Kode</th>
+                                        <th>Nama Jasa</th>
+                                        <th style="width: 50px;">Qty</th>
+                                        <th style="width: 70px;">Satuan</th>
+                                        <th>Harga</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($jasas as $index => $jasa)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td><span class="badge bg-secondary">{{ $jasa->jasa->kode ?? '-' }}</span></td>
+                                        <td class="text-start">{{ $jasa->jasa->nama_jasa }}</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-center">-</td>
+                                        <td class="text-end">Rp {{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</td>
+                                    </tr>
+                                    @endforeach
+                                    <tr class="table-light fw-bold">
+                                        <td colspan="6">Total Biaya Jasa</td>
+                                        <td class="text-end text-success">Rp {{ number_format($totalJasa, 0, ',', '.')
+                                            }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @else
+                        <p class="text-muted fst-italic">Belum ada jasa yang digunakan.</p>
+                        @endif
                     </div>
-                    @else
-                    <p class="text-muted fst-italic">Belum ada jasa yang digunakan.</p>
+
+                    {{-- 2. Tabel Sparepart --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-uppercase">2. Sparepart</label>
+                        @php
+                        // Ambil semua sparepart dari relasi transaksi->serviceDetail->service->spareparts
+                        $spareparts = $transaksi->serviceDetail
+                        ? $transaksi->serviceDetail->service->spareparts
+                        : collect();
+                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->subtotal ?? 0);
+                        @endphp
+
+                        @if ($spareparts->isNotEmpty())
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-success text-dark">
+                                    <tr class="text-center">
+                                        <th style="width: 50px;">No</th>
+                                        <th>Kode</th>
+                                        <th>Nama</th>
+                                        <th style="width: 50px;">Qty</th>
+                                        <th style="width: 70px;">Satuan</th>
+                                        <th>Harga</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($spareparts as $index => $sp)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td><span class="badge bg-info text-dark">{{ $sp->sparepart->kode ?? '-'
+                                                }}</span></td>
+                                        <td>{{ $sp->sparepart->nama }}</td>
+                                        <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
+                                        <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
+                                        <td class="text-end">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($sp->subtotal ?? 0, 0, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    <tr class="table-light fw-bold">
+                                        <td colspan="6">Total Biaya Sparepart</td>
+                                        <td class="text-end text-success">Rp {{ number_format($totalSparepart, 0, ',',
+                                            '.') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @else
+                        <p class="text-muted fst-italic">Belum ada sparepart yang digunakan.</p>
+                        @endif
+                    </div>
+                    @elseif ($transaksi->jenis_transaksi === 'penjualan')
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-uppercase">2. Sparepart</label>
+                        @php
+                        // Ambil semua sparepart dari relasi transaksi->serviceDetail->service->spareparts
+                        $spareparts = $transaksi->penjualanDetails ?? collect();
+                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->subtotal ?? 0);
+                        @endphp
+
+                        @if ($spareparts->isNotEmpty())
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="table-success text-dark">
+                                    <tr class="text-center">
+                                        <th style="width: 50px;">No</th>
+                                        <th>Kode</th>
+                                        <th>Nama</th>
+                                        <th style="width: 50px;">Qty</th>
+                                        <th style="width: 70px;">Satuan</th>
+                                        <th>Harga</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($spareparts as $index => $sp)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td>
+                                        <td><span class="badge bg-info text-dark">{{ $sp->sparepart->kode ?? '-'
+                                                }}</span></td>
+                                        <td>{{ $sp->sparepart->nama }}</td>
+                                        <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
+                                        <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
+                                        <td class="text-end">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($sp->subtotal ?? 0, 0, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    <tr class="table-light fw-bold">
+                                        <td colspan="6">Total Biaya Sparepart</td>
+                                        <td class="text-end text-success">Rp {{ number_format($totalSparepart, 0, ',',
+                                            '.') }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @else
+                        <p class="text-muted fst-italic">Belum ada sparepart yang digunakan.</p>
+                        @endif
+                    </div>
                     @endif
                 </div>
+            </div>
 
-                {{-- 2. Tabel Sparepart --}}
-                <div class="mb-3">
-                    <label class="form-label fw-bold text-uppercase">2. Sparepart</label>
-                    @php
-                    // Ambil semua sparepart dari relasi transaksi->serviceDetail->service->spareparts
-                    $spareparts = $transaksi->serviceDetail
-                    ? $transaksi->serviceDetail->service->spareparts
-                    : collect();
-                    $totalSparepart = $spareparts->sum(fn($sp) => $sp->subtotal ?? 0);
-                    @endphp
-
-                    @if ($spareparts->isNotEmpty())
-                    <div class="table-responsive">
-                        <table class="table table-bordered align-middle">
-                            <thead class="table-success text-dark">
-                                <tr class="text-center">
-                                    <th style="width: 50px;">No</th>
-                                    <th>Kode</th>
-                                    <th>Nama</th>
-                                    <th style="width: 50px;">Qty</th>
-                                    <th style="width: 70px;">Satuan</th>
-                                    <th>Harga</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($spareparts as $index => $sp)
-                                <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td><span class="badge bg-info text-dark">{{ $sp->sparepart->kode ?? '-'
-                                            }}</span></td>
-                                    <td>{{ $sp->sparepart->nama }}</td>
-                                    <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
-                                    <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
-                                    <td class="text-end">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
-                                    <td class="text-end">Rp {{ number_format($sp->subtotal ?? 0, 0, ',', '.') }}
-                                    </td>
-                                </tr>
-                                @endforeach
-                                <tr class="table-light fw-bold">
-                                    <td colspan="6">Total Biaya Sparepart</td>
-                                    <td class="text-end text-success">Rp {{ number_format($totalSparepart, 0, ',',
-                                        '.') }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    @else
-                    <p class="text-muted fst-italic">Belum ada sparepart yang digunakan.</p>
-                    @endif
+            <!-- Total Keseluruhan -->
+            <div class="card mt-4 shadow-sm border-0">
+                <div class="card-body d-flex justify-content-end fw-bold fs-5">
+                    <span class="me-2">Total Keseluruhan: </span>
+                    <span class="text-success">
+                        Rp {{ number_format($transaksi->total,
+                        0,
+                        ',',
+                        '.'
+                        ) }}
+                    </span>
                 </div>
             </div>
+
         </div>
 
-        <!-- Total Keseluruhan -->
-        <div class="card mt-4 shadow-sm border-0">
-            <div class="card-body d-flex justify-content-end fw-bold fs-5">
-                <span class="me-2">Total Keseluruhan: </span>
-                <span class="text-success">
-                    Rp {{ number_format(
-                    ($totalJasa ?? 0) + ($totalSparepart ?? 0),
-                    0,
-                    ',',
-                    '.'
-                    ) }}
-                </span>
-            </div>
-        </div>
     </div>
 </div>
 </div>
