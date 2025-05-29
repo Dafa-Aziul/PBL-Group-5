@@ -1,7 +1,8 @@
-    <div>
+<div>
     <h2 class="mt-4">Kelola Konten</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('konten.view') }}">Manajemen Konten</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('konten.view') }}">Manajemen Konten</a></li>
         <li class="breadcrumb-item active">Daftar Konten</li>
     </ol>
     @if (session()->has('success'))
@@ -34,7 +35,8 @@
             <div class="mb-3 d-flex justify-content-between">
                 <!-- Select Entries per page -->
                 <div class="d-flex align-items-center">
-                    <select class="form-select" aria-label="Select entries per page" wire:model.live="perPage" style="width: auto;">
+                    <select class="form-select" aria-label="Select entries per page" wire:model.live="perPage"
+                        style="width: auto;">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
@@ -65,23 +67,43 @@
                     </thead>
                     <tbody>
                         @forelse ($kontens as $konten)
-                        <tr>
+                        <tr class="align-middle">
                             <td class="text-center">{{ ($kontens->firstItem() +$loop->iteration) - 1 }}</td>
                             <td>{{ $konten->judul }}</td>
                             <td>{{ $konten->kategori }}</td>
                             <td>{{ $konten->isi }}</td>
                             <td>{{ $konten->penulis->nama}}</td>
-                            <td>{{ $konten->status}}</td>
                             <td class="text-center">
-                                <a href="{{ route('konten.edit', ['id' => $konten->id]) }}" class="btn btn-warning" wire:navigate>
+                                @php
+                                $status = strtolower($konten->status);
+                                $badgeClass = match($status) {
+                                'draft' => 'bg-secondary',
+                                'terbit' => 'bg-success',
+                                'arsip' => 'bg-warning text-dark',
+                                default => 'bg-light text-dark',
+                                };
+                                @endphp
+
+                                <span class="badge {{ $badgeClass }} px-3 py-1 fs-6 fw-semibold">
+                                    {{ ucfirst($status) }}
+                                </span>
+                            </td>
+
+
+                            <td class="text-center">
+                                <a href="{{ route('konten.edit', ['id' => $konten->id]) }}"
+                                    class="btn btn-warning mb-3 mb-md-0" wire:navigate>
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="d-none d-md-inline ms-1">Edit</span>
                                 </a>
-                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm">
+                                <button class="btn btn-danger mb-3 mb-md-0" data-bs-toggle="modal"
+                                    data-bs-target="#confirm">
                                     <i class="fas fa-trash-can"></i>
                                     <span class="d-none d-md-inline ms-1">Delete</span>
                                 </button>
-                                <x-modal.confirm id="confirm" action="modal" target="delete({{ $konten->id }})" content="Apakah anda yakin untuk menghapus data ini?" />
+
+                                <x-modal.confirm id="confirm" action="modal" target="delete({{ $konten->id }})"
+                                    content="Apakah anda yakin untuk menghapus data ini?" />
                             </td>
                         </tr>
                         @empty

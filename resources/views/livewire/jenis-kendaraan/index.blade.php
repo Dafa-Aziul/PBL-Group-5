@@ -74,11 +74,11 @@
                             <td>{{ $jenis->deskripsi }}</td>
                             <td class="text-center">
                                     <a href="{{ route('jenis_kendaraan.edit', ['id' => $jenis->id]) }}"
-                                        class="btn btn-warning" wire:navigate>
+                                        class="btn btn-warning mb-3 mb-md-1" wire:navigate>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>
-                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm"> <i
+                                <button class="btn btn-danger mb-3 mb-md-1" data-bs-toggle="modal" data-bs-target="#confirm"> <i
                                         class="fas fa-trash-can"></i><span
                                         class="d-none d-md-inline ms-1">Delete</span></button>
                                 <x-modal.confirm id="confirm" action="modal" target="delete({{ $jenis->id }})"

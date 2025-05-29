@@ -112,13 +112,13 @@
 
                         <td class="text-center" @click.stop>
                             <a href="{{ route('sparepart.edit', ['id' => $sparepart->id]) }}"
-                                class="btn btn-warning" wire:navigate>
+                                class="btn btn-warning mb-3 mb-md-1" wire:navigate>
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="d-none d-md-inline ms-1">Edit</span>
                                 </a>
 
                                 <!-- Button delete yang trigger modal unik -->
-                                <button class="btn btn-danger" data-bs-toggle="modal"
+                                <button class="btn btn-danger mb-3 mb-md-1" data-bs-toggle="modal"
                                     data-bs-target="#confirm-{{ $sparepart->id }}">
                                     <i class="fas fa-trash-can"></i>
                                     <span class="d-none d-md-inline ms-1">Delete</span>
