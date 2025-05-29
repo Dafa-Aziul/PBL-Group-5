@@ -15,14 +15,6 @@ class Index extends Component
 
     public $perPage = 5;
     public $search = '';
-    public function render()
-    {
-        // $jenis_kendaraans = JenisKendaraan::search($this->search);
-        // return view('livewire.jenis-kendaraan.index', compact('jenis_kendaraans'));
-        return view('livewire.jenis-kendaraan.index', [
-            'jenis_kendaraans' => JenisKendaraan::search($this->search)->paginate($this->perPage),
-        ]);
-    }
 
     public function updatingSearch()
     {
@@ -34,5 +26,12 @@ class Index extends Component
         $jenis_kendaraan = JenisKendaraan::findOrFail($id);
         $jenis_kendaraan->delete();
         return session()->flash('success', 'Jenis Kendaraan berhasil dihapus.');
+    }
+
+    public function render()
+    {
+        $jenis_kendaraans = JenisKendaraan::search($this->search)->paginate($this->perPage);
+        // return view('livewire.jenis-kendaraan.index', compact('jenis_kendaraans'));
+        return view('livewire.jenis-kendaraan.index', compact('jenis_kendaraans'));
     }
 }

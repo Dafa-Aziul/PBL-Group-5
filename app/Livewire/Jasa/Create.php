@@ -17,7 +17,7 @@ class Create extends Component
 
         logger()->info('Data valid:', $validated); // log ke storage/logs/laravel.log
 
-        Jasa::create($validated);
+        $jasa = Jasa::create($validated);
         session()->flash('success', 'Jasa berhasil ditambahkan!');
         return redirect()->route('jasa.view')->with('wire:navigate', true);
     }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('judul');
             $table->text('isi');
             $table->string('kategori');
-            $table->string('foto_konten');
+            $table->string('foto_konten')->nullable();
             $table->string('video_konten')->nullable();
             $table->enum('status', ['draft', 'terbit', 'arsip'])->default('draft');
             $table->timestamps();

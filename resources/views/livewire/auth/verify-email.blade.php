@@ -1,28 +1,33 @@
-<div class="container mt-5">
-    <div class="text-center">
-        <h4>Verifikasi Email</h4>
-        <p>
-            {{ __('Silakan verifikasi alamat email Anda dengan mengklik tautan yang telah kami kirim.') }}
-        </p>
+<div class="container-fluid">
+  <main class="card shadow-lg p-4 rounded-4 position-absolute top-50 start-50 translate-middle" style="max-width: 420px; width: 100%;">
+    <div class="text-center mb-4">
+      <i class="fa-solid fa-envelope-circle-check fs-1 text-primary mb-4"></i>
+      <h1 class="h4 fw-bold">Verifikasi Email Anda</h1>
+      <p class="text-muted small">
+        {{ __('Please verify your email address by clicking on the link we just emailed to you.') }}
+      </p>
     </div>
 
-    @if (session('status') === 'verification-link-sent')
-        <div class="alert alert-success text-center">
-            {{ __('Link verifikasi baru telah dikirim ke alamat email Anda.') }}
-        </div>
+    @if (session('status') == 'verification-link-sent')
+      <div class="alert alert-success text-center" role="alert">
+        <i class="fa-solid fa-circle-check me-2"></i>
+        {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+      </div>
     @endif
 
-    <div class="d-flex flex-column align-items-center mt-4 gap-3">
-        <form wire:submit='sendVerification'>
-            <button type="submit" class="btn btn-primary">
-                {{ __('Kirim Ulang Email Verifikasi') }}
-            </button>
-        </form>
+    <div class="d-grid gap-3">
+      <button wire:click="sendVerification" class="btn btn-primary py-2" wire:loading.attr="disabled">
+        <span wire:loading.remove>
+          <i class="fa-solid fa-envelope me-2"></i> {{ __('Resend verification email') }}
+        </span>
+        <span wire:loading>
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Mengirim...
+        </span>
+      </button>
 
-        <form wire:submit='logout'>
-            <button type="submit" class="btn btn-link text-danger">
-                {{ __('Logout') }}
-            </button>
-        </form>
+      <button wire:click="logout" class="btn btn-outline-secondary py-2">
+        <i class="fa-solid fa-right-from-bracket me-2"></i> {{ __('Log out') }}
+      </button>
     </div>
+  </main>
 </div>

@@ -1,7 +1,8 @@
 <div>
     <h2 class="mt-4">Kelola sparepart</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('sparepart.view') }}">Jenis Sparepart</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('sparepart.view') }}">Jenis Sparepart</a></li>
         <li class="breadcrumb-item active">Daftar Sparepart</li>
     </ol>
     @if (session()->has('success'))
@@ -16,8 +17,6 @@
         </div>
     </div>
     @endif
-
-
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
@@ -69,54 +68,69 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    </tfoot>
-                    <tbody>
-                        @forelse ($spareparts as $sparepart)
-                        <tr style="cursor: pointer;" x-data
-                            @click="Livewire.navigate(`/sparepart/{{ $sparepart->id }}/detail`)">
-                            <td class="text-center">{{ ($spareparts->firstItem() + $loop->iteration) - 1 }}</td>
-                            <td>{{ $sparepart->kode}}</td>
-                            <td>{{ $sparepart->nama}}</td>
-                            <td>{{ $sparepart->merk}}</td>
-                            <td>{{ $sparepart->satuan}}</td>
-                            <td>{{ $sparepart->stok }}</td>
+                </tfoot>
+                <tbody>
+                    @forelse ($spareparts as $sparepart)
+                    <tr style="cursor: pointer;" x-data
+                    @click="Livewire.navigate(`/sparepart/{{ $sparepart->id }}`)">
+                    <td class="text-center">{{ ($spareparts->firstItem() + $loop->iteration) - 1 }}</td>
+                    <td>{{ $sparepart->kode}}</td>
+                    <td>{{ $sparepart->nama}}</td>
+                    <td>{{ $sparepart->merk}}</td>
+                    <td>{{ $sparepart->satuan}}</td>
+                    <td>{{ $sparepart->stok }}</td>
 
 
-                            <td>Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
-                            <td>{{ $sparepart->model_kendaraan}}</td>
-                            <td>{{ $sparepart->ket}}</td>
-                            <td class="text-center" @click.stop>
-                                <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('foto/default.png') }}"
-                                    alt="Foto Sparepart"
-                                    class="img-thumbnail"
-                                    style="max-width: 150px; max-height: 150px; object-fit: contain;"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#fotoModal{{ $sparepart->id }}"
-                                    style="cursor: zoom-in;">
-                            </td>
+                    <td>Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
+                        <td>{{ $sparepart->model_kendaraan}}</td>
+                        <td>{{ $sparepart->ket}}</td>
+                        <td class="text-center" @click.stop>
+                            <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('storage/foto/default.png') }}"
+                            alt="Foto Sparepart" class="img-thumbnail"
+                            style="max-width: 150px; max-height: 150px; object-fit: contain;"
+                            data-bs-toggle="modal" data-bs-target="#fotoModal{{ $sparepart->id }}"
+                            style="cursor: zoom-in;">
+                            <div class="modal fade" id="fotoModal{{ $sparepart->id }}" tabindex="-1"
+                                aria-labelledby="fotoModalLabel{{ $sparepart->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <!-- modal-lg untuk besar -->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="fotoModalLabel{{ $sparepart->id }}">Preview Foto Sparepart
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('foto/default.png') }}"
+                                                alt="Preview Gambar" class="img-fluid rounded shadow">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
 
-                            <td class="text-center" @click.stop>
-                                <a href="{{ route('sparepart.edit', ['id' => $sparepart->id]) }}"
-                                    class="btn btn-warning" wire:navigate>
+                        <td class="text-center" @click.stop>
+                            <a href="{{ route('sparepart.edit', ['id' => $sparepart->id]) }}"
+                                class="btn btn-warning" wire:navigate>
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="d-none d-md-inline ms-1">Edit</span>
                                 </a>
 
                                 <!-- Button delete yang trigger modal unik -->
-                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirm-{{ $sparepart->id }}">
+                                <button class="btn btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#confirm-{{ $sparepart->id }}">
                                     <i class="fas fa-trash-can"></i>
                                     <span class="d-none d-md-inline ms-1">Delete</span>
                                 </button>
 
                                 <!-- Modal confirm unik per item -->
-                                <x-modal.confirm
-                                    id="confirm-{{ $sparepart->id }}"
-                                    action="modal"
+                                <x-modal.confirm id="confirm-{{ $sparepart->id }}" action="modal"
                                     target="delete({{ $sparepart->id }})"
                                     content="Apakah anda yakin untuk menghapus data ini?" />
-                            </td>
+                                </td>
 
-                        </tr>
+                            </tr>
                         @empty
                         <tr>
                             <td colspan="11" class="text-center text-muted">Tidak ada data yang ditemukan.</td>

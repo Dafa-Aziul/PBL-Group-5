@@ -39,14 +39,14 @@
                     {{-- search --}}
                     <div class="position-relative" style="width: 30ch;">
                         <input type="text" class="form-control ps-5" placeholder="Cari"
-                            wire:model.debounce.300ms="search" />
+                            wire:model.live.debounce.300ms="search" />
                         <i
                             class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                     </div>
 
                     {{-- FILTER --}}
                     {{-- <div class="d-flex gap-2">
-                        <select class="form-select" wire:model="filterKaryawan">
+                        <select class="form-select" wire:model.live="filterKaryawan">
                             <option value="">Semua Karyawan</option>
                             @foreach ($karyawans as $karyawan)
                             <option value="{{ $karyawan->id }}">{{ $karyawan->nama }}</option>

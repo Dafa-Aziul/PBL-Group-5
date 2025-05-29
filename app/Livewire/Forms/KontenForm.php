@@ -22,7 +22,7 @@ class KontenForm extends Form
     #[Validate('nullable|mimes:mp4,mov,avi|max:10000')]
     public $video_konten;
 
-    #[Validate('required|string|in:draf,terbit,arsip')]
+    #[Validate('required|string|in:draft,terbit,arsip')]
     public $status;
 
     public $gambar_lama = null ;

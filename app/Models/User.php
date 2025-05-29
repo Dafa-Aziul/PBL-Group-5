@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
     protected $guarded = [];
     protected $table = 'users';
     /**
@@ -51,12 +52,12 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function karyawans (): HasOne { 
+    public function karyawans (): HasOne {
         return $this->hasOne(Karyawan::class);
     }
 
     public function scopeSearch($query, $value)
-    { 
+    {
         $query->where('name', 'like', "%{$value}%")
             ->orWhere('email', 'like',"%{$value}%")
             ->orWhere('role', 'like', "%{$value}%")

@@ -63,24 +63,24 @@
                                         <th>No.</th>
                                         <th>No Polisi</th>
                                         <th>Jenis Kendaraan</th>
-                                        <th>Tipe</th>
+                                        <th>Model</th>
                                         <th>Odometer</th>
                                         <th class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($pelanggan->kendaraans as $index => $kendaraan)
-                                    <tr>
+                                    <tr style="cursor:pointer;" wire:x-data @click="Livewire.navigate(`/pelanggan/{{ $pelanggan->id }}/kendaraan/{{ $kendaraan->id }}`)">
                                         <td class="text-center">{{ $index + 1 }}</td>
                                         <td>{{ $kendaraan->no_polisi }}</td>
                                         <td>{{ $kendaraan->jenis_kendaraan->nama_jenis ?? '-' }}</td>
                                         <td>{{ $kendaraan->model_kendaraan }}</td>
                                         <td>{{ $kendaraan->odometer }} km</td>
                                         <td class="text-center">
-                                            <a href="" class="btn btn-warning btn-sm" wire:navigate>
+                                            {{-- <a href="{{ route('kendaraan.riwayat_service', ['pelanggan' => $pelanggan->id, 'kendaraan' => $kendaraan->id]) }}" class="btn btn-warning btn-sm" wire:navigate>
                                                 <i class="fa-solid fa-pen-to-square"></i>
-                                                <span class="d-none d-md-inline ms-1">Riwayat Service<s/span>
-                                            </a>
+                                                <span class="d-none d-md-inline ms-1">Riwayat Service</span>
+                                            </a> --}}
                                         </td>
                                     </tr>
                                     @empty

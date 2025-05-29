@@ -12,17 +12,9 @@ class Index extends Component
     use WithPagination, WithoutUrlPagination;
 
     protected $paginationTheme = 'bootstrap';
-        
+
     public $perPage = 5;
     public $search = '';
-    public function render()
-    {
-        // $jenis_kendaraans = JenisKendaraan::search($this->search);
-        // return view('livewire.konten.index', compact('kontens'));
-        return view('livewire.konten.index', [
-            'kontens' => Konten::search($this->search)->paginate($this->perPage),
-        ]);
-    }
 
     public function updatingSearch()
     {
@@ -34,5 +26,22 @@ class Index extends Component
         $jenis_kendaraan = Konten::findOrFail($id);
         $jenis_kendaraan->delete();
         return session()->flash('success', 'Konten berhasil dihapus.');
+    }
+
+    public function render()
+    {
+        $kontens = Konten::with('penulis')
+            ->where(function ($query) {
+                $search = $this->search; // misal $this->search adalah properti Livewire
+                $query->where('judul', 'like', "%{$search}%")
+                    ->orWhere('kategori', 'like', "%{$search}%")
+                    ->orWhere('isi', 'like', "%{$search}%")
+                    ->orWhereHas('penulis', function ($q) use ($search) {
+                        $q->where('nama', 'like', "%{$search}%");
+                    });
+            })
+            ->orderByDesc('created_at')
+            ->paginate($this->perPage);
+        return view('livewire.konten.index', compact('kontens'));
     }
 }

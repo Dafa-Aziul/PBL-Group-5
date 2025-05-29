@@ -37,8 +37,6 @@ class Create extends Component
 
         // Gabungkan kode + form
         $data = array_merge(['kode' => $this->kode], $validated);
-
-        logger()->info('Data valid:', $data);
         Sparepart::create($data);
 
         session()->flash('success', 'Sparepart berhasil ditambahkan!');

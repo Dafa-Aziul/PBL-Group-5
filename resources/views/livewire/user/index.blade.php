@@ -1,21 +1,53 @@
+@push('scripts')
+<script>
+    window.addEventListener('closeConfirmPasswordModal', event => {
+        const id = event.detail; // dapatkan id dari event detail
+        const modalEl = document.getElementById(`confirmPassword-${id}`);
+        const modal = bootstrap.Modal.getInstance(modalEl);
+
+        if (modal) {
+            modal.hide();
+        }
+
+        // Bersihkan backdrop dan class modal-open agar tidak tertinggal
+        setTimeout(() => {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        }, 300); // delay kecil supaya transisi modal selesai
+    });
+
+    // Jika pakai Livewire, hook untuk cleanup setelah Livewire proses update
+    document.addEventListener('livewire:load', function () {
+        Livewire.hook('message.processed', () => {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        });
+    });
+</script>
+@endpush
 <div>
     <h2 class="mt-4">Manajemen User</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('user.view') }}">User</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('user.view') }}">User</a></li>
         <li class="breadcrumb-item active">Daftar User</li>
     </ol>
     @if (session()->has('success'))
-    <div class="        ">
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    </div @elseif (session()->has('error'))
-    <div class="        ">
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @elseif (session()->has('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
     </div>
     @endif
+
 
 
     <div class="card mb-4">
@@ -49,7 +81,7 @@
                 <!-- Search Input with Icon -->
                 <div class="position-relative" style="width: 30ch;">
                     <input type="text" class="form-control ps-5" placeholder="Search"
-                        wire:model.live.debounce.100ms="search"  />
+                        wire:model.live.debounce.100ms="search" />
                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                 </div>
             </div>
@@ -68,7 +100,6 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    </tfoot>
                     <tbody>
                         @forelse ($users as $user)
                         <tr>
@@ -86,7 +117,7 @@
                                     <span class="d-none d-md-inline ms-1">Delete</span>
                                 </button>
                                 <x-modal.confirm id="confirm-{{ $user->id }}" action="modal"
-                                    targetModal="confirmPassword-{{ $user->id }}"
+                                    targetModal="confirmPassword-{{ $user->id }}" target=""
                                     content="Apakah anda yakin untuk menghapus ini?" />
                                 <x-modal.confirmPassword id="confirmPassword-{{ $user->id }}"
                                     target="delete({{ $user->id }})" action="modal" />
@@ -97,6 +128,7 @@
                             <td colspan="7" class="text-center text-muted">Tidak ada data yang ditemukan.</td>
                         </tr>
                         @endforelse
+                    </tbody>
                 </table>
             </div>
             {{ $users->links() }}

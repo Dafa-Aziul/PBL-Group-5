@@ -19,11 +19,11 @@ class Sparepart extends Model
         'satuan',
         'stok',
         'harga',
-        'model_kendaraan', 
+        'model_kendaraan',
         'foto',
         'ket',
     ];
-    
+
     public function scopeSearch($query, $value)
     {
         $query->where('kode', 'like', "%{$value}%")

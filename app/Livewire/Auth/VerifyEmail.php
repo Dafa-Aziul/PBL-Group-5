@@ -31,14 +31,10 @@ class VerifyEmail extends Component
     /**
      * Log the current user out of the application.
      */
-    public function logout()
+    public function logout(): void
     {
-        Auth::logout(); // logout user
+        Auth::logout();
 
-        return redirect('/'); // arahkan ke halaman utama
-    }
-    public function render()
-    {
-        return view('livewire.auth.verify-email');
+        $this->redirect('/');
     }
 }

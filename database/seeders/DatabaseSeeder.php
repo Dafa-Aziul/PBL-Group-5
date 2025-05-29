@@ -46,5 +46,8 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+
+        $this->call(SparepartsSeeder::class);
+        $this->call(JasasSeeder::class);
     }
 }
