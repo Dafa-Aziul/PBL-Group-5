@@ -74,7 +74,7 @@
                             </div>
 
                             <div class="col-md-2">
-                                <input wire:model="jumlahSparepart" type="number" min="1" class="form-control"
+                                <input wire:model.number="jumlahSparepart" type="text" min="1" class="form-control"
                                     placeholder="Jumlah">
                             </div>
 
@@ -149,8 +149,8 @@
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="diskon">Diskon (%)</label>
-                                    <input type="number" min="0" max="100" class="form-control"
-                                        wire:model.lazy="form.diskon" id="diskon">
+                                    <input type="text" min="0" max="100" class="form-control"
+                                        wire:model.number.lazy="form.diskon" id="diskon" maxlength="3"
                                     @error('form.diskon') <span class="text-danger">{{ $message }}</span> @enderror
                                 </div>
                                 <div class="col-md-4 mb-3">

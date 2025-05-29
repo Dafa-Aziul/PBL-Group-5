@@ -30,10 +30,6 @@ class Index extends Component
             })
             ->latest()
             ->paginate($this->perPage);
-        // $penjualans = Transaksi::where('jenis_transaksi', 'penjualan')
-        //     ->with(['pelanggan'])
-        //     ->latest()
-        //     ->paginate(10);
         return view('livewire.penjualan.index', compact('penjualans'));
     }
 }

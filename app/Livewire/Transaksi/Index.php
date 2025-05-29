@@ -6,6 +6,7 @@ use App\Models\Transaksi;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
+use Carbon\Carbon;
 
 class Index extends Component
 {
@@ -15,20 +16,51 @@ class Index extends Component
     public $perPage = 5;
     public $search = '';
 
+    public $tanggalAwal;
+    public $tanggalAkhir;
+    public $showAll = false;
+
     public function mount()
     {
-        $this->resetPage(); // reset pagination saat mount
-        $this->search = ''; // reset pencarian juga jika diperlukan
+        $this->search = '';
+        $this->tanggalAwal = null;
+        $this->tanggalAkhir = null;
+        $this->showAll = false; // default: tampilkan hari ini saja
     }
 
     public function updatingSearch()
     {
-        $this->resetPage(); // Kembali ke halaman 1 saat pencarian berubah
+        $this->resetPage();
+    }
+
+    public function resetFilter()
+    {
+        $this->tanggalAwal = null;
+        $this->tanggalAkhir = null;
+        $this->search = '';
+        $this->showAll = false;
+        $this->resetPage();
+    }
+
+    public function updatedShowAll()
+    {
+        if ($this->showAll) {
+            $this->tanggalAwal = null;
+            $this->tanggalAkhir = null;
+        }
+
+        $this->resetPage();
     }
 
     public function render()
     {
         $transaksis = Transaksi::with(['kasir', 'pelanggan'])
+            ->when(!$this->showAll, function ($query) {
+                $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
+                $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
+
+                $query->whereBetween('created_at', [$start, $end]);
+            })
             ->where(function ($query) {
                 $query->where('kode_transaksi', 'like', '%' . $this->search . '%')
                     ->orWhere('jenis_transaksi', 'like', '%' . $this->search . '%')
