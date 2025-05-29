@@ -67,7 +67,7 @@
 
 
         <!-- Reset Button -->
-        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
+        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2    ">
             <!-- Checkbox "Semua" -->
             <div>
                 <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">

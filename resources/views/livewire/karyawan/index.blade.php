@@ -31,21 +31,20 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="mb-3 d-flex justify-content-between">
-                {{-- Select Entries per page --}}
-                <div class="d-flex align-items-center">
-                    <select class="form-select" aria-label="Select entries per page" wire:model.live="perPage"
-                        style="width: auto;">
+            <div class="row g-3 mb-3 d-flex justify-content-between">
+                <!-- Select Entries per page -->
+                <div class=" col-2 col-md-2 d-flex align-items-center">
+                    <select class="form-select" wire:model.live="perPage" style="width:auto;cursor:pointer;">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <p for="perPage" class="ms-2 mb-0 text-muted">Entri per pages</p>
+                    <label class="d-none d-md-inline ms-2 mb-0 text-muted">Entries per page</label>
                 </div>
 
-                {{-- Search Input with Icon --}}
-                <div class="position-relative" style="width: 30ch;">
-                    <input type="text" class="form-control ps-5" placeholder="Cari"
+                <!-- Search -->
+                <div class="position-relative col-5 col-md-3">
+                    <input type="text" class="form-control ps-5" placeholder="Search"
                         wire:model.live.debounce.100ms="search" />
                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                 </div>
@@ -80,11 +79,12 @@
                             <td>{{ \Carbon\Carbon::parse($karyawan->tgl_masuk)->format('d-m-Y') }}</td>
                             <td class="text-center">
                                 @if ($karyawan->status === 'aktif')
-                                <span class="btn btn-success btn-sm">Aktif</span>
+                                <span class="badge bg-success px-3 py-1 fs-6 fw-semibold">Aktif</span>
                                 @else
-                                <span class="btn btn-secondary btn-sm">Tidak Aktif</span>
+                                <span class="badge bg-secondary px-3 py-1 fs-6 fw-semibold">Tidak Aktif</span>
                                 @endif
                             </td>
+
                             <td class="text-center">
                                 <img src="{{ $karyawan->foto ? asset('storage/images/profile/' . $karyawan->foto) : asset('storage/foto/default.png') }}"
                                     alt="Foto Karyawan" width="80" height="80" class="rounded-circle">
