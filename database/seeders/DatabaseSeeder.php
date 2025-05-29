@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Absensi;
+use App\Models\Karyawan;
 use App\Models\JenisKendaraan;
 use App\Models\Pelanggan;
 use App\Models\User;
@@ -35,6 +37,15 @@ class DatabaseSeeder extends Seeder
         JenisKendaraan::factory(10)->create();
 
         Pelanggan::factory(10)->create();
+
+        $karyawans = Karyawan::all();
+
+        foreach ($karyawans as $karyawan) {
+            Absensi::factory()->count(5)->create([
+                'karyawan_id' => $karyawan->id,
+            ]);
+        }
+
 
         $this->call(SparepartsSeeder::class);
         $this->call(JasasSeeder::class);

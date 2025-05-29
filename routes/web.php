@@ -15,10 +15,6 @@ use App\Livewire\Dashboard;
 use App\Livewire\User\Index as UserIndex;
 use \App\Livewire\User\Create as UserCreate;
 
-// jasa
-use App\Livewire\Jasa\Create as JasaCreate;
-use App\Livewire\Jasa\Edit as JasaEdit;
-use App\Livewire\Jasa\Index as JasaIndex;
 
 // jenis kendaraan
 use App\Livewire\JenisKendaraan\Create as JenisKendaraanCreate;
@@ -30,10 +26,6 @@ use App\Livewire\Karyawan\Create as karyawanCreate;
 use App\Livewire\Karyawan\Edit as karyawanEdit;
 use App\Livewire\Karyawan\Index as karyawanIndex;
 
-// konten
-use App\Livewire\Konten\Index as KontenIndex;
-use App\Livewire\Konten\Create as KontenCreate;
-use App\Livewire\Konten\Edit as KontenEdit;
 
 //pelanggan
 use App\Livewire\Pelanggan\Create as PelangganCreate;
@@ -65,6 +57,23 @@ use App\Livewire\Transaksi\TambahService as TransaksiService;
 use App\Livewire\Penjualan\Index as PenjualanIndex;
 use App\Livewire\Penjualan\Create as PenjualanCreate;
 use App\Livewire\Penjualan\Show as PenjualanShow;
+//konten
+use App\Livewire\Konten\Index as KontenIndex;
+use App\Livewire\Konten\Create as KontenCreate;
+use App\Livewire\Konten\Edit as KontenEdit;
+//jasa
+use App\Livewire\Jasa\Index as JasaIndex;
+use App\Livewire\Jasa\Create as JasaCreate;
+use App\Livewire\Jasa\Edit as JasaEdit;
+//absensi
+use \App\Livewire\Absensi\Index as AbsensiIndex;
+use \App\Livewire\Absensi\Create as AbsensiCreate;
+use \App\Livewire\Absensi\Show as AbsensiShow;
+use \App\Livewire\Absensi\Read as AbsensiRead;
+
+
+
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -77,9 +86,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
+    //user
     Route::get('/user', UserIndex::class)->name('user.view');
     Route::get('/user/create', UserCreate::class)->name('user.create');
 
+    //karyawan
     Route::get('/karyawan', KaryawanIndex::class)->name('karyawan.view');
     Route::get('/karyawan/create', KaryawanCreate::class)->name('karyawan.create');
     Route::get('/karyawan/{id}/edit', KaryawanEdit::class)->name('karyawan.edit');
@@ -99,21 +110,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
     //jasa
-    Route::get('/jasa',JasaIndex::class)->name('jasa.view');
-    Route::get('/jasa/create',JasaCreate::class)->name('jasa.create');
-    Route::get('/jasa/{id}/edit',JasaEdit::class)->name('jasa.edit');
+    Route::get('/jasa', JasaIndex::class)->name('jasa.view');
+    Route::get('/jasa/create', JasaCreate::class)->name('jasa.create');
+    Route::get('/jasa/{id}/edit', JasaEdit::class)->name('jasa.edit');
 
-   //sparepart
-    Route::get('/sparepart',SparepartIndex::class)->name('sparepart.view');
-    Route::get('/sparepart/create',SparepartCreate::class)->name('sparepart.create');
-    Route::get('/sparepart/{id}',SparepartShow::class)->name('sparepart.show');
-    Route::get('/sparepart/{id}/edit',SparepartEdit::class)->name('sparepart.edit');
-    Route::get('/sparepart/{id}/gudang/create',GudangCreate::class)->name('gudang.create');
+    //sparepart
+    Route::get('/sparepart', SparepartIndex::class)->name('sparepart.view');
+    Route::get('/sparepart/create', SparepartCreate::class)->name('sparepart.create');
+    Route::get('/sparepart/{id}', SparepartShow::class)->name('sparepart.show');
+    Route::get('/sparepart/{id}/edit', SparepartEdit::class)->name('sparepart.edit');
+    Route::get('/sparepart/{id}/gudang/create', GudangCreate::class)->name('gudang.create');
 
     //konten
     Route::get('/konten', KontenIndex::class)->name('konten.view');
     Route::get('/konten/create', KontenCreate::class)->name('konten.create');
     Route::get('/konten/{id}/edit', KontenEdit::class)->name('konten.edit');
+
+    //absensi
+    Route::get('/absensi', AbsensiIndex::class)->name('absensi.view');
+    Route::get('/absensi/create/{id}/{type}', AbsensiCreate::class)->name('absensi.create');
+    Route::get('/absensi/lihat-absen', AbsensiRead::class)->name('absensi.read');
+    Route::get('/rekap-absen', AbsensiShow::class)->name('absensi.rekap');
+
 
     //transaksi
     Route::get('/transaksi/', TransaksiIndex::class)->name('transaksi.view');
@@ -151,4 +169,3 @@ Route::middleware('guest')->group(function () {
     Route::get('forgot-password', ForgotPassword::class)->name('password.request');
     Route::get('/reset-password/{token}/{email}', ResetPassword::class)->name('password.reset');
 });
-

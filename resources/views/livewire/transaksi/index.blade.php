@@ -1,15 +1,51 @@
 <div>
-    <h1 class="mt-4">Manajemen Transaksi</h1>
+    <h2 class="mt-4">Manajemen Transaksi</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('sparepart.view') }}">Transaksi</a></li>
         <li class="breadcrumb-item active">Daftar Transaksi</li>
     </ol>
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+            <div class="card card-jumlah h-100 card-hover">
+                <div class="card-body">
+                    <h3 class="card-title text-success">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> Total Transaksi Hari Ini
+                    </h3>
+                    <hr class="border border-2 opacity-50">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card card-jumlah h-100 card-hover">
+                <div class="card-body">
+                    <h3 class="card-title text-success">
+                        <i class="fa-solid fa-money-bill-1-wave"></i> Total Pendapatan Hari Ini
+                    </h3>
+                    <hr class="border border-2 opacity-50">
+
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card card-jumlah h-100 card-hover">
+                <div class="card-body">
+                   <h3 class="card-title text-success">
+                        <i class="fa-solid fa-universal-access"></i> Status Pembayaran
+                    </h3>
+                    <hr class="border border-2 opacity-50"> 
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-money-bill-wave me-1"></i>
-                <span class="d-none d-md-inline ms-1 semibold">Daftar Transaksi</span>
+                <span class="d-none d-md-inline ms-1 ">Daftar Transaksi</span>
             </div>
             {{-- <div>
                 <a class="btn btn-primary float-end" href="{{ route('transaksi.create') }}" wire:navigate>

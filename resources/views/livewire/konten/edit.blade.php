@@ -1,5 +1,5 @@
 <div class="p-6">
-    <h1 class="mt-4">Manajemen Kontent</h1>
+    <h2 class="mt-4">Manajemen Kontent</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('konten.view') }}">Kontent</a></li>
         <li class="breadcrumb-item active">Update Data Konten</li>

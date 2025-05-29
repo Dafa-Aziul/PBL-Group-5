@@ -32,7 +32,7 @@
 </script>
 @endpush
 <div>
-    <h1 class="mt-4">Manajemen User</h1>
+    <h2 class="mt-4">Manajemen User</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('user.view') }}">User</a></li>
@@ -54,7 +54,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1 semibold">Daftar User</span>
+                <span class="d-none d-md-inline ms-1">Daftar User</span>
             </div>
             <div>
                 <a class="btn btn-primary float-end" href="{{ route('user.create') }}" wire:navigate><i
@@ -75,7 +75,7 @@
                         <option value="15">15</option>
                     </select>
                     {{-- <span class="d-none d-md-inline ms-1">Entries per page</span> --}}
-                    <label for="perPage" class="d-none d-md-inline ms-2 mb-0 text-muted">Entries per page</label>
+                    <p for="perPage" class="d-none d-md-inline ms-2 mb-0 text-muted">Entries per page</p>
                 </div>
 
                 <!-- Search Input with Icon -->

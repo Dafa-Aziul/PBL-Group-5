@@ -4,12 +4,12 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
 @endphp
 
 <div>
-    <h1 class="mt-4">Selamat Datang, {{ Auth::user()->name }} 👋
+    <h1 class="mt-4" style="color: #09005d;">Selamat Datang, {{ Auth::user()->name }} 👋
         <label class="text-muted mb-4">
             {{ Carbon::now()->translatedFormat('l, d F Y') }}
         </label>
     </h1>
-    <ol class="breadcrumb mb-4">
+    <ol class="breadcrumb">
         <li class="breadcrumb-item active">Dashboard</li>
     </ol>
 
@@ -33,7 +33,7 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
                     </h3>
                     <hr class="border border-2 opacity-50">
 
-                    <h5 class="card-text">Ada <strong>5 sparepart</strong> dengan stok menipis.</h5>
+                    <p class="card-text">Ada <strong>5 sparepart</strong> dengan stok menipis.</p>
                     <ul class="list-group list-group-flush mt-3">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             Oli Mesin
@@ -91,6 +91,19 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
             </div>
         </div>
     </div>
+
+    <div class="row d-flex align-items-stretch my-3">
+        <div class="card h-100 card-hover">
+            <div class="card-body">
+                <h3 class="card-title text-center">
+                        <i class="fa-solid fa-chart-simple"></i> Transaksi Bulan Ini
+                </h3>
+                    <hr class="border border-2 opacity-50">
+                
+            </div>
+        </div>
+    </div>
+
 
 
 
