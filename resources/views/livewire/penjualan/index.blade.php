@@ -1,5 +1,5 @@
 <div>
-    <h1 class="mt-4">Manajemen Penjualan</h1>
+    <h2 class="mt-4">Manajemen Penjualan</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('penjualan.view') }}">Penjualan</a></li>
@@ -33,7 +33,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1 semibold">Daftar service</span>
+                <span class="d-none d-md-inline ms-1">Daftar service</span>
             </div>
             <div>
                 <a class="btn btn-primary float-end" href="{{ route('penjualan.create') }}" wire:navigate><i

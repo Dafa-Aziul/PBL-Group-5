@@ -1,5 +1,5 @@
 <div>
-    <h1 class="mt-4">Kelola Pelanggan</h1>
+    <h2 class="mt-4">Kelola Pelanggan</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
         <li class="breadcrumb-item active">Tambah Pelanggan</li>

@@ -43,6 +43,44 @@
                         wire:model.live.debounce.100ms="search" />
                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                 </div>
+
+                <select class="form-select" wire:model.live="filterBulan" style="width:auto;cursor:pointer;">
+                    <option value="">Semua Bulan</option>
+                    @foreach(range(1, 12) as $bulan)
+                    <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
+                        }}</option>
+                    @endforeach
+                </select>
+
+                <!-- Filter Minggu -->
+                <select class="form-select" wire:model.live="filterMinggu" style="width: 150px;">
+                    <option value="">Semua Minggu</option>
+                    @for ($i = 1; $i <= 5; $i++) <option value="{{ $i }}">Minggu ke-{{ $i }}</option>
+                        @endfor
+                </select>
+
+                <!-- Filter Status -->
+                <select class="form-select" wire:model.live="filterStatus" style="width:auto;cursor:pointer;">
+                    <option value="">Semua Status</option>
+                    <option value="hadir">Hadir</option>
+                    <option value="terlambat">Terlambat</option>
+                    <option value="lembur">Lembur</option>
+                    <option value="izin">Izin</option>
+                    <option value="sakit">Sakit</option>
+                    <option value="alpha">Alpha</option>
+                </select>
+
+                <!-- Sort Tanggal -->
+                <select class="form-select" wire:model.live="sortDirection" style="width: 150px;">
+                    <option value="desc">Terbaru</option>
+                    <option value="asc">Terlama</option>
+                </select>
+
+                <div class="d-flex">
+                    <!-- Filter Bulan -->
+
+                </div>
+
             </div>
 
             <div class="table-responsive">
