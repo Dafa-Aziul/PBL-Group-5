@@ -1,7 +1,8 @@
 <div>
     <h2 class="mt-4">Kelola Karyawan</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('karyawan.view') }}">Karyawan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('karyawan.view') }}">Karyawan</a></li>
         <li class="breadcrumb-item active">Edit Karyawan</li>
     </ol>
     <div class="card mb-4">
@@ -23,7 +24,7 @@
                     <select class="form-select" wire:model="form.user_id">
                         <option value="">-- Pilih User --</option>
                         @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
                     @error('form.user_id') <span class="text-danger">{{ $message }}</span> @enderror
@@ -60,22 +61,28 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="status" class="form-label">Status</label><br>
+                    <label for="status" class="form-label">Status</label>
+                    <div class="btn-group" role="group" aria-label="Status selection">
+                        <!-- Aktif -->
+                        <input type="radio" id="aktif" value="aktif" wire:model="form.status" class="btn-check">
+                        <label for="aktif" class="btn btn-outline-success">Aktif</label>
 
-                    <input type="radio" id="aktif" value="aktif" wire:model="form.status">
-                    <label for="aktif">Aktif</label>
+                        <!-- Tidak Aktif -->
+                        <input type="radio" id="tidakaktif" value="tidak aktif" wire:model="form.status"
+                            class="btn-check">
+                        <label for="tidakaktif" class="btn btn-outline-secondary">Tidak Aktif</label>
+                    </div>
 
-                    <input type="radio" id="tidakaktif" value="tidak aktif" wire:model="form.status">
-                    <label for="tidakaktif">Tidak Aktif</label>
-
-                    @error('form.status') <span class="text-danger">{{ $message }}</span> @enderror
-
+                    @error('form.status')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
 
                 <div class="mb-3">
                     <label for="foto" class="form-label">Foto</label>
-                    <input type="file" class="form-control" id="foto" wire:model="form.foto" accept="image/png, image/jpeg">
+                    <input type="file" class="form-control" id="foto" wire:model="form.foto"
+                        accept="image/png, image/jpeg">
                     @error('form.foto') <span class="text-danger">{{ $message }}</span> @enderror
                     <div wire:loading wire:target="form.foto" class="text-muted mt-2">
                         Memuat gambar...

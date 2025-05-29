@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class Show extends Component
 {
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
     public $perPage = 10;

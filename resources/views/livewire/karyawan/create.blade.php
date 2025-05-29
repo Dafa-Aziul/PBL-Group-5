@@ -1,7 +1,8 @@
 <div>
     <h2 class="mt-4">Kelola Karyawan</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('karyawan.view') }}">Karyawan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('karyawan.view') }}">Karyawan</a></li>
         <li class="breadcrumb-item active">Tambah Karyawan</li>
     </ol>
     <div class="card mb-4">
@@ -23,7 +24,7 @@
                     <select class="form-select" wire:model.live="user_id">
                         <option value="">-- Pilih User --</option>
                         @foreach($users as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
                     @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
@@ -60,16 +61,23 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="status" class="form-label">Status</label><br>
+                    <label for="status" class="form-label">Status</label>
+                    <div class="btn-group" role="group" aria-label="Status selection">
+                        <!-- Aktif -->
+                        <input type="radio" id="aktif" value="aktif" wire:model="form.status" class="btn-check">
+                        <label for="aktif" class="btn btn-outline-success">Aktif</label>
 
-                    <input type="radio" id="aktif" value="aktif" wire:model="form.status">
-                    <label for="aktif">Aktif</label>
+                        <!-- Tidak Aktif -->
+                        <input type="radio" id="tidakaktif" value="tidak aktif" wire:model="form.status"
+                            class="btn-check">
+                        <label for="tidakaktif" class="btn btn-outline-secondary">Tidak Aktif</label>
+                    </div>
 
-                    <input type="radio" id="tidakaktif" value="tidak aktif" wire:model="form.status">
-                    <label for="tidakaktif">Tidak Aktif</label>
-
-                    @error('form.status') <span class="text-danger">{{ $message }}</span> @enderror
+                    @error('form.status')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
+
 
                 <div class="mb-3">
                     <label for="foto" class="form-label">Foto</label>
@@ -83,22 +91,23 @@
                     <label class="form-label fw-bold">Preview Gambar</label>
 
                     @if (is_object($form->foto))
-                        <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa; position: relative;">
-                            {{-- Loading indicator di atas preview --}}
-                            <div wire:loading wire:target="form.foto" class="position-absolute top-50 start-50 translate-middle text-primary">
-                                <div class="spinner-border spinner-border-sm" role="status"></div>
-                                <span class="ms-2">Memuat preview...</span>
-                            </div>
+                    <div class="border rounded p-2 text-center"
+                        style="min-height: 220px; background: #f8f9fa; position: relative;">
+                        {{-- Loading indicator di atas preview --}}
+                        <div wire:loading wire:target="form.foto"
+                            class="position-absolute top-50 start-50 translate-middle text-primary">
+                            <div class="spinner-border spinner-border-sm" role="status"></div>
+                            <span class="ms-2">Memuat preview...</span>
+                        </div>
 
-                            <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Gambar Baru"
-                                class="img-fluid rounded" style="max-height: 200px; object-fit: contain;"
-                                wire:loading.remove>
-                        </div>
+                        <img src="{{ $form->foto->temporaryUrl() }}" alt="Preview Gambar Baru" class="img-fluid rounded"
+                            style="max-height: 200px; object-fit: contain;" wire:loading.remove>
+                    </div>
                     @else
-                        <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
-                            style="min-height: 220px; background: #f8f9fa;">
-                            <span>Belum ada foto diupload</span>
-                        </div>
+                    <div class="border rounded p-4 d-flex justify-content-center align-items-center text-muted"
+                        style="min-height: 220px; background: #f8f9fa;">
+                        <span>Belum ada foto diupload</span>
+                    </div>
                     @endif
                 </div>
 

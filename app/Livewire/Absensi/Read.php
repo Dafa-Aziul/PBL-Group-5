@@ -11,7 +11,7 @@ use Livewire\WithPagination;
 
 class Read extends Component
 {
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $perPage = 15;
     public $search = '';
@@ -31,9 +31,7 @@ class Read extends Component
             ->where('nama', 'like', '%' . $this->search . '%') // filter pencarian jika ada
             ->paginate($this->perPage);
 
-        
+
         return view('livewire.absensi.read', compact('karyawans'));
-         
     }
-    
 }

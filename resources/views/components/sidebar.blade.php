@@ -12,7 +12,7 @@
             </a>
             <div class="collapse mt-2" id="collapseAbsensi" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" >
                 <nav class="sb-sidenav-menu-nested nav">
-                    <x-nav-link wire:current.exact href="{{ route('absensi.view') }}" icon="fa-solid fa-clipboard-user p-2" class="mb-2">absen</x-nav-link>
+                    <x-nav-link wire:current.exact href="{{ route('absensi.view') }}" icon="fa-solid fa-clipboard-user p-2">absen</x-nav-link>
                     <x-nav-link wire:current.exact href="{{ route('absensi.rekap') }}" icon="fa-solid fa-book-open-reader p-2">Rekap Absen</x-nav-link>
                     <x-nav-link wire:current.exact href="{{ route('absensi.read') }}" icon="fa-solid fa-table-list p-2">Absensi Hari Ini</x-nav-link>
                 </nav>
@@ -36,9 +36,9 @@
             </a>
             <div class="collapse" id="collapseTransaksi" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" >
                 <nav class="sb-sidenav-menu-nested nav">
-                    <x-nav-link wire:current.exact href="{{ route('transaksi.view') }}" icon="fa-solid fa-money-bill-transfer  p-2">Aktifitas Transaksi</x-nav-link>
-                    <x-nav-link wire:current.exact href="{{ route('penjualan.view') }}" icon="fas fa-shopping-cart  p-2">Penjualan</x-nav-link>
-                    <x-nav-link wire:current.exact href="{{ route('service.view') }}" icon="fas fa-tools  p-2">Service</x-nav-link>
+                    <x-nav-link wire:current.exact href="{{ route('transaksi.view') }}" icon="fa-solid fa-money-bill-transfer p-2">Aktifitas Transaksi</x-nav-link>
+                    <x-nav-link wire:current.exact href="{{ route('penjualan.view') }}" icon="fas fa-shopping-cart p-2">Penjualan</x-nav-link>
+                    <x-nav-link wire:current.exact href="{{ route('service.view') }}" icon="fas fa-tools p-2">Service</x-nav-link>
                 </nav>
             </div>
 

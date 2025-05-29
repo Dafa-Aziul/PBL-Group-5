@@ -34,16 +34,47 @@
         </div>
     </div>
     @endif
-    <div class="modal fade" id="modalTest" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal Test</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
+
+        <div class="col-12 col-md-4 d-flex align-items-center gap-3">
+            <!-- Container form untuk dari dan sampai -->
+            <div class="d-flex flex-column flex-md-row gap-3 w-100">
+                <!-- From -->
+                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                    <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
+                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if($showAll)
+                        disabled @endif>
                 </div>
-                <div class="modal-body">Ini modal test</div>
+
+                <!-- To -->
+                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                    <label for="tanggalAkhir" class="form-label mb-0" style="width: 50px;">To :</label>
+                    <input type="date" id="tanggalAkhir" wire:model.live="tanggalAkhir" class="form-control"
+                        @if($showAll) disabled @endif>
+                </div>
+
             </div>
         </div>
+
+
+        <!-- Reset Button -->
+        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2    ">
+            <!-- Checkbox "Semua" -->
+            <div>
+                <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">
+                <label class="btn btn-outline-primary mb-0" for="showAllCheck">
+                    Semua
+                </label>
+            </div>
+
+            <!-- Tombol Reset -->
+            <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
+                <i class="fas fa-rotate me-1"></i>
+                <span class="d-none d-md-inline">Reset Filter</span>
+            </button>
+        </div>
+
+
     </div>
 
     <div class="card mb-4">

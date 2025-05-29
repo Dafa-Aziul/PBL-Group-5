@@ -1,7 +1,8 @@
 <div>
     <h2 class="mt-4">Kelola Pelanggan</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
         <li class="breadcrumb-item active">Tambah Pelanggan</li>
     </ol>
     <div class="card mb-4">
@@ -37,18 +38,16 @@
 
                 <div class="mb-3">
                     <label class="form-label">Keterangan</label>
-                    <div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" wire:model="form.keterangan"
-                                id="keteranganPribadi" value="pribadi">
-                            <label class="form-check-label" for="keteranganPribadi">Pribadi</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" wire:model="form.keterangan"
-                                id="keteranganPerusahaan" value="perusahaan">
-                            <label class="form-check-label" for="keteranganPerusahaan">Perusahaan</label>
-                        </div>
+                    <div class="btn-group">
+                        <input type="radio" id="pribadi" value="pribadi" wire:model="form.tipe"
+                            class="btn-check">
+                        <label for="pribadi" class="btn btn-outline-primary">pribadi</label>
+
+                        <input type="radio" id="perusahaan" value="perusahaan" wire:model="form.tipe"
+                            class="btn-check">
+                        <label for="perusahaan" class="btn btn-outline-primary">Perusahaan</label>
                     </div>
+                    {{-- --}}
                     @error('form.keterangan')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror

@@ -25,8 +25,8 @@
                 <span class="d-none d-md-inline ms-1">Daftar jasa</span>
             </div>
             <div>
-                <a class="btn btn-primary float-end" href="{{ route('jasa.create') }}" wire:navigate><i
-                        class="fas fa-plus"></i>
+                <a class="btn btn-primary float-end" href="{{ route('jasa.create') }}" wire:navigate>
+                    <i class="fas fa-plus"></i>
                     <span class="d-none d-md-inline ms-1">Tambah jenis jasa</span>
                 </a>
 

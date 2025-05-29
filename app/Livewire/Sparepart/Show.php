@@ -19,8 +19,8 @@ class Show extends Component
     public function render()
     {
 
-         return view('livewire.sparepart.show', [
-        'sparepart' => $this->sparepart,
-    ]);
+        return view('livewire.sparepart.show', [
+            'sparepart' => $this->sparepart,
+        ]);
     }
 }

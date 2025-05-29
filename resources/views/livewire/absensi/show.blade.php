@@ -17,6 +17,51 @@
     </div>
     @endif
 
+    <div class="row g-2 mb-3">
+
+        <!-- Filter Bulan -->
+        <div class="col-6 col-md-3">
+            <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                <option value="">Semua Bulan</option>
+                @foreach(range(1, 12) as $bulan)
+                <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
+                </option>
+                @endforeach
+            </select>
+        </div>
+
+        <!-- Filter Minggu -->
+        <div class="col-6 col-md-3">
+            <select class="form-select" wire:model.live="filterMinggu">
+                <option value="">Semua Minggu</option>
+                @for ($i = 1; $i <= 5; $i++) <option value="{{ $i }}">Minggu ke-{{ $i }}</option>
+                    @endfor
+            </select>
+        </div>
+
+        <!-- Filter Status -->
+        <div class="col-6 col-md-3">
+            <select class="form-select" wire:model.live="filterStatus" style="cursor:pointer;">
+                <option value="">Semua Status</option>
+                <option value="hadir">Hadir</option>
+                <option value="terlambat">Terlambat</option>
+                <option value="lembur">Lembur</option>
+                <option value="izin">Izin</option>
+                <option value="sakit">Sakit</option>
+                <option value="alpha">Alpha</option>
+            </select>
+        </div>
+
+        <!-- Sort Tanggal -->
+        <div class="col-6 col-md-3">
+            <select class="form-select" wire:model.live="sortDirection">
+                <option value="desc">Terbaru</option>
+                <option value="asc">Terlama</option>
+            </select>
+        </div>
+
+    </div>
+
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
@@ -25,63 +70,26 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="mb-3 d-flex justify-content-between">
+            <div class="row g-3 mb-3 d-flex justify-content-between">
                 <!-- Select Entries per page -->
-                <div class="d-flex align-items-center">
-                    <select class="form-select" aria-label="Select entries per page" wire:model.live="perPage"
-                        style="width:auto;cursor:pointer;">
+                <div class=" col-2 col-md-2 d-flex align-items-center">
+                    <select class="form-select" wire:model.live="perPage" style="width:auto;cursor:pointer;">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
                         <option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
                     </select>
-                    <p for="perPage" class="d-none d-md-inline ms-2 mb-0 text-muted ">Entries per page</p>
+                    <label class="d-none d-md-inline ms-2 mb-0 text-muted">Entries per page</label>
                 </div>
 
-                <!-- Search Input with Icon -->
-                <div class="position-relative" style="width: 30ch;">
+                <!-- Search -->
+                <div class="position-relative col-5 col-md-3">
                     <input type="text" class="form-control ps-5" placeholder="Search"
                         wire:model.live.debounce.100ms="search" />
                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                 </div>
-
-                <select class="form-select" wire:model.live="filterBulan" style="width:auto;cursor:pointer;">
-                    <option value="">Semua Bulan</option>
-                    @foreach(range(1, 12) as $bulan)
-                    <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
-                        }}</option>
-                    @endforeach
-                </select>
-
-                <!-- Filter Minggu -->
-                <select class="form-select" wire:model.live="filterMinggu" style="width: 150px;">
-                    <option value="">Semua Minggu</option>
-                    @for ($i = 1; $i <= 5; $i++) <option value="{{ $i }}">Minggu ke-{{ $i }}</option>
-                        @endfor
-                </select>
-
-                <!-- Filter Status -->
-                <select class="form-select" wire:model.live="filterStatus" style="width:auto;cursor:pointer;">
-                    <option value="">Semua Status</option>
-                    <option value="hadir">Hadir</option>
-                    <option value="terlambat">Terlambat</option>
-                    <option value="lembur">Lembur</option>
-                    <option value="izin">Izin</option>
-                    <option value="sakit">Sakit</option>
-                    <option value="alpha">Alpha</option>
-                </select>
-
-                <!-- Sort Tanggal -->
-                <select class="form-select" wire:model.live="sortDirection" style="width: 150px;">
-                    <option value="desc">Terbaru</option>
-                    <option value="asc">Terlama</option>
-                </select>
-
-                <div class="d-flex">
-                    <!-- Filter Bulan -->
-
-                </div>
-
             </div>
+
+            {{-- Filter Bulan, Minggu, Status, dan Sort Tanggal --}}
 
             <div class="table-responsive">
                 <table class="table table-bordered table-hover">

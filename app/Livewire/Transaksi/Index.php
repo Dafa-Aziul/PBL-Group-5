@@ -25,7 +25,8 @@ class Index extends Component
         $this->search = '';
         $this->tanggalAwal = null;
         $this->tanggalAkhir = null;
-        $this->showAll = false; // default: tampilkan hari ini saja
+        $this->showAll = false;
+         // default: tampilkan hari ini saja
     }
 
     public function updatingSearch()
@@ -40,6 +41,7 @@ class Index extends Component
         $this->search = '';
         $this->showAll = false;
         $this->resetPage();
+        $this->perPage = 5;
     }
 
     public function updatedShowAll()
@@ -48,8 +50,18 @@ class Index extends Component
             $this->tanggalAwal = null;
             $this->tanggalAkhir = null;
         }
-
         $this->resetPage();
+    }
+    public function updatedTanggalAkhir()
+    {
+        if ($this->tanggalAwal && $this->tanggalAkhir) {
+            if (Carbon::parse($this->tanggalAkhir)->lt(Carbon::parse($this->tanggalAwal))) {
+                $this->addError('tanggalAkhir', 'Tanggal akhir tidak boleh lebih awal dari tanggal awal.');
+                $this->tanggalAkhir = null; // Reset atau bisa disesuaikan
+            } else {
+                $this->resetErrorBag('tanggalAkhir');
+            }
+        }
     }
 
     public function render()
