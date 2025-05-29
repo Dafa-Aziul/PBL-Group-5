@@ -1,5 +1,5 @@
 <div>
-    <h1 class="mt-4">Kelola Karyawan</h1>
+    <h2 class="mt-4">Kelola Karyawan</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('user.view') }}">Karyawan</a></li>
@@ -21,7 +21,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1 semibold">Daftar Karyawan</span>
+                <span class="d-none d-md-inline ms-1">Daftar Karyawan</span>
             </div>
             <div>
                 <a class="btn btn-primary float-end" href="{{ route('karyawan.create') }}" wire:navigate>
@@ -40,7 +40,7 @@
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <label for="perPage" class="ms-2 mb-0 text-muted">Entri per pages</label>
+                    <p for="perPage" class="ms-2 mb-0 text-muted">Entri per pages</p>
                 </div>
 
                 {{-- Search Input with Icon --}}

@@ -27,14 +27,20 @@ use App\Livewire\Sparepart\Create as SparepartCreate;
 use App\Livewire\Sparepart\Edit as SparepartEdit;
 use App\Livewire\Sparepart\Show as SparepartShow;
 use App\Livewire\Gudang\Create as GudangCreate;
-
+//konten
 use App\Livewire\Konten\Index as KontenIndex;
 use App\Livewire\Konten\Create as KontenCreate;
 use App\Livewire\Konten\Edit as KontenEdit;
-
+//jasa
 use App\Livewire\Jasa\Index as JasaIndex;
 use App\Livewire\Jasa\Create as JasaCreate;
 use App\Livewire\Jasa\Edit as JasaEdit;
+//absensi
+use \App\Livewire\Absensi\Index as AbsensiIndex;
+use \App\Livewire\Absensi\Create as AbsensiCreate;
+use \App\Livewire\Absensi\Show as AbsensiShow;
+use \App\Livewire\Absensi\Read as AbsensiRead;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -51,9 +57,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
+    //user
     Route::get('/user', UserIndex::class)->name('user.view');
     Route::get('/user/create', Create::class)->name('user.create');
 
+    //karyawan
     Route::get('/karyawan', KaryawanIndex::class)->name('karyawan.view');
     Route::get('/karyawan/create', KaryawanCreate::class)->name('karyawan.create');
     Route::get('/karyawan/{id}/edit', KaryawanEdit::class)->name('karyawan.edit');
@@ -63,6 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/jenis_kendaraan/create', JenisKendaraanCreate::class)->name('jenis_kendaraan.create');
     Route::get('/jenis_kendaraan/{id}/edit', JenisKendaraanEdit::class)->name('jenis_kendaraan.edit');
 
+    //pelanggan
     Route::get('/pelanggan', PelangganIndex::class)->name('pelanggan.view');
     Route::get('/pelanggan/create', PelangganCreate::class)->name('pelanggan.create');
     Route::get('/pelanggan/{id}/edit', PelangganEdit::class)->name('pelanggan.edit');
@@ -85,6 +94,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/konten', KontenIndex::class)->name('konten.view');
     Route::get('/konten/create', KontenCreate::class)->name('konten.create');
     Route::get('/konten/{id}/edit', KontenEdit::class)->name('konten.edit');
+
+    //absensi
+    Route::get('/absensi', AbsensiIndex::class)->name('absensi.view');
+    Route::get('/absensi/create/{id}/{type}', AbsensiCreate::class)->name('absensi.create');
+    Route::get('/absensi/lihat-absen', AbsensiRead::class)->name('absensi.read');
+    Route::get('/rekap-absen', AbsensiShow::class)->name('absensi.rekap');
+
 
 });
 

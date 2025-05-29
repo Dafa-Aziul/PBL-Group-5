@@ -1,7 +1,8 @@
 <div>
     <h1 class="mt-4">Kelola Jenis Kendaraan</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('jenis_kendaraan.view') }}">Jenis Kendaraan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('jenis_kendaraan.view') }}">Jenis Kendaraan</a></li>
         <li class="breadcrumb-item active">Tambah Jenis Kendaraan</li>
     </ol>
     <div class="card mb-4">
@@ -36,8 +37,7 @@
                     @error('form.deskripsi') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-
-                <button type="submit" class="btn btn-success" >Simpan</button>
+<button type="submit" class="btn btn-success">Simpan</button>
                 <button type="reset" class="btn btn-warning">Reset</button>
             </form>
         </div>

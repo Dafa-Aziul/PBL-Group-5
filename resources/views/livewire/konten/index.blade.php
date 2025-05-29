@@ -1,5 +1,5 @@
     <div>
-    <h1 class="mt-4">Kelola Konten</h1>
+    <h2 class="mt-4">Kelola Konten</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('konten.view') }}">Manajemen Konten</a></li>
         <li class="breadcrumb-item active">Daftar Konten</li>
@@ -39,7 +39,7 @@
                         <option value="10">10</option>
                         <option value="15">15</option>
                     </select>
-                    <label for="perPage" class="ms-2 mb-0">Entries per page</label>
+                    <p for="perPage" class="ms-2 mb-0 text-muted">Entries per page</p>
                 </div>
 
                 <!-- Search Input with Icon -->

@@ -1,12 +1,13 @@
 <nav class="sb-topnav navbar navbar-expand navbar-light">
-     <!-- Sidebar Toggle-->
-    <button class="btn btn-link btn-sm order-1 order-lg-0 ms-2 me-4 me-lg-0"  style="font-size: 1.1rem;"  id="sidebarToggle" href="#!"><i
-            class="fas fa-bars"></i></button>
+
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3 d-flex align-items-center gap-2" href="{{ route('dashboard') }}" wire:navigate>
         <img src="/images/kopcv.jpg" width="28" alt="Logo CV Razka Pratama">
         <span class="fw-semibold fs-6 d-none d-sm-inline">CV. Razka Pratama</span>
     </a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 ms-2 me-4 me-lg-0" style="font-size: 1.1rem;"
+        id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
     <!-- Navbar Search-->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
