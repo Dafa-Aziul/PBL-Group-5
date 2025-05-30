@@ -14,20 +14,20 @@ class Index extends Component
     {
         $today = Carbon::today()->toDateString();
 
-    // Ambil karyawan yang terkait dengan user yang sedang login
-    $user = Auth::user();
-    $karyawan = Karyawan::where('user_id', $user->id)->firstOrFail();
+        // Ambil karyawan yang terkait dengan user yang sedang login
+        $user = Auth::user();
+        $karyawan = Karyawan::where('user_id', $user->id)->firstOrFail();
 
-    // Kalau tidak ada data karyawan, return kosong
-    if (!$karyawan) {
-        $absensis = collect(); // koleksi kosong
-    } else {
-        $absensis = Absensi::where('tanggal', $today)
-            ->where('karyawan_id', $karyawan->id)
-            ->orderBy('jam_masuk', 'asc')
-            ->get();
-    }
+        // Kalau tidak ada data karyawan, return kosong
+        if (!$karyawan) {
+            $absensis = collect(); // koleksi kosong
+        } else {
+            $absensis = Absensi::where('tanggal', $today)
+                ->where('karyawan_id', $karyawan->id)
+                ->orderBy('jam_masuk', 'asc')
+                ->get();
+        }
 
-    return view('livewire.absensi.index', compact('absensis'));
+        return view('livewire.absensi.index', compact('absensis'));
     }
 }

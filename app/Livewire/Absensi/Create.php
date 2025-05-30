@@ -161,7 +161,7 @@ class Create extends Component
         $this->form->tanggal = $today;
         $data = $this->form->validate();
         $data['karyawan_id'] = $this->karyawan_id;
-        // dd($data);   
+        // dd($data);
         // $data['status'] = $this->absensi->status;
         $data['tanggal'] = $today;
 

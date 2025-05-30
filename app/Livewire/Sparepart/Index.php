@@ -24,16 +24,17 @@ class Index extends Component
         $this->resetPage(); // Kembali ke halaman 1 saat pencarian berubah
     }
 
-    public function render()
-    {
-        $spareparts = Sparepart::search($this->search)->paginate($this->perPage);
-        return view('livewire.sparepart.index', compact('spareparts'));
-    }
-
     public function delete($id)
     {
         $sparepart = Sparepart::findOrFail($id);
         $sparepart->delete();
         return session()->flash('success', 'sparepart berhasil dihapus.');
     }
+
+    public function render()
+    {
+        $spareparts = Sparepart::search($this->search)->paginate($this->perPage);
+        return view('livewire.sparepart.index', compact('spareparts'));
+    }
+
 }

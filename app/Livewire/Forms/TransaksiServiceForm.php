@@ -45,4 +45,13 @@ class TransaksiServiceForm extends Form
         $this->sub_total = $service->estimasi_harga;
         $this->jenis_transaksi = 'service';
     }
+
+    public function hitungTotal()
+    {
+        $diskonValue = $this->sub_total * ($this->diskon / 100);
+        $this->total = round($this->sub_total + $this->pajak - $diskonValue, 2);
+        if ($this->total < 0) {
+            $this->total = 0;
+        }
+    }
 }

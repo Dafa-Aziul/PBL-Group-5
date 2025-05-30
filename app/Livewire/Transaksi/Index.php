@@ -67,7 +67,7 @@ class Index extends Component
     public function render()
     {
         $transaksis = Transaksi::with(['kasir', 'pelanggan'])
-            ->when(!$this->showAll, function ($query) {
+            ->when(!$this->showAll && !$this->search, function ($query) {
                 $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
                 $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
 

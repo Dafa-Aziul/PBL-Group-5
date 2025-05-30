@@ -84,7 +84,7 @@
                         <td>{{ $sparepart->model_kendaraan}}</td>
                         <td>{{ $sparepart->ket}}</td>
                         <td class="text-center" @click.stop>
-                            <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('storage/foto/default.png') }}"
+                            <img src="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('storage/foto/default.png') }}"
                             alt="Foto Sparepart" class="img-thumbnail"
                             style="max-width: 150px; max-height: 150px; object-fit: contain;"
                             data-bs-toggle="modal" data-bs-target="#fotoModal{{ $sparepart->id }}"

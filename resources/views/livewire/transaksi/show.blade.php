@@ -162,7 +162,8 @@
                     @if($transaksi->status_pembayaran != 'lunas')
                     <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
                         data-bs-target="#paymentModal">
-                        <i class="fas fa-money-bill-wave"></i> Bayar Sekarang
+                        <i class="fas fa-money-bill-wave"></i> <span class="d-none d-md-inline ms-1">Bayar
+                            Sekarang</span>
                     </button>
                     @endif
                 </div>
@@ -211,35 +212,35 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Form Pembayaran</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal">
-                                <span>&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form wire:submit.prevent="simpanPembayaran">
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label>Tanggal Bayar</label>
-                                    <input type="date" class="form-control" wire:model.defer="tanggal_bayar">
-                                    @error('tanggal_bayar') <small class="text-danger">{{ $message }}</small>
+                                    <input type="date" class="form-control" wire:model.defer="form.tanggal_bayar">
+                                    @error('form.tanggal_bayar') <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Jumlah Bayar</label>
-                                    <input type="number" class="form-control" wire:model.defer="jumlah_bayar">
-                                    @error('jumlah_bayar') <small class="text-danger">{{ $message }}</small>
+                                    <label>Jumlah Bayar (Sisa: Rp{{ number_format($sisaPembayaran, 0, ',', '.')
+                                        }})</label>
+                                    <input type="number" class="form-control" wire:model.defer="form.jumlah_bayar">
+                                    @error('form.jumlah_bayar') <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
 
                                 <div class="form-group">
                                     <label>Keterangan</label>
-                                    <textarea class="form-control" wire:model.defer="ket"></textarea>
+                                    <textarea class="form-control" wire:model.defer="form.ket"></textarea>
+                                    @error('form.ket') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    wire:click="closePaymentModal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary"
+                                    wire:loading.attr="disabled">Simpan</button>
                             </div>
                         </form>
                     </div>

@@ -1,4 +1,43 @@
+@push('scripts')
+<script>
+    // Menangani pemanggilan modal
+    window.addEventListener('open-confirm-password-modal', event => {
+        const modalEl = document.getElementById('confirmPassword');
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    });
 
+    // Menangani penutupan modal
+    window.addEventListener('hide-confirm-password-modal', event => {
+        const modalEl = document.getElementById('confirmPassword');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+
+        if (modal) {
+            modal.hide();
+        }
+
+        // Tambahan: bersihkan backdrop jika tertinggal
+        setTimeout(() => {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        }, 300); // delay kecil untuk pastikan transisi selesai
+    });
+
+    // Opsional: Jika pakai Livewire, tambahkan hook
+    document.addEventListener('livewire:load', function () {
+        Livewire.hook('message.processed', () => {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        });
+    });
+</script>
+@endpush
 <div>
     <h2 class="mt-4">Manajemen User</h2>
     <ol class="breadcrumb mb-4">
@@ -46,12 +85,10 @@
                     <input type="password" class="form-control" wire:model="form.password">
                     @error('form.password') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
-            <button type="submit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmPassword">Simpan</button>
+            <button type="submit" class="btn btn-success" >Simpan</button>
             <button wire:click='resetForm' type="reset" class="btn btn-warning">Reset</button>
         </form>
-        @if ($showModal)
             <x-modal.confirmPassword id="confirmPassword" target="submit"></x-modal.confirmPassword>
-        @endif
         </div>
     </div>
 </div>

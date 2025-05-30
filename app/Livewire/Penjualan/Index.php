@@ -59,7 +59,7 @@ class Index extends Component
 
         $penjualans = Transaksi::with(['pelanggan'])
             ->where('jenis_transaksi', 'penjualan')
-            ->when(!$this->showAll, function ($query) {
+            ->when(!$this->showAll && !$this->search, function ($query) {
                 $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
                 $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
 

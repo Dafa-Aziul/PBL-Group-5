@@ -32,13 +32,6 @@ class TambahService extends Component
         $this->form->total = $this->form->sub_total + $this->form->pajak;
     }
 
-    // public function updateTotal()
-    // {
-    //     $diskonPersen = floatval($this->form->diskon);
-    //     $this->total_diskon = $this->form->sub_total * ($diskonPersen / 100);
-    //     $this->form->total = $this->form->sub_total + $this->form->pajak - $this->total_diskon;
-    // }
-
     public function updatedFormDiskon($value)
     {
         // Jika kosong, kembalikan ke 0
