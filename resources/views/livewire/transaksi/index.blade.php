@@ -6,41 +6,68 @@
         <li class="breadcrumb-item active">Daftar Transaksi</li>
     </ol>
     <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-            <div class="card card-jumlah h-100 card-hover">
-                <div class="card-body">
-                    <h3 class="card-title text-success">
-                        <i class="fa-solid fa-file-invoice-dollar"></i> Total Transaksi Hari Ini
-                    </h3>
-                    <hr class="border border-2 opacity-50">
+        {{-- Kanan atas: Status + Jenis dalam satu kolom besar (75%) --}}
+        <div class="col-12 col-lg-4">
+            <div class="d-flex flex-column h-100 justify-content-between gap-3">
+                {{-- Status Pembayaran --}}
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-money-bill-1-wave"></i> Total Pendapatan
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <h2 class="fw-bold text-dark text-center" >
+                            Rp {{ number_format($totalPendapatanHariIni, 0, ',', '.') }}
+                        </h2>
+                    </div>
+
+                </div>
+                {{-- Jenis Transaksi --}}
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Total Transaksi
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <h2 class="fw-bold text-dark text-center">{{ $totalTransaksiHariIni }} transaksi hari ini</h2>
+                    </div>
+
                 </div>
             </div>
         </div>
-
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-lg-4">
             <div class="card card-jumlah h-100 card-hover">
                 <div class="card-body">
-                    <h3 class="card-title text-success">
-                        <i class="fa-solid fa-money-bill-1-wave"></i> Total Pendapatan Hari Ini
-                    </h3>
+                    <h5 class="card-title text-success">
+                        <i class="fa-solid fa-comments-dollar"></i> Status Pembayaran
+                    </h5>
                     <hr class="border border-2 opacity-50">
-
-                    
+                    <canvas id="myChart" width="280" height="280"></canvas>
+                    <script>
+                        window.chartData = @json($chartData);
+                    </script>
                 </div>
+
             </div>
         </div>
 
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-lg-4">
             <div class="card card-jumlah h-100 card-hover">
                 <div class="card-body">
-                   <h3 class="card-title text-success">
-                        <i class="fa-solid fa-universal-access"></i> Status Pembayaran
-                    </h3>
-                    <hr class="border border-2 opacity-50"> 
+                    <h5 class="card-title text-success">
+                        <i class="fa-solid fa-list"></i> Jenis Transaksi
+                    </h5>
+                    <hr class="border border-2 opacity-50">
+                    <canvas id="jenisChart" width="280" height="280"></canvas>
+                    <script>
+                        window.chartJenis = @json($chartJenis);
+                    </script>
                 </div>
+
             </div>
         </div>
     </div>
+
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
@@ -126,5 +153,80 @@
             {{ $transaksis->links() }}
         </div>
     </div>
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('myChart');
+
+        const chartData = window.chartData;
+        const labels = chartData.labels;
+        const values = chartData.data;
+
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Status Pembayaran',
+                    data: values,
+                    backgroundColor: [
+                        'rgb(75, 192, 192)', // Lunas
+                        'rgb(255, 205, 86)'  // Pending
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+    });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('jenisChart');
+
+        const chartJenis = window.chartJenis;
+        const labels = chartJenis.labels;
+        const values = chartJenis.data;
+
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jenis Service',
+                    data: values,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)'  
+                        
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+    });
+    </script>
+    @endpush
+
+
+
 
 </div>

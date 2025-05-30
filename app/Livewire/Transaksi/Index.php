@@ -3,6 +3,7 @@
 namespace App\Livewire\Transaksi;
 
 use App\Models\Transaksi;
+use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
@@ -26,8 +27,52 @@ class Index extends Component
         $this->resetPage(); // Kembali ke halaman 1 saat pencarian berubah
     }
 
+    public function getChartData()
+    {
+        $today = Carbon::today();
+
+        $jumlahLunas = Transaksi::whereDate('created_at', $today)
+            ->where('status_pembayaran', 'lunas')
+            ->count();
+
+        $jumlahPending = Transaksi::whereDate('created_at', $today)
+            ->where('status_pembayaran', 'pending')
+            ->count();
+
+        return [
+            'labels' => ['Lunas', 'Pending'],
+            'data' => [$jumlahLunas, $jumlahPending],
+        ];
+    }
+    public function getChartJenis()
+    {
+        $today = Carbon::today();
+
+        $jumlahService = Transaksi::whereDate('created_at', $today)
+            ->where('jenis_transaksi', 'service')
+            ->count();
+
+        $jumlahJual = Transaksi::whereDate('created_at', $today)
+            ->where('jenis_transaksi', 'penjualan')
+            ->count();
+
+        return [
+            'labels' => ['Service', 'Penjualan'],
+            'data' => [$jumlahService, $jumlahJual],
+        ];
+    }
+
+
     public function render()
     {
+        $today = Carbon::today();
+        $chartData = $this->getChartData();
+        $chartJenis = $this->getChartJenis();
+
+        $totalTransaksiHariIni = Transaksi::whereDate('created_at', $today)->count();
+        $totalPendapatanHariIni = Transaksi::whereDate('created_at', $today)->sum('total');
+        
+
         $transaksis = Transaksi::with(['kasir', 'pelanggan'])
             ->where(function ($query) {
                 $query->where('kode_transaksi', 'like', '%' . $this->search . '%')
@@ -39,6 +84,11 @@ class Index extends Component
             })
             ->paginate($this->perPage);
 
-        return view('livewire.transaksi.index', compact('transaksis'));
+        return view('livewire.transaksi.index', compact(
+            'transaksis',
+            'totalTransaksiHariIni',
+            'totalPendapatanHariIni',
+            'chartData', 'chartJenis'
+        ));
     }
 }

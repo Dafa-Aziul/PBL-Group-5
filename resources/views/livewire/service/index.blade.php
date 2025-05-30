@@ -16,6 +16,7 @@
 @endpush
 
 <div>
+
     <h2 class="mt-4">Kelola Service</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
@@ -42,6 +43,69 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">Ini modal test</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        {{-- Kanan atas: Status + Jenis dalam satu kolom besar (75%) --}}
+        <div class="col-12 col-lg-4">
+            <div class="d-flex flex-column h-100 justify-content-between gap-3">
+                {{-- Status Pembayaran --}}
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-money-bill-1-wave"></i> Total Pendapatan
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <h2 class="fw-bold text-dark text-center" >
+                            
+                        </h2>
+                    </div>
+
+                </div>
+                {{-- Jenis Transaksi --}}
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Total Transaksi
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <h2 class="fw-bold text-dark text-center"></h2>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card card-jumlah h-100 card-hover">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fa-solid fa-comments-dollar"></i> Status Pembayaran
+                    </h5>
+                    <hr class="border border-2 opacity-50">
+                    <canvas id="myChart" width="280" height="280"></canvas>
+                    {{-- <script>
+                        window.chartData = @json($chartData);
+                    </script> --}}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-4">
+            <div class="card card-jumlah h-100 card-hover">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fa-solid fa-list"></i> Jenis Transaksi
+                    </h5>
+                    <hr class="border border-2 opacity-50">
+                    <canvas id="jenisChart" width="280" height="280"></canvas>
+                    {{-- <script>
+                        window.chartJenis = @json($chartJenis);
+                    </script> --}}
+                </div>
+
             </div>
         </div>
     </div>

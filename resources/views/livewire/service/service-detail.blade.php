@@ -267,7 +267,6 @@
                     <div class="card-header">Estimasi Total Biaya</div>
                     <div class="card-body">
                         <h5>Total Keseluruhan: <strong>Rp {{ number_format($totalSemua, 0, ',', '.') }}</strong></h5>
-                        <pre>@json($sparepartList)</pre>
                     </div>
                 </div>
                 @endif
