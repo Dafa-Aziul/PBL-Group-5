@@ -26,7 +26,7 @@ class Index extends Component
         $this->tanggalAwal = null;
         $this->tanggalAkhir = null;
         $this->showAll = false;
-         // default: tampilkan hari ini saja
+        // default: tampilkan hari ini saja
     }
 
     public function updatingSearch()
@@ -81,6 +81,7 @@ class Index extends Component
                     ->orWhere('status_pembayaran', 'like', '%' . $this->search . '%')
                     ->orWhere('keterangan', 'like', '%' . $this->search . '%');
             })
+            ->orderByDesc('created_at')
             ->paginate($this->perPage);
 
         return view('livewire.transaksi.index', compact('transaksis'));

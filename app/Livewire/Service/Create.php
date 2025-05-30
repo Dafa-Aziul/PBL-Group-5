@@ -27,6 +27,14 @@ class Create extends Component
 
     public function mount()
     {
+        $this->pelanggan_id = request()->query('pelanggan_id');
+        $selectedKendaraan = request()->query('selectedKendaraan');
+
+        if ($selectedKendaraan) {
+            $this->form->kendaraan_id = $selectedKendaraan;
+            $this->selectedKendaraan = Kendaraan::find($selectedKendaraan);
+        }
+
         $this->pelanggans = Pelanggan::all();
         $this->montirs = Karyawan::where('jabatan', 'mekanik')->get();
     }

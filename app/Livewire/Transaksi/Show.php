@@ -27,14 +27,6 @@ class Show extends Component
         $this->sisaPembayaran = max(0, $this->transaksi->total - $total);
     }
 
-    public function openPaymentModal()
-    {
-        $this->resetValidation();
-        $this->form->resetForm();
-        $this->dispatch('open-payment-modal', [
-            'transaksiId' => $this->transaksi->id,
-        ]);
-    }
 
     private function closePaymentModal()
     {

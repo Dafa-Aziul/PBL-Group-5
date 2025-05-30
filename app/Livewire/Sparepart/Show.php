@@ -18,33 +18,44 @@ class Show extends Component
         $this->sparepart = Sparepart::find($id);
     }
 
+    public function resetForm()
+    {
+        $this->form->reset(); // Mereset semua properti di GudangForm
+    }
+
     public function updateGudang()
     {
-        $data = $this->form->validate();
-        $data['sparepart_id'] = $this->sparepart->id;
+        // Validasi langsung dari form
+        $this->form->validate();
 
-        $sparepart = Sparepart::findOrFail( $this->sparepart->id);
+        // Ambil data sparepart
+        $sparepart = Sparepart::findOrFail($this->sparepart->id);
 
         // Cek stok saat aktivitas keluar
-        if ($data['aktivitas'] === 'keluar' && $sparepart->stok < $data['jumlah']) {
+        if ($this->form->aktivitas === 'keluar' && $sparepart->stok < $this->form->jumlah) {
             $this->addError('form.jumlah', 'Stok tidak mencukupi untuk aktivitas keluar.');
             return;
         }
 
-        // Simpan monitoring
-        Gudang::create($data);
+        // Simpan monitoring ke tabel gudangs melalui relasi (menggunakan fungsi simpan di form)
+        $this->form->simpan($sparepart);
 
         // Update stok sparepart
-        if ($data['aktivitas'] === 'masuk') {
-            $sparepart->stok += $data['jumlah'];
+        if ($this->form->aktivitas === 'masuk') {
+            $sparepart->stok += $this->form->jumlah;
         } else {
-            $sparepart->stok -= $data['jumlah'];
+            $sparepart->stok -= $this->form->jumlah;
         }
+
         $sparepart->save();
         $this->sparepart = $sparepart->refresh();
+
+        // Feedback dan reset form
         session()->flash('success', 'Monitoring berhasil ditambahkan dan stok diperbarui!');
+        $this->form->resetForm();
         $this->closePaymentModal();
     }
+
 
     public function closePaymentModal()
     {

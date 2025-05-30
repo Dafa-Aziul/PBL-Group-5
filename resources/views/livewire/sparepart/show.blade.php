@@ -102,7 +102,7 @@
                 <div class="card-body">
                     <div class="mb-4">
                         <h5>
-                            <span class="badge bg-{{ $sparepart->stok <= 10 ? 'warning' : 'info' }} fs-6">
+                            <span class="badge bg-{{ $sparepart->stok <= 10 ? 'danger' : 'info' }} fs-6">
                                 Stok barang : {{ $sparepart->stok }}
                             </span>
                         </h5>

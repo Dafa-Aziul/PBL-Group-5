@@ -49,7 +49,7 @@
             <!-- Container form untuk dari dan sampai -->
             <div class="d-flex flex-column flex-md-row gap-3 w-100">
                 <!-- From -->
-                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                <div class="d-flex align-items-center gap-2 me-md-0 mb-2 mb-md-0">
                     <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
                     <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if($showAll)
                         disabled @endif>

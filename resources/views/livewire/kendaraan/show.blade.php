@@ -2,10 +2,12 @@
     <h2 class="mt-4">Riwayat Service Kendaraan</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item">
-            <a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a>
+            <a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('pelanggan.view') }}">Pelanggan</a>
         </li>
         <li class="breadcrumb-item">
-            <a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.detail', ['id' => $kendaraan->pelanggan_id]) }}">
+            <a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('pelanggan.detail', ['id' => $kendaraan->pelanggan_id]) }}">
                 Detail Data Pelanggan : {{ $kendaraan->pelanggan->nama }}
             </a>
         </li>
@@ -19,7 +21,8 @@
                 <span class="d-none d-md-inline ms-1">Data Kendaraan</span>
             </div>
             <div>
-                <a class="btn btn-secondary" href="{{ route('pelanggan.detail', ['id' => $kendaraan->pelanggan_id]) }}" wire:navigate>
+                <a class="btn btn-secondary" href="{{ route('pelanggan.detail', ['id' => $kendaraan->pelanggan_id]) }}"
+                    wire:navigate>
                     <i class="fas fa-arrow-left"></i> Kembali ke Pelanggan
                 </a>
             </div>
@@ -41,43 +44,57 @@
                 </div>
             </div>
 
-            <h5 class="mb-3">Daftar Riwayat Service</h5>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-secondary">
-                        <tr>
-                            <th>No.</th>
-                            <th>Tanggal Service</th>
-                            <th>Keterangan</th>
-                            <th>Montir</th>
-                            <th>Total Biaya</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($kendaraan->services as $index => $service)
-                        <tr>
-                            <td class="text-center">{{ $index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($service->tanggal_service)->format('d M Y') }}</td>
-                            <td>{{ $service->keterangan ?? '-' }}</td>
-                            <td>{{ $service->montir->nama ?? '-' }}</td>
-                            {{-- <td>Rp {{ number_format($service->total_biaya ?? 0, 0, ',', '.') }}</td> --}}
-                            <td class="text-center">
-                                <a href="{{ route('service.show', ['id' => $service->id]) }}" class="btn btn-info btn-sm" wire:navigate>
-                                    <i class="fas fa-eye"></i>
-                                    <span class="d-none d-md-inline ms-1">Detail</span>
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">Belum ada riwayat service.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+            <div class="card mt-4 shadow-sm border-0">
+                <div class="card-header bg-primary text-white justify-content-between d-flex align-items-center">
+                    <div class="">
+                        <i class="fas fa-car me-2"></i>
+                        <strong>Daftar Riwayat Service</strong>
+                    </div>
 
+                    <a class="btn bg-white text-primary btn-primary" href="{{ route('service.create', ['pelanggan_id' => $kendaraan->pelanggan_id, 'selectedKendaraan' => $kendaraan->id]) }}">
+                        <i class="fas fa-plus"></i>
+                        <span class="d-none d-md-inline ms-1">Tambah service</span>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead class="table-secondary">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Tanggal Service</th>
+                                    <th>Keterangan</th>
+                                    <th>Montir</th>
+                                    <th>Total Biaya</th>
+                                    <th class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($kendaraan->services as $index => $service)
+                                <tr>
+                                    <td class="text-center">{{ $index + 1 }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($service->tanggal_service)->format('d M Y') }}</td>
+                                    <td>{{ $service->keterangan ?? '-' }}</td>
+                                    <td>{{ $service->montir->nama ?? '-' }}</td>
+                                    {{-- <td>Rp {{ number_format($service->total_biaya ?? 0, 0, ',', '.') }}</td> --}}
+                                    <td class="text-center">
+                                        <a href="{{ route('service.show', ['id' => $service->id]) }}"
+                                            class="btn btn-info btn-sm" wire:navigate>
+                                            <i class="fas fa-eye"></i>
+                                            <span class="d-none d-md-inline ms-1">Detail</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">Belum ada riwayat service.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -22,7 +22,7 @@ class Create extends Component
         $this->pelanggan = Pelanggan::findOrFail($id);
         $this->jenis_kendaraans = JenisKendaraan::all();
     }
-    public function submit()
+    public function createKendaraan()
     {
         $data = $this->form->validate();
         $data['pelanggan_id'] = $this->pelanggan_id;
