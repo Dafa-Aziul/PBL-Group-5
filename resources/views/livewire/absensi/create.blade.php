@@ -15,9 +15,9 @@
             <div>
                 <i class="fa-solid fa-clipboard-user"></i>
                 <span class="d-none d-md-inline ms-1">
-                    @if ($type === 'check in')
+                    @if ($type === 'check-in')
                     Absen Masuk
-                    @elseif ($type === 'check out')
+                    @elseif ($type === 'check-out')
                     Absen Keluar
                     @else
                     Ketidakhadiran Karyawan
@@ -37,7 +37,7 @@
                 {{ $karyawan->nama }} - {{ ucfirst($type) }}
             </h2>
 
-            @if (!in_array($type, ['check in', 'check out']))
+            @if (!in_array($type, ['check-in', 'check-out']))
             <!-- Input file biasa untuk selain check in/out -->
             <div class="mb-3">
                 <label for="foto" class="form-label">Bukti Tidak Hadir</label>
@@ -87,11 +87,11 @@
                 </a>
             </div>
 
-            @if ($type === 'check in' && $form->foto_masuk)
+            @if ($type === 'check-in' && $form->foto_masuk)
             <div class="mb-4">
                 <img src="{{ $form->foto_masuk->temporaryUrl() }}" class="rounded w-100">
             </div>
-            @elseif ($type === 'check out' && $form->foto_keluar)
+            @elseif ($type === 'check-out' && $form->foto_keluar)
             <div class="mb-4">
                 <img src="{{ $form->foto_keluar->temporaryUrl() }}" class="rounded w-100">
             </div>
@@ -113,7 +113,7 @@
             @endif --}}
 
             <form wire:submit.prevent="submit">
-                @if (!in_array($type, ['check in', 'check out']))
+                @if (!in_array($type, ['check-in', 'check-out']))
                 <div class="mb-3">
                     <label class="form-label">Status</label>
                     <select wire:model="form.status" class="form-select">
@@ -132,10 +132,10 @@
                 @endif
 
                 <input type="file" id="fotoInput"
-                    wire:model="{{ $type === 'check in' ? 'form.foto_masuk' : 'form.foto_keluar' }}" class="d-none"
+                    wire:model="{{ $type === 'check-in' ? 'form.foto_masuk' : 'form.foto_keluar' }}" class="d-none"
                     accept="image/*" capture="environment">
 
-                @error($type === 'check in' ? 'form.foto_masuk' : 'form.foto_keluar')
+                @error($type === 'check-in' ? 'form.foto_masuk' : 'form.foto_keluar')
                 <span class="text-danger text-sm d-block mb-2">{{ $message }}</span>
                 @enderror
 
@@ -185,7 +185,7 @@
             dataTransfer.items.add(file);
             input.files = dataTransfer.files;
             input.dispatchEvent(new Event('change', { bubbles: true }));
-            @this.upload('{{ $type === "check in" ? "form.foto_masuk" : "form.foto_keluar" }}', file, (success) => {
+            @this.upload('{{ $type === "check-in" ? "form.foto_masuk" : "form.foto_keluar" }}', file, (success) => {
         console.log("Upload sukses!");
     }, (error) => {
         console.error("Upload gagal:", error);

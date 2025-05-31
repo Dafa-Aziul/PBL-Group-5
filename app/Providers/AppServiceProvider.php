@@ -23,12 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('components.navbar', function ($view) {
-            $karyawan = null;
+        View::composer('*', function ($view) {
             if (Auth::check()) {
-                $karyawan = Karyawan::where('user_id', Auth::id())->first();
+                Auth::setUser(Auth::user()->fresh()); // ⬅️ Paksa refresh data user
             }
-            $view->with('karyawan', $karyawan);
         });
     }
 }

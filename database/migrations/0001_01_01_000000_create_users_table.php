@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'mekanik', 'owner'])->default('mekanik');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile_photo')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

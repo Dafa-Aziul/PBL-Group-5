@@ -1,39 +1,64 @@
 <?php
 
+use \App\Livewire\Absensi\Create as AbsensiCreate;
+use \App\Livewire\Absensi\Index as AbsensiIndex;
+use \App\Livewire\Absensi\Read as AbsensiRead;
+use \App\Livewire\Absensi\Show as AbsensiShow;
+
+//auth
+use \App\Livewire\User\Create as UserCreate;
 use App\Http\Controllers\auth\VerifyEmailController;
 use App\Livewire\About;
-use App\Livewire\Auth\ForgotPassword;
-use App\Livewire\Auth\Login;
 use App\Livewire\Action\Logout;
-use App\Livewire\Auth\ResetPassword;
-use App\Livewire\Auth\VerifyEmail;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Livewire\Dashboard;
+use App\Livewire\Auth\ForgotPassword;
 
 // user
-use App\Livewire\User\Index as UserIndex;
-use \App\Livewire\User\Create as UserCreate;
+use App\Livewire\Auth\Login;
+use App\Livewire\Auth\ResetPassword;
+use App\Livewire\Auth\VerifyEmail;
+
 
 
 // jenis kendaraan
-use App\Livewire\JenisKendaraan\Create as JenisKendaraanCreate;
-use App\Livewire\JenisKendaraan\Edit as JenisKendaraanEdit;
-use App\Livewire\JenisKendaraan\Index as JenisKendaraanIndex;
+use App\Livewire\Dashboard;
+use App\Livewire\Gudang\Create as GudangCreate;
 
-// karyawan
-use App\Livewire\Karyawan\Create as karyawanCreate;
-use App\Livewire\Karyawan\Edit as karyawanEdit;
-use App\Livewire\Karyawan\Index as karyawanIndex;
+// jasa
+use App\Livewire\Jasa\Create as JasaCreate;
+use App\Livewire\Jasa\Edit as JasaEdit;
+use App\Livewire\Jasa\Index as JasaIndex;
 
 
 //pelanggan
+use App\Livewire\JenisKendaraan\Create as JenisKendaraanCreate;
+use App\Livewire\JenisKendaraan\Edit as JenisKendaraanEdit;
+use App\Livewire\JenisKendaraan\Index as JenisKendaraanIndex;
+use App\Livewire\Karyawan\Create as karyawanCreate;
+
+//jenis kendaraan
+use App\Livewire\Karyawan\Edit as karyawanEdit;
+use App\Livewire\Karyawan\Index as karyawanIndex;
+use App\Livewire\Kendaraan\Create as KendaraanCreate;
+
+//karyawan
+use App\Livewire\Kendaraan\show as KendaraanDetail;
+use App\Livewire\Konten\Create as KontenCreate;
+use App\Livewire\Konten\Edit as KontenEdit;
+
+//kendaraan
+use App\Livewire\Konten\Index as KontenIndex;
 use App\Livewire\Pelanggan\Create as PelangganCreate;
+
+//konten
 use App\Livewire\Pelanggan\Edit as PelangganEdit;
 use App\Livewire\Pelanggan\Index as PelangganIndex;
 use App\Livewire\Pelanggan\Show as PelangganDetail;
-use App\Livewire\Kendaraan\Create as KendaraanCreate;
-use App\Livewire\Kendaraan\show as KendaraanDetail;
+
+//penjualan
+use App\Livewire\Penjualan\Create as PenjualanCreate;
+use App\Livewire\Penjualan\Index as PenjualanIndex;
+use App\Livewire\Penjualan\Show as PenjualanShow;
+
 
 //service
 use App\Livewire\Service\Create as ServiceCreate;
@@ -47,29 +72,19 @@ use App\Livewire\Sparepart\Create as SparepartCreate;
 use App\Livewire\Sparepart\Edit as SparepartEdit;
 use App\Livewire\Sparepart\Index as SparepartIndex;
 use App\Livewire\Sparepart\Show as SparepartShow;
-use App\Livewire\Gudang\Create as GudangCreate;
 
 //transaksi
 use App\Livewire\Transaksi\Index as TransaksiIndex;
 use App\Livewire\Transaksi\Show as TransaksiShow;
 use App\Livewire\Transaksi\TambahService as TransaksiService;
 
-use App\Livewire\Penjualan\Index as PenjualanIndex;
-use App\Livewire\Penjualan\Create as PenjualanCreate;
-use App\Livewire\Penjualan\Show as PenjualanShow;
-//konten
-use App\Livewire\Konten\Index as KontenIndex;
-use App\Livewire\Konten\Create as KontenCreate;
-use App\Livewire\Konten\Edit as KontenEdit;
-//jasa
-use App\Livewire\Jasa\Index as JasaIndex;
-use App\Livewire\Jasa\Create as JasaCreate;
-use App\Livewire\Jasa\Edit as JasaEdit;
 //absensi
-use \App\Livewire\Absensi\Index as AbsensiIndex;
-use \App\Livewire\Absensi\Create as AbsensiCreate;
-use \App\Livewire\Absensi\Show as AbsensiShow;
-use \App\Livewire\Absensi\Read as AbsensiRead;
+use App\Livewire\User\Index as UserIndex;
+use App\Livewire\User\Password;
+use App\Livewire\User\Profile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -89,6 +104,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //user
     Route::get('/user', UserIndex::class)->name('user.view');
     Route::get('/user/create', UserCreate::class)->name('user.create');
+    Route::get('/profile', Profile::class)->name('profile.show');
+    Route::get('/profile/password', Password::class)->name('profile.password');
 
     //karyawan
     Route::get('/karyawan', KaryawanIndex::class)->name('karyawan.view');

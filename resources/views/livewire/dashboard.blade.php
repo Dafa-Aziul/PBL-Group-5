@@ -99,7 +99,7 @@ Carbon::setLocale('id'); // Biar hari & bulan pakai bahasa Indonesia
                         <i class="fa-solid fa-chart-simple"></i> Transaksi Bulan Ini
                 </h3>
                     <hr class="border border-2 opacity-50">
-                
+
             </div>
         </div>
     </div>

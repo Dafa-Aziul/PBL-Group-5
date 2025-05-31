@@ -1,4 +1,4 @@
-import * as bootstrap from 'bootstrap';
+import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
 window.bootstrap = bootstrap;
 
 import axios from 'axios';

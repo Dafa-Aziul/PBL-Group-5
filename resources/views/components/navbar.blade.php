@@ -19,26 +19,38 @@
     <!-- Navbar-->
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                @php
-                    $foto = $karyawan?->foto ? asset('storage/images/profile/' . $karyawan->foto) : asset('storage/images/default.png');
-                @endphp
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
 
-                <img src="{{ $foto }}" alt="Foto Karyawan" width="30" height="30" class="rounded-circle">
+                <img src="{{ auth()->user()->profile_photo ? asset('storage/images/profile/' . auth()->user()->profile_photo) : asset('storage/images/default.png') }}" alt="Foto Karyawan" width="30" height="30" class="rounded-circle">
 
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Settings</a></li>
-                <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.show') }}">
+                        <i class="fas fa-user p-2"></i>
+                        <span class="ms-2">Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.password') }}">
+                        <i class="fas fa-key p-2"></i>
+                        <span class="ms-2">Reset Password</span>
+                    </a>
+                </li>
                 <li>
                     <hr class="dropdown-divider" />
                 </li>
                 <li>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="dropdown-item">Logout</button>
+                        <button type="submit" class="dropdown-item d-flex align-items-center">
+                            <i class="fas fa-sign-out-alt p-2"></i><span class="ms-2">Logout</span>
+                        </button>
                     </form>
                 </li>
+
+
             </ul>
         </li>
     </ul>

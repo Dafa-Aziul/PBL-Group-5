@@ -81,12 +81,12 @@ class Create extends Component
     {
         $now = now();
 
-        if ($this->type === 'check in') {
+        if ($this->type === 'check-in') {
             $batasMasuk = now()->setTime(8, 0);
             return $now->greaterThan($batasMasuk) ? 'terlambat' : 'hadir';
         }
 
-        if ($this->type === 'check out') {
+        if ($this->type === 'check-out') {
             $batasKeluar = now()->setTime(17, 0);
 
             // Ambil absensi hari ini
@@ -117,7 +117,7 @@ class Create extends Component
             ->whereNotNull('jam_masuk') // pastikan hanya cek yang sudah check in
             ->first();
 
-        if ($this->type === 'check in'){
+        if ($this->type === 'check-in'){
             if ($absensiHariIni) {
                 session()->flash('error', 'Anda sudah melakukan check in hari ini.');
                 return redirect()->route('absensi.view');
@@ -135,7 +135,7 @@ class Create extends Component
             }
         }
 
-        if ($this->type === 'check out') {
+        if ($this->type === 'check-out') {
             // Belum check in → tidak boleh check out
             if (!$absensiHariIni || !$absensiHariIni->jam_masuk) {
                 session()->flash('error', 'Anda belum melakukan check in hari ini.');
@@ -167,7 +167,7 @@ class Create extends Component
 
 
 
-        if ($this->type === 'tidak hadir') {
+        if ($this->type === 'tidak-hadir') {
             $absensiHariIni = Absensi::where('karyawan_id', $this->karyawan_id)
                 ->whereDate('tanggal', $today)
                 ->first();
@@ -188,7 +188,7 @@ class Create extends Component
             }
         }
 
-        if ($this->type === 'check in') {
+        if ($this->type === 'check-in') {
             $data['jam_masuk'] = now()->format('H:i');
             $data['status'] = $this->getStatusByTime();
             if ($data['foto_masuk']) {
@@ -197,7 +197,7 @@ class Create extends Component
             }
             Absensi::create($data);
 
-        } elseif ($this->type === 'check out') {
+        } elseif ($this->type === 'check-out') {
             // Validasi sudah dilakukan sebelumnya: absensiHariIni tersedia dan belum jam_keluar
 
             $statusCheckIn = $absensiHariIni->status;
