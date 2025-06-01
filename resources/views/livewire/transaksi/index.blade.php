@@ -149,7 +149,7 @@
                             <td>Rp {{ number_format($transaksi->sub_total, 0, ',', '.') }}</td>
                             <td>Rp {{ number_format($transaksi->pajak, 0, ',', '.') }}</td>
                             <td>{{ number_format($transaksi->diskon, 0, ',', '.') }} %</td>
-                            <td>Rp {{ number_format($transaksi->total, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($transaksi->grand_total, 0, ',', '.') }}</td>
                             <td>
                                 @if ($transaksi->status_pembayaran == 'lunas')
                                 <span class="badge bg-success">Lunas</span>

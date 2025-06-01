@@ -10,14 +10,14 @@ class JenisKendaraanForm extends Form
     #[Validate('required|string|max:255')]
     public $nama_jenis = '';
     #[Validate('required|string|max:255')]
-    public $model_kendaraan = '';
+    public $tipe_kendaraan = '';
     #[Validate('required|string|max:255')]
     public $deskripsi = '';
-    
+
     public function fillFromModel($jenisKendaraan)
     {
         $this->nama_jenis = $jenisKendaraan->nama_jenis;
-        $this->model_kendaraan = $jenisKendaraan->model_kendaraan;
+        $this->tipe_kendaraan = $jenisKendaraan->tipe_kendaraan;
         $this->deskripsi = $jenisKendaraan->deskripsi;
     }
 }

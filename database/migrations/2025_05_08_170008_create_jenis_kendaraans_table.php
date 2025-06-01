@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jenis_kendaraans', function (Blueprint $table) {
             $table->id();
             $table->string('nama_jenis');
-            $table->string('model_kendaraan');
+            $table->string('tipe_kendaraan');
             $table->text('deskripsi');
             $table->timestamps();
         });

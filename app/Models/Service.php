@@ -19,7 +19,7 @@ class Service extends Model
         'kendaraan_id',
         'montir_id',
         'no_polisi',
-        'model_kendaraan',
+        'tipe_kendaraan',
         'odometer',
         'deskripsi_keluhan',
         'status',
@@ -33,7 +33,7 @@ class Service extends Model
     {
         $query->where('kode_service', 'like', "%{$value}%")
             ->orWhere('no_polisi', 'like', "%{$value}%")
-            ->orWhere('model_kendaraan', 'like', "%{$value}%")
+            ->orWhere('tipe_kendaraan', 'like', "%{$value}%")
             ->orWhere('odometer', 'like', "%{$value}%")
             ->orWhere('deskripsi_keluhan', 'like', "%{$value}%")
             ->orWhere('status', 'like', "%{$value}%")

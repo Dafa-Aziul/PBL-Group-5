@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('pelanggan_id')->constrained('pelanggans');
             $table->foreignId('jenis_kendaraan_id')->constrained('jenis_kendaraans');
             $table->string('no_polisi')->unique();
-            $table->string('model_kendaraan');
+            $table->string('tipe_kendaraan');
             $table->unsignedBigInteger('odometer');
             $table->timestamps();
         });

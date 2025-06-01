@@ -78,7 +78,7 @@ class Create extends Component
         $data = array_merge($validated, [
             'kode_service' => $this->kode_service,
             'no_polisi' => $this->selectedKendaraan->no_polisi,
-            'model_kendaraan' => $this->selectedKendaraan->model_kendaraan,
+            'tipe_kendaraan' => $this->selectedKendaraan->tipe_kendaraan,
             'tanggal_mulai_service' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'),
         ]);
 

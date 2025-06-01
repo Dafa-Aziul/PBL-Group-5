@@ -30,7 +30,7 @@ class Show extends Component
     public function render()
     {
         $totalJasa = $this->service->jasas->sum('harga');
-        $totalSparepart = $this->service->spareparts->sum('subtotal');
+        $totalSparepart = $this->service->spareparts->sum('sub_total');
         $totalEstimasi = $totalJasa + $totalSparepart;
 
         return view('livewire.service.show', [

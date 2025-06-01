@@ -58,7 +58,7 @@
                         <tr>
                             <th>No.</th>
                             <th>Nama Jenis</th>
-                            <th>Model Kendaraan</th>
+                            <th>Tipe Kendaraan</th>
                             <th>Deskripsi</th>
                             <th>Aksi</th>
                         </tr>
@@ -69,7 +69,7 @@
                         <tr>
                             <td class="text-center">{{ ($jenis_kendaraans->firstItem() +$loop->iteration) - 1 }}</td>
                             <td>{{ $jenis->nama_jenis }}</td>
-                            <td>{{ $jenis->model_kendaraan }}</td>
+                            <td>{{ $jenis->tipe_kendaraan }}</td>
                             <td>{{ $jenis->deskripsi }}</td>
                             <td class="text-center">
                                 <a href="{{ route('jenis_kendaraan.edit', ['id' => $jenis->id]) }}"

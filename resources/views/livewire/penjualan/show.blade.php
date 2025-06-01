@@ -1,61 +1,20 @@
-@push('scripts')
-<script>
-    // Menangani pemanggilan modal
-    window.addEventListener('open-payment-modal', event => {
-        const modalEl = document.getElementById('paymentModal');
-        const modal = new bootstrap.Modal(modalEl);
-        modal.show();
-    });
-
-    // Menangani penutupan modal
-    window.addEventListener('hide-payment-modal', event => {
-        const modalEl = document.getElementById('paymentModal');
-        const modal = bootstrap.Modal.getInstance(modalEl);
-
-        if (modal) {
-            modal.hide();
-        }
-
-        // Tambahan: bersihkan backdrop jika tertinggal
-        setTimeout(() => {
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) backdrop.remove();
-
-            document.body.classList.remove('modal-open');
-            document.body.style.removeProperty('padding-right');
-        }, 300); // delay kecil untuk pastikan transisi selesai
-    });
-
-    // Opsional: Jika pakai Livewire, tambahkan hook
-    document.addEventListener('livewire:load', function () {
-        Livewire.hook('message.processed', () => {
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) backdrop.remove();
-
-            document.body.classList.remove('modal-open');
-            document.body.style.removeProperty('padding-right');
-        });
-    });
-</script>
-
-@endpush
 <div>
-    <h2 class="mt-4">Kelola Transaksi</h2>
+    <h2 class="mt-4">Manajemen Penjualan</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
-                href="{{ route('transaksi.view') }}">Transaksi</a></li>
+                href="{{ route('penjualan.view') }}">Penjualan</a></li>
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
-                href="{{ route('transaksi.view') }}">Daftar Transaksi</a></li>
-        <li class="breadcrumb-item active">Detail Transaksi : {{ $penjualan->kode_transaksi }}</li>
+                href="{{ route('penjualan.view') }}">Daftar Penjualan</a></li>
+        <li class="breadcrumb-item active">Detail Penjualan : {{ $penjualan->kode_transaksi }}</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-receipt me-1"></i>
-                <span class="d-none d-md-inline ms-1">Data Transaksi</span>
+                <span class="d-none d-md-inline ms-1">Data Penjualan</span>
             </div>
             <div>
-                <a class="btn btn-primary float-end" href="{{  route('transaksi.view') }}" wire:navigate>
+                <a class="btn btn-primary float-end" href="{{  route('penjualan.view') }}" wire:navigate>
                     <i class="fas fa-arrow-left"></i>
                     <span>Kembali</span>
                 </a>
@@ -151,46 +110,6 @@
                 }
             </style>
 
-            {{-- <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" wire:ignore.self>
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Form Pembayaran</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal">
-                                <span>&times;</span>
-                            </button>
-                        </div>
-                        <form wire:submit.prevent="simpanPembayaran">
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label>Tanggal Bayar</label>
-                                    <input type="date" class="form-control" wire:model.defer="tanggal_bayar">
-                                    @error('tanggal_bayar') <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Jumlah Bayar</label>
-                                    <input type="number" class="form-control" wire:model.defer="jumlah_bayar">
-                                    @error('jumlah_bayar') <small class="text-danger">{{ $message }}</small>
-                                    @enderror
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Keterangan</label>
-                                    <textarea class="form-control" wire:model.defer="ket"></textarea>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    wire:click="closePaymentModal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div> --}}
-
 
             <!-- Detail Penggunaan Jasa & Sparepart -->
             <div class="card mt-4 shadow-sm border-0">
@@ -199,13 +118,13 @@
                     <strong>Detail Penjualan</strong>
                 </div>
                 <div class="card-body">
-                    {{-- 1. Tabel Jasa --}}
+                    {{-- 1. Tabel Sparepart --}}
                     <div class="mb-3">
                         <label class="form-label fw-bold text-uppercase">1. Sparepart</label>
                         @php
-                        // Ambil semua sparepart dari relasi transaksi->serviceDetail->service->spareparts
+                        // Ambil semua sparepart dari relasi penjualan->serviceDetail->service->spareparts
                         $spareparts = $penjualan->penjualanDetail ?? collect();
-                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->subtotal ?? 0);
+                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->sub_total ?? 0);
                         @endphp
 
                         @if ($spareparts->isNotEmpty())
@@ -232,7 +151,7 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
-                                        <td class="text-end">Rp {{ number_format($sp->subtotal ?? 0, 0, ',', '.') }}
+                                        <td class="text-end">Rp {{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -243,31 +162,48 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="row">
+                                <div class="mt-2">
+                                    <div class="alert alert-info d-flex align-items-center"
+                                        role="alert">
+                                        <i class="fas fa-calculator me-2"></i>
+                                        <div>
+                                            <strong>Total Keseluruhan: </strong>
+                                            <span class="text-success fs-5 ms-2">Rp {{
+                                                number_format($penjualan->grand_total,
+                                                0,
+                                                ',', '.')
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4 mb-3">
+                                    <label for="pajak" class="form-label">Pajak 11%</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($penjualan->pajak, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 mb-3">
+                                    <label for="diskon">Diskon (%)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($penjualan->diskon, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4 mb-3">
+                                    <label for="diskon">Diskon (Rp)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format(($penjualan->diskon/100)*($penjualan->grand_total) , 0, ',',
+                                        '.')}}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         @else
                         <p class="text-muted fst-italic">Belum ada sparepart yang digunakan.</p>
                         @endif
                     </div>
-
                 </div>
             </div>
-
-            <!-- Total Keseluruhan -->
-            <div class="card mt-4 shadow-sm border-0">
-                <div class="card-body d-flex justify-content-end fw-bold fs-5">
-                    <span class="me-2">Total Keseluruhan: </span>
-                    <span class="text-success">
-                        Rp {{ number_format($penjualan->total,
-                        0,
-                        ',',
-                        '.'
-                        ) }}
-                    </span>
-                </div>
-            </div>
-
         </div>
-
     </div>
-</div>
 </div>

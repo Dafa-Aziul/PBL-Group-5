@@ -30,7 +30,7 @@ class PenjualanForm extends Form
     public $diskon = 0;
 
     #[Validate('required|numeric|min:0')]
-    public $total;
+    public $grand_total;
 
     #[Validate('required|in:lunas,pending')]
     public $status_pembayaran = 'pending';
@@ -47,7 +47,7 @@ class PenjualanForm extends Form
         $this->sub_total = $penjualan->sub_total;
         $this->pajak = $penjualan->pajak;
         $this->diskon = $penjualan->diskon;
-        $this->total = $penjualan->total;
+        $this->grand_total = $penjualan->grand_total;
         $this->status_pembayaran = $penjualan->status_pembayaran;
         $this->keterangan = $penjualan->keterangan;
         // Jika ada field lain yang perlu diisi, tambahkan di sini

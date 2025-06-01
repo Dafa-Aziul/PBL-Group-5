@@ -37,7 +37,7 @@
                     <select wire:model="form.kendaraan_id" class="form-select" @disabled(!$pelanggan_id) disabled>
                         <option value="">-- Pilih Kendaraan --</option>
                         @forelse ($kendaraans as $k)
-                        <option value="{{ $k->id }}">{{ $k->no_polisi }} - {{ $k->model_kendaraan }}</option>
+                        <option value="{{ $k->id }}">{{ $k->no_polisi }} - {{ $k->tipe_kendaraan }}</option>
                         @empty
                         <option disabled>Tidak ada kendaraan ditemukan</option>
                         @endforelse

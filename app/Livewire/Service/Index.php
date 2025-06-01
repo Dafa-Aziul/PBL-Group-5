@@ -156,7 +156,7 @@ class Index extends Component
                 $query->where('kode_service', 'like', '%' . $this->search . '%')
                     ->orWhereHas('kendaraan', function ($q) {
                         $q->where('no_polisi', 'like', '%' . $this->search . '%')
-                            ->orWhere('model_kendaraan', 'like', '%' . $this->search . '%')
+                            ->orWhere('tipe_kendaraan', 'like', '%' . $this->search . '%')
                             ->orWhereHas('pelanggan', function ($sub) {
                                 $sub->where('nama', 'like', '%' . $this->search . '%');
                             });

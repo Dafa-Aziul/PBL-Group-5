@@ -14,7 +14,7 @@ class KendaraanForm extends Form
     public $no_polisi = '';
 
     #[Validate('required|string|max:50')]
-    public $model_kendaraan = '';
+    public $tipe_kendaraan = '';
 
     #[Validate('required|integer|min:0')]
     public $odometer = '';
@@ -23,7 +23,7 @@ class KendaraanForm extends Form
     {
         $this->jenis_kendaraan_id = '';
         $this->no_polisi = '';
-        $this->model_kendaraan = '';
+        $this->tipe_kendaraan = '';
         $this->odometer = '';
     }
     public function simpan($pelanggan)
@@ -33,7 +33,7 @@ class KendaraanForm extends Form
         $kendaraan = $pelanggan->kendaraans()->create([
             'jenis_kendaraan_id' => $this->jenis_kendaraan_id,
             'no_polisi' => $this->no_polisi,
-            'model_kendaraan' => $this->model_kendaraan,
+            'tipe_kendaraan' => $this->tipe_kendaraan,
             'odometer' => $this->odometer,
         ]);
 

@@ -123,7 +123,7 @@
                             <td>Rp {{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
                             <td>Rp {{ number_format($penjualan->pajak, 0, ',', '.') }}</td>
                             <td>{{ number_format($penjualan->diskon, 0, ',', '.')  }} %</td>
-                            <td>Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
                             <td>
                                 @if ($penjualan->status_pembayaran == 'lunas')
                                 <span class="badge bg-success">Lunas</span>

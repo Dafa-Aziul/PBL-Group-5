@@ -75,8 +75,8 @@
                         <div class="form-control bg-light">{{ $sparepart->harga }}</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Model Kendaraan</label>
-                        <div class="form-control bg-light">{{ $sparepart->model_kendaraan }}</div>
+                        <label class="form-label fw-bold">Tipe Kendaraan</label>
+                        <div class="form-control bg-light">{{ $sparepart->tipe_kendaraan }}</div>
                     </div>
 
                     <div class="mb-3">

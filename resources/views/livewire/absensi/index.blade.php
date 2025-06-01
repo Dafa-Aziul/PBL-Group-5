@@ -7,8 +7,8 @@ $today = $now->toDateString();
 $jamSekarang = $now->format('H:i');
 $jamPulang = '17:00';
 
-$absenHariIni = $user->karyawans
-? $user->karyawans->absensis()->whereDate('tanggal', $today)->first()
+$absenHariIni = $user->karyawan
+? $user->karyawan->absensis()->whereDate('tanggal', $today)->first()
 : null;
 
 $sudahCheckIn = $absenHariIni && $absenHariIni->jam_masuk;
@@ -66,12 +66,12 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 
                     <h4 class="text-center my-5" style="font-weight: bold">{{ $statusText }}</h4>
 
-                    @if ($user && $user->karyawans)
+                    @if ($user && $user->karyawan)
                     {{-- Tombol Check In --}}
                     @if (!$sudahCheckIn)
                     @if ($jamSekarang < $jamPulang) <div class="text-center">
                         <a class="btn btn-absen btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"
-                            href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawans->id, 'type' => 'check-in']) : '#' }}"
+                            href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'check-in']) : '#' }}"
                             wire:navigate @if (!$bolehCheckIn) aria-disabled="true" tabindex="-1" @endif>
                             <i class="fas fa-plus"></i>
                             <span class="d-none d-md-inline ms-1">Check In</span>
@@ -91,7 +91,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                 @if ($sudahCheckIn && !$sudahCheckOut && $jamSekarang >= $jamPulang)
                 <div class="text-center">
                     <a class="btn btn-absen btn-sm mt-3 float"
-                        href="{{ route('absensi.create', ['id' => $user->karyawans->id, 'type' => 'check-out']) }}"
+                        href="{{ route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'check-out']) }}"
                         wire:navigate>
                         <i class="fas fa-sign-out-alt"></i>
                         <span class="d-none d-md-inline ms-1">Check Out</span>
@@ -107,7 +107,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
             @if (!$sudahCheckIn && !$sudahCheckOut)
             <div class="text-center">
                 <a class="btn btn-outline-primary btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"
-                    href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawans->id, 'type' => 'tidak-hadir']) : '#' }}"
+                    href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'tidak-hadir']) : '#' }}"
                     wire:navigate>
                     <i class="fas fa-user-times"></i>
                     <span class="d-none d-md-inline ms-1">Tidak Hadir</span>

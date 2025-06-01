@@ -226,40 +226,40 @@
                     <div class="mb-3 row">
                         <label class="col-sm-3 col-form-label fw-bold">Name</label>
                         <div class="col-sm-9 col-form-label">
-                            {{ auth()->user()->karyawans->nama }}
+                            {{ auth()->user()->karyawan->nama }}
                         </div>
                     </div>
 
                     <div class="mb-3 row">
                         <label class="col-sm-3 col-form-label fw-bold">Jabatan</label>
                         <div class="col-sm-9 col-form-label">
-                            {{ auth()->user()->karyawans->jabatan }}
+                            {{ auth()->user()->karyawan->jabatan }}
                         </div>
                     </div>
 
-                    @if(auth()->user()->karyawans->no_hp)
+                    @if(auth()->user()->karyawan->no_hp)
                     <div class="mb-3 row">
                         <label class="col-sm-3 col-form-label fw-bold">Phone</label>
                         <div class="col-sm-9 col-form-label">
-                            {{ auth()->user()->karyawans->no_hp }}
+                            {{ auth()->user()->karyawan->no_hp }}
                         </div>
                     </div>
                     @endif
 
-                    @if(auth()->user()->karyawans->alamat)
+                    @if(auth()->user()->karyawan->alamat)
                     <div class="mb-3 row">
                         <label class="col-sm-3 col-form-label fw-bold">Alamat</label>
                         <div class="col-sm-9 col-form-label">
-                            {{ auth()->user()->karyawans->alamat }}
+                            {{ auth()->user()->karyawan->alamat }}
                         </div>
                     </div>
                     @endif
 
-                    @if(auth()->user()->karyawans->tgl_masuk)
+                    @if(auth()->user()->karyawan->tgl_masuk)
                     <div class="mb-3 row">
                         <label class="col-sm-3 col-form-label fw-bold">Tanggal Masuk</label>
                         <div class="col-sm-9 col-form-label">
-                            {{ \Carbon\Carbon::parse(auth()->user()->karyawans->tgl_masuk)->format('d M Y') }}
+                            {{ \Carbon\Carbon::parse(auth()->user()->karyawan->tgl_masuk)->format('d M Y') }}
                         </div>
                     </div>
                     @endif
@@ -268,8 +268,8 @@
                         <label class="col-sm-3 col-form-label fw-bold">Status</label>
                         <div class="col-sm-9 col-form-label">
                             <span
-                                class="badge {{ auth()->user()->karyawans->status == 'aktif' ? 'bg-success' : 'bg-secondary' }}">
-                                {{ ucfirst(auth()->user()->karyawans->status) }}
+                                class="badge {{ auth()->user()->karyawan->status == 'aktif' ? 'bg-success' : 'bg-secondary' }}">
+                                {{ ucfirst(auth()->user()->karyawan->status) }}
                             </span>
                         </div>
                     </div>

@@ -39,8 +39,8 @@
                     <div class="form-control bg-light">{{ $kendaraan->jenis_kendaraan->nama_jenis ?? '-' }}</div>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-bold">Model Kendaraan</label>
-                    <div class="form-control bg-light">{{ $kendaraan->model_kendaraan }}</div>
+                    <label class="form-label fw-bold">Tipe Kendaraan</label>
+                    <div class="form-control bg-light">{{ $kendaraan->tipe_kendaraan }}</div>
                 </div>
             </div>
 

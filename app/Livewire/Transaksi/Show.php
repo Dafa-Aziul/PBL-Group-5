@@ -23,8 +23,8 @@ class Show extends Component
 
     public function hitungSisaPembayaran()
     {
-        $total = $this->transaksi->pembayarans->sum('jumlah_bayar');
-        $this->sisaPembayaran = max(0, $this->transaksi->total - $total);
+        $grand_total = $this->transaksi->pembayarans->sum('jumlah_bayar');
+        $this->sisaPembayaran = max(0, $this->transaksi->grand_total - $grand_total);
     }
 
 

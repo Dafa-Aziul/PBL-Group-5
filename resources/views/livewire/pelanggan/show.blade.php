@@ -108,7 +108,7 @@
                                     <th>No.</th>
                                     <th>No Polisi</th>
                                     <th>Jenis Kendaraan</th>
-                                    <th>Model</th>
+                                    <th>Tipe</th>
                                     <th>Odometer</th>
                                 </tr>
                             </thead>
@@ -119,7 +119,7 @@
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td>{{ $kendaraan->no_polisi }}</td>
                                     <td>{{ $kendaraan->jenis_kendaraan->nama_jenis ?? '-' }}</td>
-                                    <td>{{ $kendaraan->model_kendaraan }}</td>
+                                    <td>{{ $kendaraan->tipe_kendaraan }}</td>
                                     <td>{{ $kendaraan->odometer }} km</td>
                                 </tr>
                                 @empty
@@ -166,9 +166,9 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Model Kendaraan</label>
-                                <input type="text" wire:model="form.model_kendaraan" class="form-control">
-                                @error('form.model_kendaraan') <div class="text-danger">{{ $message }}</div>
+                                <label class="form-label">Tipe Kendaraan</label>
+                                <input type="text" wire:model="form.tipe_kendaraan" class="form-control">
+                                @error('form.tipe_kendaraan') <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
 

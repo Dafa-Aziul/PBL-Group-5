@@ -32,10 +32,10 @@ class PembayaranForm extends Form
             'jumlah_bayar.max' => 'Jumlah bayar tidak boleh lebih besar dari sisa pembayaran.',
         ]);
 
-        $totalSebelumnya = $transaksi->pembayarans->sum('jumlah_bayar');
-        $totalSesudah = $totalSebelumnya + $this->jumlah_bayar;
+        $grand_totalSebelumnya = $transaksi->pembayarans->sum('jumlah_bayar');
+        $grand_totalSesudah = $grand_totalSebelumnya + $this->jumlah_bayar;
 
-        $status = $totalSesudah >= $transaksi->total ? 'lunas' : 'pending';
+        $status = $grand_totalSesudah >= $transaksi->grand_total ? 'lunas' : 'pending';
 
         Pembayaran::create([
             'transaksi_id' => $transaksi->id,

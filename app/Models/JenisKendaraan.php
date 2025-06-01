@@ -15,14 +15,14 @@ class JenisKendaraan extends Model
     protected $table = 'jenis_kendaraans';
     protected $fillable = [
         'nama_jenis',
-        'model_kendaraan',
+        'tipe_kendaraan',
         'deskripsi',
     ];
 
     public function scopeSearch($query, $value)
-    { 
+    {
         $query->where('nama_jenis', 'like', "%{$value}%")
-            ->orWhere('model_kendaraan', 'like',"%{$value}%")
+            ->orWhere('tipe_kendaraan', 'like',"%{$value}%")
             ->orWhere('deskripsi', 'like', "%{$value}%");
     }
 

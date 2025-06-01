@@ -27,13 +27,13 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.show') }}">
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.show') }}" wire:navigate>
                         <i class="fas fa-user p-2"></i>
                         <span class="ms-2">Profile</span>
                     </a>
                 </li>
                 <li>
-                    <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.password') }}">
+                    <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.password') }}" wire:navigate>
                         <i class="fas fa-key p-2"></i>
                         <span class="ms-2">Reset Password</span>
                     </a>

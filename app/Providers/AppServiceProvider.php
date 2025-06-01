@@ -23,10 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('*', function ($view) {
-            if (Auth::check()) {
-                Auth::setUser(Auth::user()->fresh()); // ⬅️ Paksa refresh data user
-            }
-        });
+        //
     }
 }

@@ -121,7 +121,7 @@
                                 <th>Kode service</th>
                                 <th>Pelanggan</th>
                                 <th>Nomor Polisi</th>
-                                <th>Model Kendaraan</th>
+                                <th>Tipe Kendaraan</th>
                                 <th>status</th>
                                 <th>Tanggal Mulai</th>
                                 <th>tanggal Selesai</th>
@@ -138,7 +138,7 @@
                                 <td>{{ $service->kode_service }}</td>
                                 <td>{{ $service->kendaraan->pelanggan->nama }}</td>
                                 <td>{{ $service->no_polisi }}</td>
-                                <td>{{ $service->model_kendaraan }}</td>
+                                <td>{{ $service->tipe_kendaraan }}</td>
                                 <td @click.stop class="text-center">
                                     @if(in_array($service->status, ['selesai', 'batal']))
                                     @if($service->status == 'selesai')

@@ -44,7 +44,7 @@
                         </div>
 
                         <div class="form-control bg-light mb-1">
-                            <strong>Model Kendaraan:</strong> {{ $service->model_kendaraan ?? '-' }}
+                            <strong>Tipe Kendaraan:</strong> {{ $service->tipe_kendaraan ?? '-' }}
                         </div>
 
                         <div class="form-control bg-light mb-1">
@@ -239,7 +239,7 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga, 0, ',', '.') }}</td>
-                                        <td class="text-end fw-semibold text-primary">Rp {{ number_format($sp->subtotal,
+                                        <td class="text-end fw-semibold text-primary">Rp {{ number_format($sp->sub_total,
                                             0, ',', '.') }}</td>
                                     </tr>
                                     @endforeach

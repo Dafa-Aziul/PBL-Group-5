@@ -314,7 +314,7 @@
                         $spareparts = $transaksi->serviceDetail
                         ? $transaksi->serviceDetail->service->spareparts
                         : collect();
-                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->subtotal ?? 0);
+                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->sub_total ?? 0);
                         @endphp
 
                         @if ($spareparts->isNotEmpty())
@@ -341,7 +341,7 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
-                                        <td class="text-end">Rp {{ number_format($sp->subtotal ?? 0, 0, ',', '.') }}
+                                        <td class="text-end">Rp {{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -352,6 +352,46 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="row">
+                                <div class="col-12 col-md-3 mb-3">
+                                    <label for="pajak" class="form-label">Subtotal</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->sub_total, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 mb-3">
+                                    <label for="pajak" class="form-label">Pajak 11%</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->pajak, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3 ">
+                                    <label for="diskon">Diskon (%)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->diskon, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3">
+                                    <label for="diskon">Diskon (Rp)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format(($transaksi->diskon/100)*($transaksi->grand_total) , 0, ',',
+                                        '.')}}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                        <i class="fas fa-calculator me-2"></i>
+                                        <div>
+                                            <strong>Grand Total: </strong>
+                                            <span class="text-success fs-5 ms-2">Rp {{
+                                                number_format($transaksi->grand_total,
+                                                0,
+                                                ',', '.')
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         @else
                         <p class="text-muted fst-italic">Belum ada sparepart yang digunakan.</p>
@@ -359,11 +399,11 @@
                     </div>
                     @elseif ($transaksi->jenis_transaksi === 'penjualan')
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-uppercase">2. Sparepart</label>
+                        <label class="form-label fw-bold text-uppercase">1. Sparepart</label>
                         @php
                         // Ambil semua sparepart dari relasi transaksi->serviceDetail->service->spareparts
                         $spareparts = $transaksi->penjualanDetail ?? collect();
-                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->subtotal ?? 0);
+                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->sub_total ?? 0);
                         @endphp
 
                         @if ($spareparts->isNotEmpty())
@@ -390,7 +430,7 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
-                                        <td class="text-end">Rp {{ number_format($sp->subtotal ?? 0, 0, ',', '.') }}
+                                        <td class="text-end">Rp {{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -401,6 +441,46 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="row">
+                                <div class="col-12 col-md-3 mb-3">
+                                    <label for="pajak" class="form-label">Subtotal</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->sub_total, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 mb-3">
+                                    <label for="pajak" class="form-label">Pajak 11%</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->pajak, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3 ">
+                                    <label for="diskon">Diskon (%)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->diskon, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3">
+                                    <label for="diskon">Diskon (Rp)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format(($transaksi->diskon/100)*($transaksi->grand_total) , 0, ',',
+                                        '.')}}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                        <i class="fas fa-calculator me-2"></i>
+                                        <div>
+                                            <strong>Grand Total: </strong>
+                                            <span class="text-success fs-5 ms-2">Rp {{
+                                                number_format($transaksi->grand_total,
+                                                0,
+                                                ',', '.')
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         @else
                         <p class="text-muted fst-italic">Belum ada sparepart yang digunakan.</p>
@@ -415,7 +495,7 @@
                 <div class="card-body d-flex justify-content-end fw-bold fs-5">
                     <span class="me-2">Total Keseluruhan: </span>
                     <span class="text-success">
-                        Rp {{ number_format($transaksi->total,
+                        Rp {{ number_format($transaksi->grand_total,
                         0,
                         ',',
                         '.'

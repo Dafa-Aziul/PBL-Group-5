@@ -115,7 +115,7 @@
                                         <td wire:click="openEditModal({{ $index }})" style="cursor: pointer;">{{
                                             $sparepart['jumlah'] }}</td>
                                         <td>Rp {{ number_format($sparepart['harga'], 0, ',', '.') }}</td>
-                                        <td>Rp {{ number_format($sparepart['subtotal'], 0, ',', '.') }}</td>
+                                        <td>Rp {{ number_format($sparepart['sub_total'], 0, ',', '.') }}</td>
                                         <td>
                                             <button wire:click="removeSparepart({{ $index }})" type="button"
                                                 class="btn btn-outline-danger p-0" style="width: 28px; height: 28px;"
@@ -168,7 +168,7 @@
                                     <i class="fas fa-calculator me-2"></i>
                                     <div>
                                         <strong>Total Estimasi Biaya:</strong>
-                                        <span class="text-success fs-5 ms-2">Rp {{ number_format($this->form->total,
+                                        <span class="text-success fs-5 ms-2">Rp {{ number_format($this->form->grand_total,
                                             0,
                                             ',', '.')
                                             }}</span>

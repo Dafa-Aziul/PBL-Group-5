@@ -61,7 +61,7 @@
                             <th>Satuan</th>
                             <th>Stok</th>
                             <th>Harga</th>
-                            <th>Model Kendaraan</th>
+                            <th>Tipe Kendaraan</th>
                             <th>Keterangan</th>
                             <th>Foto</th>
                             <th>Aksi</th>
@@ -81,7 +81,7 @@
 
 
                     <td>Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
-                        <td>{{ $sparepart->model_kendaraan}}</td>
+                        <td>{{ $sparepart->tipe_kendaraan}}</td>
                         <td>{{ $sparepart->ket}}</td>
                         <td class="text-center" @click.stop>
                             <img src="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('storage/foto/default.png') }}"

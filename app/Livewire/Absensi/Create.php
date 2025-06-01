@@ -40,7 +40,7 @@ class Create extends Component
 
         $today = now()->toDateString();
         $user = Auth::user();
-        $karyawanId = $user?->karyawans?->id;
+        $karyawanId = $user?->karyawan?->id;
 
         if (!$karyawanId) return;
 

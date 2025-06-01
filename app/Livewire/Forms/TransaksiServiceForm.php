@@ -30,7 +30,7 @@ class TransaksiServiceForm extends Form
     public $diskon = 0;
 
     #[Validate('required|numeric|min:0')]
-    public $total;
+    public $grand_total;
 
     #[Validate('required|in:lunas,pending')]
     public $status_pembayaran = 'pending';
@@ -49,9 +49,9 @@ class TransaksiServiceForm extends Form
     public function hitungTotal()
     {
         $diskonValue = $this->sub_total * ($this->diskon / 100);
-        $this->total = round($this->sub_total + $this->pajak - $diskonValue, 2);
-        if ($this->total < 0) {
-            $this->total = 0;
+        $this->grand_total = round($this->sub_total + $this->pajak - $diskonValue, 2);
+        if ($this->grand_total < 0) {
+            $this->grand_total = 0;
         }
     }
 }
