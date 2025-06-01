@@ -4,18 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice No.{{ $transaksi->kode_transaksi }}</title>
+    @vite('resources/sass/app.scss')
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
+            font-size: 12px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 11px;
-            margin-bottom: 10px;
+            margin-bottom: 30px;
         }
 
         th,
@@ -71,7 +72,25 @@
         }
 
         .signature {
-            margin-top: 40px;
+            float: right;
+            width: 200px;
+            text-align: center;
+        }
+
+        .currency-cell {
+            text-align: right;
+            padding-right: 5px;
+            position: relative;
+        }
+
+        .currency-cell span.currency {
+            position: absolute;
+            left: 5px;
+        }
+
+        .currency-cell span.value {
+            display: block;
+            width: 100%;
             text-align: right;
         }
     </style>
@@ -80,8 +99,7 @@
 <body>
     <div class="invoice-header">
         <div class="invoice-title"># INVOICE</div>
-        <div class="invoice-number">No. 1197/INV/CV-RP/III/2025</div>
-        {{-- <div class="company-name">Kapada Yth.<br>{{ $transaksi->pelanggan->nama ?? '-' }}</div> --}}
+        <div class="invoice-number">No. {{ $transaksi->kode_transaksi }}</div>
     </div>
 
     <table class="no-border">
@@ -95,7 +113,7 @@
             <td style="width: 90px;"></td>
         </tr>
         <tr>
-            <td colspan="4">Kapada Yth.</td>
+            <td colspan="4">Kepada Yth.</td>
             <td colspan="2">Tanggal</td>
             <td>: {{ $transaksi->created_at->format('d-m-Y') }}</td>
         </tr>
@@ -107,29 +125,31 @@
         </tr>
         <tr>
             <td></td>
-            <td colspan="3"></strong></td>
+            <td colspan="3"></td>
             <td colspan="2">No.Polisi</td>
             <td>: {{ $transaksi->serviceDetail->service->no_polisi ?? '-' }}</td>
         </tr>
         <tr>
             <td></td>
-            <td colspan="3"></strong></td>
+            <td colspan="3"></td>
             <td colspan="2">Tipe Kendaraan</td>
             <td>: {{ $transaksi->serviceDetail->service->tipe_kendaraan ?? '-' }}</td>
         </tr>
     </table>
+
     @if ($transaksi->jenis_transaksi === 'service')
     @php
-    // Ambil semua jasa dari relasi transaksi->serviceDetail->service->jasas
-    $jasas = $transaksi->serviceDetail
-    ? $transaksi->serviceDetail->service->jasas
-    : collect();
+    $jasas = $transaksi->serviceDetail ? $transaksi->serviceDetail->service->jasas : collect();
     $totalJasa = $jasas->sum(fn($jasa) => $jasa->harga ?? 0);
 
-    $spareparts = $transaksi->serviceDetail
-    ? $transaksi->serviceDetail->service->spareparts
-    : collect();
+    $spareparts = $transaksi->serviceDetail ? $transaksi->serviceDetail->service->spareparts : collect();
     $totalSparepart = $spareparts->sum(fn($sp) => $sp->sub_total ?? 0);
+
+    $diskonPersen = $transaksi->diskon ?? 0;
+    $diskonNominal = ($diskonPersen / 100) * ($transaksi->sub_total ?? 0);
+    $subtotalSetelahDiskon = ($transaksi->sub_total ?? 0) - $diskonNominal;
+    $ppn = round($subtotalSetelahDiskon * 0.11);
+    $grandTotal = $subtotalSetelahDiskon + $ppn;
     @endphp
 
     <table>
@@ -156,13 +176,22 @@
                 <td>{{ $sp->sparepart->nama }}</td>
                 <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                 <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
-                <td class="text-right">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
-                <td class="text-right">Rp {{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($sp->harga ?? 0, 0, ',', '.') }}</span>
+                </td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}</span>
+                </td>
             </tr>
             @endforeach
             <tr>
                 <td colspan="6" class="text-right"><strong>Total Part</strong></td>
-                <td class="text-right">Rp {{ number_format($totalSparepart ?? 0, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($totalSparepart ?? 0, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <!-- JASA SECTION -->
@@ -176,47 +205,63 @@
                 <td>{{ $jasa->jasa->nama_jasa }}</td>
                 <td class="text-center">-</td>
                 <td class="text-center">-</td>
-                <td class="text-right">Rp {{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</td>
-                <td class="text-right">Rp {{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</span>
+                </td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</span>
+                </td>
             </tr>
             @endforeach
             <tr>
                 <td colspan="6" class="text-right"><strong>Total Jasa</strong></td>
-                <td class="text-right">Rp {{ number_format($totalJasa ?? 0, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($totalJasa ?? 0, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <tr>
                 <td colspan="6" class="text-right"><strong>Sub Total</strong></td>
-                <td class="text-right">Rp {{ number_format($transaksi->sub_total ?? 0, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($transaksi->sub_total ?? 0, 0, ',', '.') }}</span>
+                </td>
             </tr>
-
-            @php
-            $diskonPersen = $transaksi->diskon ?? 0;
-            $diskonNominal = ($diskonPersen / 100) * ($transaksi->sub_total ?? 0);
-            $subtotalSetelahDiskon = ($transaksi->sub_total ?? 0) - $diskonNominal;
-            $ppn = round($subtotalSetelahDiskon * 0.11);
-            $grandTotal = $subtotalSetelahDiskon + $ppn;
-            @endphp
 
             <tr>
                 <td colspan="6" class="text-right"><strong>Diskon ({{ number_format($diskonPersen, 0, ',', '.')
                         }}%)</strong></td>
-                <td class="text-right">Rp {{ number_format($diskonNominal, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($diskonNominal, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <tr>
                 <td colspan="6" class="text-right"><strong>Subtotal Setelah Diskon</strong></td>
-                <td class="text-right">Rp {{ number_format($subtotalSetelahDiskon, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($subtotalSetelahDiskon, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <tr>
                 <td colspan="6" class="text-right"><strong>PPN 11%</strong></td>
-                <td class="text-right">Rp {{ number_format($ppn, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($ppn, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
-            <tr>
+            <tr class="total-section">
                 <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                <td class="text-right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($grandTotal, 0, ',', '.') }}</span>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -246,7 +291,6 @@
             </tr>
         </thead>
         <tbody>
-            <!-- SPAREPART SECTION -->
             <tr class="section-title">
                 <td colspan="7"><strong>Sparepart / Oli</strong></td>
             </tr>
@@ -258,41 +302,65 @@
                 <td>{{ $sp->sparepart->nama ?? '-' }}</td>
                 <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                 <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
-                <td class="text-right">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
-                <td class="text-right">Rp {{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($sp->harga ?? 0, 0, ',', '.') }}</span>
+                </td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}</span>
+                </td>
             </tr>
             @endforeach
 
             <!-- RINGKASAN -->
             <tr>
                 <td colspan="6" class="text-right"><strong>Total Part</strong></td>
-                <td class="text-right">Rp {{ number_format($totalSparepart, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($totalSparepart, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <tr>
                 <td colspan="6" class="text-right"><strong>Sub Total</strong></td>
-                <td class="text-right">Rp {{ number_format($subTotal, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($subTotal, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <tr>
                 <td colspan="6" class="text-right"><strong>Diskon ({{ number_format($diskonPersen, 0, ',', '.')
                         }}%)</strong></td>
-                <td class="text-right">Rp {{ number_format($diskonNominal, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($diskonNominal, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <tr>
                 <td colspan="6" class="text-right"><strong>Subtotal Setelah Diskon</strong></td>
-                <td class="text-right">Rp {{ number_format($subtotalSetelahDiskon, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($subtotalSetelahDiskon, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <tr>
                 <td colspan="6" class="text-right"><strong>PPN 11%</strong></td>
-                <td class="text-right">Rp {{ number_format($ppn, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($ppn, 0, ',', '.') }}</span>
+                </td>
             </tr>
 
             <tr>
                 <td colspan="6" class="text-right"><strong>Grand Total</strong></td>
-                <td class="text-right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                <td class="currency-cell">
+                    <span class="currency">Rp</span>
+                    <span class="value">{{ number_format($grandTotal, 0, ',', '.') }}</span>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -302,12 +370,14 @@
         <div class="signature">
             <p><strong>Hormat Kami,</strong></p>
             <br><br><br>
-            <p>(_______________________)</p>
+            <p>(____________________)</p>
         </div>
     </div>
     <p><strong>Status Pembayaran:</strong> {{ ucfirst($transaksi->status_pembayaran) }}</p>
 
-    <p style="text-align: center;">~ Terima kasih atas kunjungannya ~</p>
+    <p><strong>Catatan service selanjutnya :</strong> {{ ucfirst($transaksi->ket) }}</p>
+
+    {{-- <p style="text-align: center;">~ Terima kasih atas kunjungannya ~</p> --}}
 </body>
 
 </html>

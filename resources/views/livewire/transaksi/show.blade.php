@@ -492,18 +492,34 @@
 
             <!-- Total Keseluruhan -->
             <div class="card mt-4 shadow-sm border-0">
-                <div class="card-body d-flex justify-content-end fw-bold fs-5">
-                    <span class="me-2">Total Keseluruhan: </span>
-                    <span class="text-success">
-                        Rp {{ number_format($transaksi->grand_total,
-                        0,
-                        ',',
-                        '.'
-                        ) }}
-                    </span>
+                <div class="card-body d-flex justify-content-end fw-bold fs-5 gap-2">
+                    <button data-bs-toggle="modal" data-bs-target="#previewModal" class="btn btn-info">
+                        <i class="fa fa-eye"></i>
+                        <span class="d-none d-md-inline ms-1">Preview Invoice</span>
+                    </button>
+
+                    <a href="{{ route('invoice.download', $transaksi->id) }}" class="btn btn-primary"
+                        rel="noopener noreferrer" download>
+                        <i class="fa fa-download"></i>
+                        <span class="d-none d-md-inline ms-1">Download Invoice</span>
+                    </a>
+                </div>
+
+            </div>
+            <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Preview Transaksi</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <iframe src="{{ route('invoice.show', $transaksi->id) }}" width="100%" height="600px"
+                                frameborder="0"></iframe>
+                        </div>
+                    </div>
                 </div>
             </div>
-
         </div>
 
     </div>

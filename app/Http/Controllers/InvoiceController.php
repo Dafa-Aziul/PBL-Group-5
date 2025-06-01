@@ -22,4 +22,18 @@ class InvoiceController extends Controller
 
         return $pdf->stream('invoice_'  . $transaksi->kode_transaksi . '.pdf');
     }
+    public function download($id)
+    {
+        $transaksi = Transaksi::with([
+            'pelanggan',
+            'kasir',
+            'penjualanDetail.sparepart',
+            'serviceDetail.service.spareparts',
+            'serviceDetail.service.jasas'
+        ])->findOrFail($id);
+
+        $pdf = Pdf::loadView('pdf.invoice', compact('transaksi'))->setPaper('A4');
+
+        return $pdf->download('invoice_' . $transaksi->kode_transaksi . '.pdf');
+    }
 }

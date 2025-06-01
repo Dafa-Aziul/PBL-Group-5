@@ -156,6 +156,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/transaksi/', TransaksiIndex::class)->name('transaksi.view');
     Route::get('/transaksi/{id}', TransaksiShow::class)->name('transaksi.show');
     Route::get('/transaksi/{id}/invoice/', [InvoiceController::class, 'show'])->name('invoice.show');
+    Route::get('/transaksi/{id}/invoice/download', [InvoiceController::class, 'download'])->name('invoice.download');
 
     Route::get('/transaksi/service/{id}/create', TransaksiService::class)->name('transaksi.service');
 
