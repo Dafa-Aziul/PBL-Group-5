@@ -68,10 +68,12 @@
                 <span class="d-none d-md-inline ms-1">Daftar service</span>
             </div>
             <div>
+                @can('admin')
                 <a class="btn btn-primary float-end" href="{{ route('penjualan.create') }}" wire:navigate><i
                         class="fas fa-plus"></i>
                     <span class="d-none d-md-inline ms-1">Tambah Penjualan</span>
                 </a>
+                @endcan
             </div>
         </div>
         <div class="card-body">

@@ -21,9 +21,9 @@
                 <span class="d-none d-md-inline ms-1">Data Kendaraan</span>
             </div>
             <div>
-                <a class="btn btn-secondary" href="{{ route('pelanggan.detail', ['id' => $kendaraan->pelanggan_id]) }}"
-                    wire:navigate>
-                    <i class="fas fa-arrow-left"></i> Kembali ke Pelanggan
+                <a class="btn btn-primary float-end" href="{{ route('pelanggan.detail', ['id' => $kendaraan->pelanggan_id]) }}" wire:navigate>
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Kembali</span>
                 </a>
             </div>
         </div>
@@ -50,11 +50,12 @@
                         <i class="fas fa-car me-2"></i>
                         <strong>Daftar Riwayat Service</strong>
                     </div>
-
+                    @can('admin')
                     <a class="btn bg-white text-primary btn-primary" href="{{ route('service.create', ['pelanggan_id' => $kendaraan->pelanggan_id, 'selectedKendaraan' => $kendaraan->id]) }}">
                         <i class="fas fa-plus"></i>
                         <span class="d-none d-md-inline ms-1">Tambah service</span>
                     </a>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

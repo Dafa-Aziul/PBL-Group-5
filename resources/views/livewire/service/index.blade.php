@@ -84,10 +84,12 @@
                 <span class="d-none d-md-inline ms-1">Daftar service</span>
             </div>
             <div>
+                @can('admin')
                 <a class="btn btn-primary float-end" href="{{ route('service.create') }}" wire:navigate><i
                         class="fas fa-plus"></i>
                     <span class="d-none d-md-inline ms-1">Tambah service</span>
                 </a>
+                @endcan
 
             </div>
         </div>
@@ -126,7 +128,9 @@
                                 <th>Tanggal Mulai</th>
                                 <th>tanggal Selesai</th>
                                 <th>keterangan</th>
-                                <th>Aksi</th>
+                                @can('admin')
+                                    <th>Aksi</th>
+                                @endcan
                             </tr>
                         </thead>
                         </tfoot>
@@ -140,62 +144,76 @@
                                 <td>{{ $service->no_polisi }}</td>
                                 <td>{{ $service->tipe_kendaraan }}</td>
                                 <td @click.stop class="text-center">
-                                    @if(in_array($service->status, ['selesai', 'batal']))
-                                    @if($service->status == 'selesai')
-                                    <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
-                                        <i class="fas fa-check-circle me-1"></i> Selesai
-                                    </div>
-                                    @elseif($service->status == 'batal')
-                                    <div class="badge bg-danger d-inline-flex align-items-center py-2 px-3 fs-7">
-                                        <i class="fas fa-times-circle me-1"></i> Batal
-                                    </div>
-                                    @endif
-                                    @else
-                                    <form wire:submit.prevent="updateStatus({{ $service->id }})"
-                                        class="d-flex flex-column align-items-start">
-                                        <div class="d-flex align-items-center">
-                                            <select wire:model="statuses.{{ $service->id }}" class="form-select me-2"
-                                                style="width: 160px;">
-                                                <option value="">-- Pilih Status --</option>
-                                                <option value="dalam antrian">dalam antrian</option>
-                                                <option value="dianalisis">dianalisis</option>
-                                                <option value="analisis selesai">analisis selesai</option>
-                                                <option value="dalam proses">dalam proses</option>
-                                                <option value="selesai">selesai</option>
-                                                <option value="batal">batal</option>
-                                            </select>
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        </div>
-                                        @error('statuses.' . $service->id)
-                                        <small class="text-danger small mt-1">{{ $message }}</small>
-                                        @enderror
-                                    </form>
-                                    <!-- Modal Konfirmasi Transaksi -->
-                                    <div wire:ignore.self class="modal fade" id="modalTransaksi-{{ $service->id }}"
-                                        tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="modalTransaksiLabel-{{ $service->id }}">
-                                                        Konfirmasi Transaksi</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Tutup"></button>
+                                    @can('admin')
+                                        @if(in_array($service->status, ['selesai', 'batal']))
+                                            @if($service->status == 'selesai')
+                                                <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
+                                                    <i class="fas fa-check-circle me-1"></i> Selesai
                                                 </div>
-                                                <div class="modal-body">
-                                                    Service telah selesai. Apakah Anda ingin melanjutkan ke transaksi
-                                                    pembayaran?
+                                            @elseif($service->status == 'batal')
+                                                <div class="badge bg-danger d-inline-flex align-items-center py-2 px-3 fs-7">
+                                                    <i class="fas fa-times-circle me-1"></i> Batal
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Nanti Saja</button>
-                                                    <a href="{{ route('transaksi.service', ['id' => $service->id]) }}"
-                                                        class="btn btn-primary">Lanjutkan</a>
+                                            @endif
+                                        @else
+                                            <form wire:submit.prevent="updateStatus({{ $service->id }})"
+                                                class="d-flex flex-column align-items-start">
+                                                <div class="d-flex align-items-center">
+                                                    <select wire:model="statuses.{{ $service->id }}" class="form-select me-2"
+                                                        style="width: 160px;">
+                                                        <option value="">-- Pilih Status --</option>
+                                                        <option value="dalam antrian">dalam antrian</option>
+                                                        <option value="dianalisis">dianalisis</option>
+                                                        <option value="analisis selesai">analisis selesai</option>
+                                                        <option value="dalam proses">dalam proses</option>
+                                                        <option value="selesai">selesai</option>
+                                                        <option value="batal">batal</option>
+                                                    </select>
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </div>
+                                                @error('statuses.' . $service->id)
+                                                <small class="text-danger small mt-1">{{ $message }}</small>
+                                                @enderror
+                                            </form>
+                                            <!-- Modal Konfirmasi Transaksi -->
+                                            <div wire:ignore.self class="modal fade" id="modalTransaksi-{{ $service->id }}"
+                                                tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modalTransaksiLabel-{{ $service->id }}">
+                                                                Konfirmasi Transaksi</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Tutup"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Service telah selesai. Apakah Anda ingin melanjutkan ke transaksi
+                                                            pembayaran?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Nanti Saja</button>
+                                                            <a href="{{ route('transaksi.service', ['id' => $service->id]) }}"
+                                                                class="btn btn-primary">Lanjutkan</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                        @endif
+                                    @endcan
+
+                                    @if (auth()->user()->role != 'admin' && auth()->user()->role != 'superadmin')
+                                        @if (in_array($service->status, ['selesai', 'batal']))
+                                            <div class="badge bg-secondary d-inline-flex align-items-center py-2 px-3 fs-7">
+                                                <i class="fas fa-info-circle me-1"></i> {{ ucfirst($service->status) }}
+                                            </div>
+                                        @else
+                                            <div class="badge bg-warning d-inline-flex align-items-center py-2 px-3 fs-7">
+                                                <i class="fas fa-spinner me-1"></i> {{ ucfirst($service->status) }}
+                                            </div>
+                                        @endif
                                     @endif
                                 </td>
 
@@ -211,30 +229,32 @@
                                     }}
                                 </td>
                                 <td>{{ $service->keterangan }}</td>
-                                <td class="text-center" @click.stop>
-                                    @if (!in_array($service->status, ['selesai', 'batal']))
-                                        <a href="{{ route('service.edit', ['id' => $service->id]) }}"
-                                            class="btn btn-warning mb-3 mb-md-0" wire:navigate>
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                            <span class="d-none d-md-inline ms-1">Edit</span>
-                                        </a>
-                                    @endif
-                                    @if ($service->status == 'analisis selesai' || $service->status == 'dalam proses' )
-                                        <a href="{{ route('service.detail', ['id' => $service->id]) }}" class="btn btn-info mb-3 mb-md-0"
-                                            wire:navigate>
-                                            <i class="fa-solid fa-plus"></i>
-                                            <span class="d-none d-md-inline ms-1">detail</span>
-                                        </a>
-                                    @endif
+                                @can('admin')
+                                    <td class="text-center" @click.stop>
+                                        @if (!in_array($service->status, ['selesai', 'batal']))
+                                            <a href="{{ route('service.edit', ['id' => $service->id]) }}"
+                                                class="btn btn-warning mb-3 mb-md-0" wire:navigate>
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                                <span class="d-none d-md-inline ms-1">Edit</span>
+                                            </a>
+                                        @endif
+                                        @if ($service->status == 'analisis selesai' || $service->status == 'dalam proses' )
+                                            <a href="{{ route('service.detail', ['id' => $service->id]) }}" class="btn btn-info mb-3 mb-md-0"
+                                                wire:navigate>
+                                                <i class="fa-solid fa-plus"></i>
+                                                <span class="d-none d-md-inline ms-1">detail</span>
+                                            </a>
+                                        @endif
 
-                                    @if (is_null($service->serviceDetail)&& $service->status == 'selesai')
-                                        <a href="{{ route('transaksi.service', ['id' => $service->id]) }}" class="btn btn-info mb-3 mb-md-0"
-                                            wire:navigate>
-                                            <i class="fa-solid fa-receipt"></i>
-                                            <span class="d-none d-md-inline ms-1">Catat Transaksi</span>
-                                        </a>
-                                    @endif
-                                </td>
+                                        @if (is_null($service->serviceDetail)&& $service->status == 'selesai')
+                                            <a href="{{ route('transaksi.service', ['id' => $service->id]) }}" class="btn btn-info mb-3 mb-md-0"
+                                                wire:navigate>
+                                                <i class="fa-solid fa-receipt"></i>
+                                                <span class="d-none d-md-inline ms-1">Catat Transaksi</span>
+                                            </a>
+                                        @endif
+                                    </td>
+                                @endcan
                             </tr>
                             @empty
                             <tr>

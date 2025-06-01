@@ -26,7 +26,6 @@ class TambahService extends Component
         $this->form->fillFormModel($this->service);
 
         // Hitung sub grand_total
-        $this->form->sub_total = $this->service->estimasi_harga;
         // Hitung pajak dan grand_total
         $this->form->pajak = round(0.11 * $this->form->sub_total, 2);
         $this->form->grand_total = $this->form->sub_total + $this->form->pajak;

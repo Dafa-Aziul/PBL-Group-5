@@ -55,7 +55,7 @@ use App\Livewire\Pelanggan\Edit as PelangganEdit;
 use App\Livewire\Pelanggan\Index as PelangganIndex;
 
 //penjualan
-use App\Livewire\Pelanggan\Show as PelangganDetail;
+use App\Livewire\Pelanggan\Show as PelangganShow;
 use App\Livewire\Penjualan\Create as PenjualanCreate;
 use App\Livewire\Penjualan\Index as PenjualanIndex;
 
@@ -100,79 +100,96 @@ Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('logout', Logout::class)->name('logout');
-
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-
-    //user
-    Route::get('/user', UserIndex::class)->name('user.view');
-    Route::get('/user/create', UserCreate::class)->name('user.create');
     Route::get('/profile', Profile::class)->name('profile.show');
     Route::get('/profile/password', Password::class)->name('profile.password');
 
-    //karyawan
-    Route::get('/karyawan', KaryawanIndex::class)->name('karyawan.view');
-    Route::get('/karyawan/create', KaryawanCreate::class)->name('karyawan.create');
-    Route::get('/karyawan/{id}/edit', KaryawanEdit::class)->name('karyawan.edit');
+    // Hanya admin, owner, superadmin
+    Route::middleware(['role:admin,owner,superadmin'])->group(function () {
+        // User
+        Route::get('/user', UserIndex::class)->name('user.view');
+        Route::get('/user/create', UserCreate::class)->name('user.create')->middleware('role:superadmin,admin');
 
-    //kendaraan
-    Route::get('/jenis_kendaraan', JenisKendaraanIndex::class)->name('jenis_kendaraan.view');
-    Route::get('/jenis_kendaraan/create', JenisKendaraanCreate::class)->name('jenis_kendaraan.create');
-    Route::get('/jenis_kendaraan/{id}/edit', JenisKendaraanEdit::class)->name('jenis_kendaraan.edit');
+        // Karyawan
+        Route::prefix('karyawan')->middleware('role:superadmin,admin')->group(function () {
+            Route::get('/', KaryawanIndex::class)->name('karyawan.view')->withoutMiddleware('role:superadmin,admin');
+            Route::get('/create', KaryawanCreate::class)->name('karyawan.create');
+            Route::get('/{id}/edit', KaryawanEdit::class)->name('karyawan.edit');
+        });
 
-    //pelanggan
-    Route::get('/pelanggan', PelangganIndex::class)->name('pelanggan.view');
-    Route::get('/pelanggan/create', PelangganCreate::class)->name('pelanggan.create');
-    Route::get('/pelanggan/{id}/edit', PelangganEdit::class)->name('pelanggan.edit');
-    Route::get('/pelanggan/{id}', PelangganDetail::class)->name('pelanggan.detail');
-    Route::get('/pelanggan/{id}/kendaraan/create', KendaraanCreate::class)->name('kendaraan.create');
-    Route::get('/pelanggan/{pelanggan}/kendaraan/{kendaraan}', KendaraanDetail::class)->name('kendaraan.show');
+        // Jenis Kendaraan
+        Route::prefix('jenis_kendaraan')->middleware('role:superadmin,admin')->group(function () {
+            Route::get('/', JenisKendaraanIndex::class)->name('jenis_kendaraan.view');
+            Route::get('/create', JenisKendaraanCreate::class)->name('jenis_kendaraan.create');
+            Route::get('/{id}/edit', JenisKendaraanEdit::class)->name('jenis_kendaraan.edit');
+        });
 
+        // Pelanggan
+        Route::prefix('pelanggan')->group(function () {
+            Route::get('/', PelangganIndex::class)->name('pelanggan.view');
+            Route::get('/create', PelangganCreate::class)->name('pelanggan.create')->middleware('role:superadmin,admin');
+            Route::get('/{id}/edit', PelangganEdit::class)->name('pelanggan.edit')->middleware('role:superadmin,admin');
+            Route::get('/{id}', PelangganShow::class)->name('pelanggan.detail');
+            Route::get('/{pelanggan}/kendaraan/{kendaraan}', KendaraanDetail::class)->name('kendaraan.show');
+        });
 
-    //jasa
-    Route::get('/jasa', JasaIndex::class)->name('jasa.view');
-    Route::get('/jasa/create', JasaCreate::class)->name('jasa.create');
-    Route::get('/jasa/{id}/edit', JasaEdit::class)->name('jasa.edit');
+        // Jasa
+        Route::prefix('jasa')->middleware('role:superadmin,admin')->group(function () {
+            Route::get('/', JasaIndex::class)->name('jasa.view');
+            Route::get('/create', JasaCreate::class)->name('jasa.create');
+            Route::get('/{id}/edit', JasaEdit::class)->name('jasa.edit');
+        });
 
-    //sparepart
-    Route::get('/sparepart', SparepartIndex::class)->name('sparepart.view');
-    Route::get('/sparepart/create', SparepartCreate::class)->name('sparepart.create');
-    Route::get('/sparepart/{id}', SparepartShow::class)->name('sparepart.show');
-    Route::get('/sparepart/{id}/edit', SparepartEdit::class)->name('sparepart.edit');
-    Route::get('/sparepart/{id}/gudang/create', GudangCreate::class)->name('gudang.create');
+        // Sparepart
+        Route::prefix('sparepart')->middleware('role:superadmin,admin,owner')->group(function () {
+            Route::get('/', SparepartIndex::class)->name('sparepart.view');
+            Route::get('/create', SparepartCreate::class)->name('sparepart.create')->middleware('role:superadmin,admin');
+            Route::get('/{id}', SparepartShow::class)->name('sparepart.show');
+            Route::get('/{id}/edit', SparepartEdit::class)->name('sparepart.edit')->middleware('role:superadmin,admin');
+        });
 
-    //konten
-    Route::get('/konten', KontenIndex::class)->name('konten.view');
-    Route::get('/konten/create', KontenCreate::class)->name('konten.create');
-    Route::get('/konten/{id}/edit', KontenEdit::class)->name('konten.edit');
+        // Konten
+        Route::prefix('konten')->middleware('role:superadmin,admin')->group(function () {
+            Route::get('/', KontenIndex::class)->name('konten.view');
+            Route::get('/create', KontenCreate::class)->name('konten.create');
+            Route::get('/{id}/edit', KontenEdit::class)->name('konten.edit');
+        });
+    });
 
-    //absensi
-    Route::get('/absensi', AbsensiIndex::class)->name('absensi.view');
-    Route::get('/absensi/create/{id}/{type}', AbsensiCreate::class)->name('absensi.create');
-    Route::get('/absensi/lihat-absen', AbsensiRead::class)->name('absensi.read');
-    Route::get('/rekap-absen', AbsensiShow::class)->name('absensi.rekap');
+    // Absensi
+    Route::prefix('absensi')->middleware('role:superadmin,admin,mekanik')->group(function () {
+        Route::get('/', AbsensiIndex::class)->name('absensi.view');
+        Route::get('/create/{id}/{type}', AbsensiCreate::class)->name('absensi.create');
+    });
+    Route::get('/absensi/lihat-absen', AbsensiRead::class)->name('absensi.read')->middleware('role:superadmin,owner,admin,mekanik');
+    Route::get('/rekap-absen', AbsensiShow::class)->name('absensi.rekap')->middleware('role:superadmin,admin,owner');
 
+    // Transaksi
+    Route::prefix('transaksi')->middleware('role:superadmin,admin,owner')->group(function () {
+        Route::get('/', TransaksiIndex::class)->name('transaksi.view');
+        Route::get('/{id}', TransaksiShow::class)->name('transaksi.show');
+        Route::get('/{id}/invoice', [InvoiceController::class, 'show'])->name('invoice.show');
+        Route::get('/{id}/invoice/download', [InvoiceController::class, 'download'])->name('invoice.download');
+        Route::get('/service/{id}/create', TransaksiService::class)->name('transaksi.service')->middleware('role:superadmin,admin');
+    });
 
-    //transaksi
-    Route::get('/transaksi/', TransaksiIndex::class)->name('transaksi.view');
-    Route::get('/transaksi/{id}', TransaksiShow::class)->name('transaksi.show');
-    Route::get('/transaksi/{id}/invoice/', [InvoiceController::class, 'show'])->name('invoice.show');
-    Route::get('/transaksi/{id}/invoice/download', [InvoiceController::class, 'download'])->name('invoice.download');
+    // Service
+    Route::prefix('service')->group(function () {
+        Route::get('/', ServiceIndex::class)->name('service.view')->middleware('role:superadmin,admin,owner,mekanik');
+        Route::get('/create', ServiceCreate::class)->name('service.create')->middleware('role:superadmin,admin');
+        Route::get('/create/{id}/detail', ServiceDetail::class)->name('service.detail')->middleware('role:superadmin,admin');
+        Route::get('/{id}', ServiceShow::class)->name('service.show')->middleware('role:superadmin,admin,owner,mekanik');
+        Route::get('/{id}/edit', ServiceEdit::class)->name('service.edit')->middleware('role:superadmin,admin');
+    });
 
-    Route::get('/transaksi/service/{id}/create', TransaksiService::class)->name('transaksi.service');
-
-
-    //service
-    Route::get('/service', ServiceIndex::class)->name('service.view');
-    Route::get('/service/create', ServiceCreate::class)->name('service.create');
-    Route::get('/service/create/{id}/detail', ServiceDetail::class)->name('service.detail');
-    Route::get('/service/{id}', ServiceShow::class)->name('service.show');
-    Route::get('/service/{id}/edit', ServiceEdit::class)->name('service.edit');
-
-    //penjualan
-    Route::get('/penjualan', PenjualanIndex::class)->name('penjualan.view');
-    Route::get('/penjualan/create', PenjualanCreate::class)->name('penjualan.create');
-    Route::get('/penjualan/{id}', PenjualanShow::class)->name('penjualan.show');
+    // Penjualan
+    Route::prefix('penjualan')->middleware('role:superadmin,admin,owner')->group(function () {
+        Route::get('/', PenjualanIndex::class)->name('penjualan.view');
+        Route::get('/create', PenjualanCreate::class)->name('penjualan.create');
+        Route::get('/{id}', PenjualanShow::class)->name('penjualan.show');
+    });
 });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', VerifyEmail::class)

@@ -160,11 +160,13 @@
                     </div>
 
                     @if($transaksi->status_pembayaran != 'lunas')
-                    <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
-                        data-bs-target="#paymentModal">
-                        <i class="fas fa-money-bill-wave"></i> <span class="d-none d-md-inline ms-1">Bayar
-                            Sekarang</span>
-                    </button>
+                    @can('admin')
+                        <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
+                            data-bs-target="#paymentModal">
+                            <i class="fas fa-money-bill-wave"></i> <span class="d-none d-md-inline ms-1">Bayar
+                                Sekarang</span>
+                        </button>
+                    @endcan
                     @endif
                 </div>
                 <div class="card-body">

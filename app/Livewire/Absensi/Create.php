@@ -40,7 +40,7 @@ class Create extends Component
 
         $today = now()->toDateString();
         $user = Auth::user();
-        $karyawanId = $user?->karyawan?->id;
+        $karyawanId = $user?->karyawans?->id;
 
         if (!$karyawanId) return;
 
@@ -60,7 +60,7 @@ class Create extends Component
             }
         }
 
-        //  Jika sudah check in tapi belum check out → buatkan otomatis
+        //  Jika sudah check-in tapi belum check-out → buatkan otomatis
         $absenMasuk = Absensi::where('karyawan_id', $karyawanId)
             ->whereDate('tanggal', $today)
             ->whereNotNull('jam_masuk')
@@ -111,15 +111,15 @@ class Create extends Component
     {
         $today = Carbon::today();
 
-        // Cek apakah sudah check in
+        // Cek apakah sudah check-in
         $absensiHariIni = Absensi::where('karyawan_id', $this->karyawan_id)
             ->whereDate('tanggal', $today)
-            ->whereNotNull('jam_masuk') // pastikan hanya cek yang sudah check in
+            ->whereNotNull('jam_masuk') // pastikan hanya cek yang sudah check-in
             ->first();
 
         if ($this->type === 'check-in'){
             if ($absensiHariIni) {
-                session()->flash('error', 'Anda sudah melakukan check in hari ini.');
+                session()->flash('error', 'Anda sudah melakukan check-in hari ini.');
                 return redirect()->route('absensi.view');
             }
 
@@ -136,19 +136,19 @@ class Create extends Component
         }
 
         if ($this->type === 'check-out') {
-            // Belum check in → tidak boleh check out
+            // Belum check-in → tidak boleh check-out
             if (!$absensiHariIni || !$absensiHariIni->jam_masuk) {
-                session()->flash('error', 'Anda belum melakukan check in hari ini.');
+                session()->flash('error', 'Anda belum melakukan check-in hari ini.');
                 return redirect()->route('absensi.view');
             }
 
-            // Sudah check out → tidak boleh dua kali
+            // Sudah check-out → tidak boleh dua kali
             if ($absensiHariIni->jam_keluar) {
-                session()->flash('error', 'Anda sudah melakukan check out hari ini.');
+                session()->flash('error', 'Anda sudah melakukan check-out hari ini.');
                 return redirect()->route('absensi.view');
             }
 
-            // Belum masuk waktu pulang → tidak boleh check out
+            // Belum masuk waktu pulang → tidak boleh check-out
             $waktuSekarang = now();
             $waktuPulang = now()->setTime(17, 0); // ← atur sesuai aturan jam pulang
             if ($waktuSekarang->lt($waktuPulang)) {
@@ -167,7 +167,7 @@ class Create extends Component
 
 
 
-        if ($this->type === 'tidak-hadir') {
+        if ($this->type === 'tidak hadir') {
             $absensiHariIni = Absensi::where('karyawan_id', $this->karyawan_id)
                 ->whereDate('tanggal', $today)
                 ->first();
@@ -203,10 +203,10 @@ class Create extends Component
             $statusCheckIn = $absensiHariIni->status;
             $statusCheckOut = $this->getStatusByTime(); // status berdasarkan jam keluar
 
-            // Default: status tetap seperti check in
+            // Default: status tetap seperti check-in
             $finalStatus = $statusCheckIn;
 
-            // Jika check in tidak terlambat tapi pulang lembur, maka ubah jadi 'lembur'
+            // Jika check-in tidak terlambat tapi pulang lembur, maka ubah jadi 'lembur'
             if ($statusCheckIn === 'hadir' && $statusCheckOut === 'lembur') {
                 $finalStatus = 'lembur';
             }
@@ -244,7 +244,7 @@ class Create extends Component
 
 
         // dd($data);
-        // Simpan data check in
+        // Simpan data check-in
         // Absensi::create($data);
 
         session()->flash('success', 'Absensi berhasil disimpan.');

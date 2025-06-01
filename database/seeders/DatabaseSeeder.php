@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'role' => 'admin',
+            'role' => 'superadmin',
         ]);
         User::factory(1)->create([
             'role' => 'owner',

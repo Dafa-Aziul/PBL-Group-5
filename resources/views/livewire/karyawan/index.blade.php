@@ -24,10 +24,12 @@
                 <span class="d-none d-md-inline ms-1">Daftar Karyawan</span>
             </div>
             <div>
-                <a class="btn btn-primary float-end" href="{{ route('karyawan.create') }}" wire:navigate>
-                    <i class="fas fa-plus"></i>
-                    <span class="d-none d-md-inline ms-1">Tambah karyawan</span>
-                </a>
+                @can('admin')
+                    <a class="btn btn-primary float-end" href="{{ route('karyawan.create') }}" wire:navigate>
+                        <i class="fas fa-plus"></i>
+                        <span class="d-none d-md-inline ms-1">Tambah karyawan</span>
+                    </a>
+                @endcan
             </div>
         </div>
         <div class="card-body">
@@ -62,7 +64,9 @@
                             <th>Tanggal Masuk</th>
                             <th>Status</th>
                             <th>Foto</th>
+                            @can('admin')
                             <th class="text-center">Aksi</th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -89,6 +93,7 @@
                                 <img src="{{ $karyawan->foto ? asset('storage/images/profile/' . $karyawan->foto) : asset('storage/foto/default.png') }}"
                                     alt="Foto Karyawan" width="80" height="80" class="rounded-circle">
                             </td>
+                            @can('admin')
                             <td class="text-center">
                                 <div class="d-flex justify-content-center">
                                     <a href="{{ route('karyawan.edit', ['id' => $karyawan->id]) }}"
@@ -108,6 +113,7 @@
                                         content="Apakah anda yakin untuk menghapus karyawan ini?" />
                                 </div>
                             </td>
+                            @endcan
                         </tr>
                         @empty
                         <tr>

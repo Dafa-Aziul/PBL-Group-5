@@ -57,10 +57,12 @@
                 <span class="d-none d-md-inline ms-1">Daftar User</span>
             </div>
             <div>
-                <a class="btn btn-primary float-end" href="{{ route('user.create') }}" wire:navigate><i
-                        class="fas fa-plus"></i>
-                    <span class="d-none d-md-inline ms-1">Tambah User</span>
-                </a>
+                @can('admin')
+                    <a class="btn btn-primary float-end" href="{{ route('user.create') }}" wire:navigate><i
+                            class="fas fa-plus"></i>
+                        <span class="d-none d-md-inline ms-1">Tambah User</span>
+                    </a>
+                @endcan
 
             </div>
         </div>
@@ -95,7 +97,9 @@
                             <th>Tanggal Verifikasi</th>
                             <th>Tanggal dibuat</th>
                             <th>Tanggal Update</th>
+                            @can('admin')
                             <th>Aksi</th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -108,18 +112,20 @@
                             <td>{{ $user->email_verified_at ?? "Belum Verifikasi" }}</td>
                             <td>{{ $user->created_at}}</td>
                             <td>{{ $user->updated_at }}</td>
-                            <td class="text-center">
-                                <button class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#confirm-{{ $user->id }}">
-                                    <i class="fas fa-trash-can"></i>
-                                    <span class="d-none d-md-inline ms-1">Delete</span>
-                                </button>
-                                <x-modal.confirm id="confirm-{{ $user->id }}" action="modal"
-                                    targetModal="confirmPassword-{{ $user->id }}" target=""
-                                    content="Apakah anda yakin untuk menghapus ini?" />
-                                <x-modal.confirmPassword id="confirmPassword-{{ $user->id }}"
-                                    target="delete({{ $user->id }})" action="modal" />
-                            </td>
+                            @can('admin')
+                                <td class="text-center">
+                                    <button class="btn btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#confirm-{{ $user->id }}">
+                                        <i class="fas fa-trash-can"></i>
+                                        <span class="d-none d-md-inline ms-1">Delete</span>
+                                    </button>
+                                    <x-modal.confirm id="confirm-{{ $user->id }}" action="modal"
+                                        targetModal="confirmPassword-{{ $user->id }}" target=""
+                                        content="Apakah anda yakin untuk menghapus ini?" />
+                                    <x-modal.confirmPassword id="confirmPassword-{{ $user->id }}"
+                                        target="delete({{ $user->id }})" action="modal" />
+                                </td>
+                            @endcan
                         </tr>
                         @empty
                         <tr>

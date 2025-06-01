@@ -1,7 +1,8 @@
 <div>
     <h2 class="mt-4">Kelola Pelanggan</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
         <li class="breadcrumb-item active">Daftar Pelanggan</li>
     </ol>
     @if (session()->has('success'))
@@ -25,10 +26,12 @@
                 <span class="d-none d-md-inline ms-1 ">Daftar Pelanggan</span>
             </div>
             <div>
+                @can('admin')
                 <a class="btn btn-primary float-end" href="{{ route('pelanggan.create') }}" wire:navigate><i
                         class="fas fa-plus"></i>
                     <span class="d-none d-md-inline ms-1">Tambah Pelanggan</span>
                 </a>
+                @endcan
 
             </div>
         </div>
@@ -63,25 +66,31 @@
                                 <th>No Hp</th>
                                 <th>Alamat</th>
                                 <th>Keterangan</th>
+                                @can('admin')
                                 <th>Aksi</th>
+                                @endcan
                             </tr>
                         </thead>
                         </tfoot>
                         <tbody>
                             @forelse ($pelanggans as $pelanggan)
-                            <tr style="cursor:pointer;"  x-data @click="Livewire.navigate(`/pelanggan/{{ $pelanggan->id }}`)">
+                            <tr style="cursor:pointer;" x-data
+                                @click="Livewire.navigate(`/pelanggan/{{ $pelanggan->id }}`)">
                                 <td class="text-center">{{($pelanggans->firstItem() + $loop->iteration) - 1}}</td>
                                 <td>{{ $pelanggan->nama }}</td>
                                 <td>{{ $pelanggan->email }}</td>
                                 <td>{{ $pelanggan->no_hp }}</td>
                                 <td>{{ $pelanggan->alamat }}</td>
                                 <td>{{ $pelanggan->keterangan }}</td>
+                                @can('admin')
                                 <td class="text-center" @click.stop>
-                                    <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }} " class="btn btn-warning" wire:navigate >
+                                    <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }} "
+                                        class="btn btn-warning" wire:navigate>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>
                                 </td>
+                                @endcan
                             </tr>
                             @empty
                             <tr>

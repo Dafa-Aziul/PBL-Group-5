@@ -93,12 +93,13 @@
                         <i class="fas fa-car me-2"></i>
                         <strong>Daftar Kendaraan</strong>
                     </div>
-
+                    @can('admin')
                     <button class="btn bg-white text-primary btn-primary" data-bs-toggle="modal"
                         data-bs-target="#formModal">
                         <i class="fas fa-plus"></i>
                         <span class="d-none d-md-inline ms-1">Tambah Kendaraan</span>
                     </button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

@@ -5,6 +5,7 @@ namespace App\Livewire\Penjualan;
 use App\Livewire\Forms\PenjualanForm;
 use App\Models\Gudang;
 use App\Models\Pelanggan;
+use App\Models\Pembayaran;
 use App\Models\Penjualan;
 use App\Models\Sparepart;
 use App\Models\Transaksi;
@@ -164,6 +165,15 @@ class Create extends Component
                     $transaksi->transaksi,
                     optional($transaksi->pelanggan)->nama ?? '-'
                 ),
+            ]);
+        }
+        if ($validated['status_pembayaran'] === 'lunas') {
+            Pembayaran::create([
+                'transaksi_id' => $transaksi->id,
+                'tanggal_bayar' => now(),
+                'jumlah_bayar' => $transaksi->grand_total,
+                'status_pembayaran' => 'lunas',
+                'ket' => 'Pembayaran otomatis saat transaksi dibuat',
             ]);
         }
 
