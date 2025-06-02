@@ -17,16 +17,113 @@
         </div>
     </div>
     @endif
-    <div class="modal fade" id="modalTest" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal Test</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+    <div class="row g-3 mb-4">
+        {{-- Kanan atas: Status + Jenis dalam satu kolom besar (75%) --}}
+        <div class="col-12 col-lg-4">
+            <div class="d-flex flex-column h-100 justify-content-between gap-3">
+                {{-- Status Pembayaran --}}
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-calculator"></i> Total Penjualan Sparepart
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <h2 class="fw-bold text-dark text-center"> Rp {{ number_format($totalPenjualan, 0, ',', '.') }}
+                        </h2>
+                    </div>
+
                 </div>
-                <div class="modal-body">Ini modal test</div>
+
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-cart-shopping"></i> Jumlah Sparepart Terjual
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <h2 class="fw-bold text-dark text-center">
+                            {{$jumlahSparepart}} terjual
+                        </h2>
+                    </div>
+
+                </div>
             </div>
         </div>
+        <div class="col-12 col-lg-8">
+            <div class="card card-jumlah h-100 card-hover">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fa-solid fa-boxes-stacked"></i> Detail Sparepart
+                    </h5>
+                    <hr class="border border-2 opacity-50">
+                    <canvas id="myChart" width="250" height="250"></canvas>
+                    <script>
+                        window.chartDetail = @json($chartDetail);
+                    </script>
+                </div>
+
+            </div>
+        </div>
+
+        {{-- <div class="col-12 col-lg-4">
+            <div class="card card-jumlah h-100 card-hover">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fa-solid fa-gears"></i> Jenis Jasa
+                    </h5>
+                    <hr class="border border-2 opacity-50">
+                    {{-- <canvas id="statusChart" width="280" height="280"></canvas>
+                    <script>
+                        window.chartStatus = @json($chartStatus);
+                    </script>
+
+                </div>
+
+            </div>
+        </div> --}}
+    </div>
+
+    <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
+
+        <div class="col-12 col-md-4 d-flex align-items-center gap-3">
+            <!-- Container form untuk dari dan sampai -->
+            <div class="d-flex flex-column flex-md-row gap-3 w-100">
+                <!-- From -->
+                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                    <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
+                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if($showAll)
+                        disabled @endif>
+                </div>
+
+                <!-- To -->
+                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                    <label for="tanggalAkhir" class="form-label mb-0" style="width: 50px;">To :</label>
+                    <input type="date" id="tanggalAkhir" wire:model.live="tanggalAkhir" class="form-control"
+                        @if($showAll) disabled @endif>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Reset Button -->
+        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2    ">
+            <!-- Checkbox "Semua" -->
+            <div>
+                <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">
+                <label class="btn btn-outline-primary mb-0" for="showAllCheck">
+                    Semua
+                </label>
+            </div>
+
+            <!-- Tombol Reset -->
+            <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
+                <i class="fas fa-rotate me-1"></i>
+                <span class="d-none d-md-inline">Reset Filter</span>
+            </button>
+        </div>
+
+
     </div>
 
     <div class="card mb-4">
@@ -65,52 +162,89 @@
 
             <div>
                 <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>No.</th>
-                            <th>Kode Transaksi</th>
-                            <th>Kasir</th>
-                            <th>Pelanggan</th>
-                            <th>Subtotal</th>
-                            <th>Pajak (11%)</th>
-                            <th>Diskon (%)</th>
-                            <th>Total</th>
-                            <th>Status Pembayaran</th>
-                            <th>Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($penjualans as $penjualan)
-                        <tr style="cursor: pointer;" x-data
-                            @click="Livewire.navigate(`/penjualan/{{ $penjualan->id }}`)">
-                            <td class="text-center">{{ ($penjualans->firstItem() + $loop->iteration) - 1 }}</td>
-                            <td>{{ $penjualan->kode_transaksi }}</td>
-                            <td>{{ $penjualan->kasir->nama ?? '-' }}</td>
-                            <td>{{ $penjualan->pelanggan->nama ?? '-' }}</td>
-                            <td>Rp {{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
-                            <td>Rp {{ number_format($penjualan->pajak, 0, ',', '.') }}</td>
-                            <td>{{ number_format($penjualan->diskon, 0, ',', '.')  }} %</td>
-                            <td>Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
-                            <td>
-                                @if ($penjualan->status_pembayaran == 'lunas')
-                                <span class="badge bg-success">Lunas</span>
-                                @elseif ($penjualan->status_pembayaran == 'pending')
-                                <span class="badge bg-warning text-dark">Pending</span>
-                                @endif
-                            </td>
-                            <td>{{ $penjualan->keterangan }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="12" class="text-center text-muted">Tidak ada transaksi yang ditemukan.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>No.</th>
+                                <th>Kode Transaksi</th>
+                                <th>Kasir</th>
+                                <th>Pelanggan</th>
+                                <th>Subtotal</th>
+                                <th>Pajak (11%)</th>
+                                <th>Diskon (%)</th>
+                                <th>Total</th>
+                                <th>Status Pembayaran</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($penjualans as $penjualan)
+                            <tr style="cursor: pointer;" x-data
+                                @click="Livewire.navigate(`/penjualan/{{ $penjualan->id }}`)">
+                                <td class="text-center">{{ ($penjualans->firstItem() + $loop->iteration) - 1 }}</td>
+                                <td>{{ $penjualan->kode_transaksi }}</td>
+                                <td>{{ $penjualan->kasir->nama ?? '-' }}</td>
+                                <td>{{ $penjualan->pelanggan->nama ?? '-' }}</td>
+                                <td>Rp {{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($penjualan->pajak, 0, ',', '.') }}</td>
+                                <td>{{ number_format($penjualan->diskon, 0, ',', '.') }} %</td>
+                                <td>Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
+                                <td>
+                                    @if ($penjualan->status_pembayaran == 'lunas')
+                                    <span class="badge bg-success">Lunas</span>
+                                    @elseif ($penjualan->status_pembayaran == 'pending')
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    @endif
+                                </td>
+                                <td>{{ $penjualan->keterangan }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="12" class="text-center text-muted">Tidak ada transaksi yang ditemukan.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const ctx = document.getElementById('myChart');
+        if (ctx && window.chartDetail) {
+            const chartDetail = window.chartDetail;
+            const labels = chartDetail.labels;
+            const values = chartDetail.data;
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Terjual',
+                        data: values,
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+
+    @endpush
 
 </div>

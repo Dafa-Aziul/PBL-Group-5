@@ -104,26 +104,22 @@
                     <div class="card-header">Penggunaan Jasa</div>
                     <div class="card-body">
                         <div class="mb-3">
-                            <div class="row g-2 align-items-center">
-                                <div class="col-md-11">
+                            <div class="row g-2">
+                                <div class="col-10 col-md-11">
                                     <select wire:model.live="selectedJasaId" class="form-select">
                                         <option value="">-- Pilih Jasa --</option>
                                         @foreach($jasas as $jasa)
                                         <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                                <div class="col-md-1">
-                                    <button wire:click="addJasa" type="button" class="btn btn-primary w-100">
-                                        Tambah
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="row mt-1">
-                                <div class="col-md-6 offset-md-0">
                                     @error('selectedJasaId')
                                     <div class="text-danger" style="font-size: 0.875em;">{{ $message }}</div>
                                     @enderror
+                                </div>
+                                <div class="col-2 col-md-1">
+                                    <button wire:click="addJasa" type="button" class="btn btn-primary w-100">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -176,9 +172,9 @@
 
                 <div class="card mb-4">
                     <div class="card-header">Penggunaan Sparepart</div>
-                    <div class="card-body row align-items-end">
-                        <div class="row align-items-end">
-                            <div class="col-md-9">
+                    <div class="card-body">
+                        <div class="row g-2 mb-3">
+                            <div class="col-12 col-md-9">
                                 <select wire:model="selectedSparepartId" class="form-select">
                                     <option value="">-- Pilih Sparepart --</option>
                                     @foreach($spareparts as $sparepart)
@@ -187,35 +183,30 @@
                                     </option>
                                     @endforeach
                                 </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <input wire:model="jumlahSparepart" type="number" min="1" class="form-control"
-                                    placeholder="Jumlah">
-                            </div>
-
-                            <div class="col-md-1">
-                                <button wire:click="addSparepart" type="button"
-                                    class="btn btn-primary w-100">Tambah</button>
-                            </div>
-                        </div>
-
-                        <div class="row mt-1">
-                            <div class="col-md-9">
                                 @error('selectedSparepartId')
-                                <div class="text-danger" style="font-size: 0.875em;">{{ $message }}</div>
+                                <div class="text-danger" style="font-size: 0.875em;">{{ $message }}
+                                </div>
                                 @enderror
                             </div>
-                            <div class="col-md-2">
+
+                            <div class="col-8 col-md-2">
+                                <input wire:model.number="jumlahSparepart" type="text"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" min="1"
+                                    class="form-control" placeholder="Jumlah">
                                 @error('jumlahSparepart')
-                                <div class="text-danger" style="font-size: 0.875em;">{{ $message }}</div>
+                                <div class="text-danger" style="font-size: 0.875em;">{{ $message }}
+                                </div>
                                 @enderror
                             </div>
-                            <div class="col-md-1">
-                                <!-- Kosong, untuk keseimbangan kolom -->
+
+                            <div class="col-4 col-md-1 d-flex flex-column justify-content-start align-middle">
+                                <button wire:click="addSparepart" type="button" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="table-responsive mt-3">
+
+                        <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr class="table-secondary">

@@ -24,7 +24,6 @@ class Index extends Component
         $this->resetPage(); // Kembali ke halaman 1 saat pencarian berubah
     }
 
-
     public function render()
     {
         $spareparts = Sparepart::search($this->search)->paginate($this->perPage);

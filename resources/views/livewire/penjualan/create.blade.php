@@ -60,9 +60,9 @@
                 {{-- Penggunaan Sparepart --}}
                 <div class="card mb-4">
                     <div class="card-header">Penggunaan Sparepart</div>
-                    <div class="card-body row align-items-end">
-                        <div class="row align-items-end">
-                            <div class="col-md-9">
+                    <div class="card-body p-3">
+                        <div class="row g-2 mb-3">
+                            <div class="col-12 col-md-9">
                                 <select wire:model="selectedSparepartId" class="form-select">
                                     <option value="">-- Pilih Sparepart --</option>
                                     @foreach($spareparts as $sparepart)
@@ -71,29 +71,31 @@
                                     </option>
                                     @endforeach
                                 </select>
+                                @error('selectedSparepartId')
+                                <div class="text-danger" style="font-size: 0.875em;">{{ $message }}
+                                </div>
+                                @enderror
                             </div>
 
-                            <div class="col-md-2">
-                                <input wire:model="jumlahSparepart" type="number" min="1" class="form-control"
-                                    placeholder="Jumlah">
+                            <div class="col-8 col-md-2">
+                                <input wire:model.number="jumlahSparepart" type="text"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')" min="1"
+                                    class="form-control" placeholder="Jumlah">
+                                @error('jumlahSparepart')
+                                <div class="text-danger" style="font-size: 0.875em;">{{ $message }}
+                                </div>
+                                @enderror
                             </div>
 
-                            <div class="col-md-1">
-                                <button wire:click="addSparepart" type="button"
-                                    class="btn btn-primary w-100">Tambah</button>
+                            <div class="col-4 col-md-1 d-flex flex-column justify-content-start align-middle">
+                                <button wire:click="addSparepart" type="button" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i>
+                                </button>
                             </div>
-                        </div>
-
-                        <div class="row mt-1">
-                            <div class="col-md-9">@error('selectedSparepartId')<div class="text-danger"
-                                    style="font-size: 0.875em;">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-2">@error('jumlahSparepart')<div class="text-danger"
-                                    style="font-size: 0.875em;">{{ $message }}</div>@enderror</div>
-                            <div class="col-md-1"></div>
                         </div>
 
                         {{-- Tabel Sparepart --}}
-                        <div class="table-responsive mt-3">
+                        <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
                                     <tr class="table-secondary">
@@ -139,37 +141,37 @@
                             <div class="text-danger mb-2">{{ $message }}</div>
                             @enderror
 
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label for="pajak" class="form-label">Pajak 11%</label>
-                                    <div class="form-control mb-1">
-                                        Rp {{ number_format($this->form->pajak, 0, ',', '.')}}
-                                    </div>
-                                    @error('pajak') <span class="text-danger">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-md-4 mb-3">
+                                <label for="pajak" class="form-label">Pajak 11%</label>
+                                <div class="form-control mb-1">
+                                    Rp {{ number_format($this->form->pajak, 0, ',', '.')}}
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="diskon">Diskon (%)</label>
-                                    <input type="number" min="0" max="100" class="form-control"
-                                        wire:model.lazy="form.diskon" id="diskon">
-                                    @error('form.diskon') <span class="text-danger">{{ $message }}</span> @enderror
+                                @error('pajak') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="col-6 col-md-4 mb-3 ">
+                                <label for="diskon">Diskon (%)</label>
+                                <input type="text" min="0" max="100" class="form-control"
+                                    wire:model.number.lazy="form.diskon" id="diskon" maxlength="3" max="100" oninput="this.value = this.value.replace(/[^0-9]/g, '')" >
+                                @error('form.diskon') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="col-6 col-md-4 mb-3">
+                                <label for="diskon">Diskon (Rp)</label>
+                                <div class="form-control mb-1">
+                                    Rp {{ number_format($this->total_diskon, 0, ',', '.')}}
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="diskon">Diskon (Rp)</label>
-                                    <div class="form-control mb-1">
-                                        Rp {{ number_format($this->total_diskon, 0, ',', '.')}}
-                                    </div>
-                                    @error('') <span class="text-danger">{{ $message }}</span> @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <div class="alert alert-info d-flex align-items-center" role="alert">
-                                        <i class="fas fa-calculator me-2"></i>
-                                        <div>
-                                            <strong>Total Estimasi Biaya:</strong>
-                                            <span class="text-success fs-5 ms-2">Rp {{ number_format($this->form->total,
-                                                0,
-                                                ',', '.')
+                                @error('') <span class="text-danger">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="mb-3">
+                                <div class="alert alert-info d-flex align-items-center" role="alert">
+                                    <i class="fas fa-calculator me-2"></i>
+                                    <div>
+                                        <strong>Total Estimasi Biaya:</strong>
+                                        <span class="text-success fs-5 ms-2">Rp {{ number_format($this->form->total,
+                                            0,
+                                            ',', '.')
                                             }}</span>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -214,14 +216,13 @@
                             </div>
                             <div class="modal-body">
                                 <label for="editJumlah" class="form-label">Jumlah</label>
-                                <input type="number" wire:model.defer="editJumlah" id="editJumlah"
-                                    min="1" class="form-control" required>
+                                <input type="number" wire:model.defer="editJumlah" id="editJumlah" min="1"
+                                    class="form-control" required>
                                 @error('editJumlah') <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                                 <button type="submit" class="btn btn-primary">Update Jumlah</button>
                             </div>
                         </div>

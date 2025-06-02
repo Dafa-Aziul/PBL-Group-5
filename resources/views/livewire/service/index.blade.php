@@ -35,17 +35,6 @@
         </div>
     </div>
     @endif
-    <div class="modal fade" id="modalTest" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Modal Test</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">Ini modal test</div>
-            </div>
-        </div>
-    </div>
 
     <div class="row g-3 mb-4">
         {{-- Kanan atas: Status + Jenis dalam satu kolom besar (75%) --}}
@@ -55,11 +44,11 @@
                 <div class="card card-jumlah flex-fill card-hover">
                     <div class="card-body">
                         <h5 class="card-title text-success">
-                            <i class="fa-solid fa-money-bill-1-wave"></i> Total Pendapatan
+                            <i class="fa-solid fa-wrench"></i> Jumlah Service Hari Ini
                         </h5>
                         <hr class="border border-2 opacity-50">
-                        <h2 class="fw-bold text-dark text-center" >
-                            
+                        <h2 class="fw-bold text-dark text-center">{{$jumlahService}}
+                            service
                         </h2>
                     </div>
 
@@ -68,10 +57,12 @@
                 <div class="card card-jumlah flex-fill card-hover">
                     <div class="card-body">
                         <h5 class="card-title text-success">
-                            <i class="fa-solid fa-file-invoice-dollar"></i> Total Transaksi
+                            <i class="fa-solid fa-toolbox"></i> Jumlah Sparepart Yang Digunakan
                         </h5>
                         <hr class="border border-2 opacity-50">
-                        <h2 class="fw-bold text-dark text-center"></h2>
+                        <h2 class="fw-bold text-dark text-center">{{$jumlahSparepart}}
+                            sparepart
+                        </h2>
                     </div>
 
                 </div>
@@ -81,13 +72,14 @@
             <div class="card card-jumlah h-100 card-hover">
                 <div class="card-body">
                     <h5 class="card-title text-success">
-                        <i class="fa-solid fa-comments-dollar"></i> Status Pembayaran
+                        <i class="fa-solid fa-list-check"></i> Status Service
                     </h5>
                     <hr class="border border-2 opacity-50">
-                    <canvas id="myChart" width="280" height="280"></canvas>
-                    {{-- <script>
-                        window.chartData = @json($chartData);
-                    </script> --}}
+                    <canvas id="statusChart" width="280" height="280"></canvas>
+                    <script>
+                        window.chartStatus = @json($chartStatus);
+                    </script>
+
                 </div>
 
             </div>
@@ -97,17 +89,64 @@
             <div class="card card-jumlah h-100 card-hover">
                 <div class="card-body">
                     <h5 class="card-title text-success">
-                        <i class="fa-solid fa-list"></i> Jenis Transaksi
+                        <i class="fa-solid fa-gears"></i> Jenis Jasa
                     </h5>
                     <hr class="border border-2 opacity-50">
-                    <canvas id="jenisChart" width="280" height="280"></canvas>
-                    {{-- <script>
-                        window.chartJenis = @json($chartJenis);
-                    </script> --}}
+                    <canvas id="myChart" width="280" height="280"></canvas>
+                    <script>
+                        window.chartJasa = @json($chartJasa);
+                    </script>
+
+
                 </div>
 
             </div>
         </div>
+    </div>
+
+
+
+    <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
+
+        <div class="col-12 col-md-4 d-flex align-items-center gap-3">
+            <!-- Container form untuk dari dan sampai -->
+            <div class="d-flex flex-column flex-md-row gap-3 w-100">
+                <!-- From -->
+                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                    <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
+                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if($showAll)
+                        disabled @endif>
+                </div>
+
+                <!-- To -->
+                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                    <label for="tanggalAkhir" class="form-label mb-0" style="width: 50px;">To :</label>
+                    <input type="date" id="tanggalAkhir" wire:model.live="tanggalAkhir" class="form-control"
+                        @if($showAll) disabled @endif>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Reset Button -->
+        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2    ">
+            <!-- Checkbox "Semua" -->
+            <div>
+                <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">
+                <label class="btn btn-outline-primary mb-0" for="showAllCheck">
+                    Semua
+                </label>
+            </div>
+
+            <!-- Tombol Reset -->
+            <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
+                <i class="fas fa-rotate me-1"></i>
+                <span class="d-none d-md-inline">Reset Filter</span>
+            </button>
+        </div>
+
+
     </div>
 
     <div class="card mb-4">
@@ -246,26 +285,26 @@
                                 <td>{{ $service->keterangan }}</td>
                                 <td class="text-center" @click.stop>
                                     @if (!in_array($service->status, ['selesai', 'batal']))
-                                        <a href="{{ route('service.edit', ['id' => $service->id]) }}"
-                                            class="btn btn-warning" wire:navigate>
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                            <span class="d-none d-md-inline ms-1">Edit</span>
-                                        </a>
+                                    <a href="{{ route('service.edit', ['id' => $service->id]) }}"
+                                        class="btn btn-warning mb-3 mb-md-0" wire:navigate>
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                        <span class="d-none d-md-inline ms-1">Edit</span>
+                                    </a>
                                     @endif
                                     @if ($service->status == 'analisis selesai' || $service->status == 'dalam proses' )
-                                        <a href="{{ route('service.detail', ['id' => $service->id]) }}" class="btn btn-info"
-                                            wire:navigate>
-                                            <i class="fa-solid fa-plus"></i>
-                                            <span class="d-none d-md-inline ms-1">detail</span>
-                                        </a>
+                                    <a href="{{ route('service.detail', ['id' => $service->id]) }}"
+                                        class="btn btn-info mb-3 mb-md-0" wire:navigate>
+                                        <i class="fa-solid fa-plus"></i>
+                                        <span class="d-none d-md-inline ms-1">detail</span>
+                                    </a>
                                     @endif
 
                                     @if (is_null($service->serviceDetail)&& $service->status == 'selesai')
-                                        <a href="{{ route('transaksi.service', ['id' => $service->id]) }}" class="btn btn-info"
-                                            wire:navigate>
-                                            <i class="fa-solid fa-receipt"></i>
-                                            <span class="d-none d-md-inline ms-1">Catat Transaksi</span>
-                                        </a>
+                                    <a href="{{ route('transaksi.service', ['id' => $service->id]) }}"
+                                        class="btn btn-info mb-3 mb-md-0" wire:navigate>
+                                        <i class="fa-solid fa-receipt"></i>
+                                        <span class="d-none d-md-inline ms-1">Catat Transaksi</span>
+                                    </a>
                                     @endif
                                 </td>
                             </tr>
@@ -280,5 +319,99 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        function renderJasaChart() {
+        const jasaEl = document.getElementById('myChart');
+        if (!jasaEl) return;
+
+        const ctx = jasaEl.getContext('2d');
+        const labels = window.chartJasa.labels;
+        const values = window.chartJasa.data;
+
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Jasa',
+                    data: values,
+                    backgroundColor: [
+                        'rgb(75, 192, 192)',
+                        'rgb(255, 205, 86)',
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(153, 102, 255)'
+                    ].slice(0, labels.length),
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+    }
+
+    function renderStatusChart() {
+        const statusEl = document.getElementById('statusChart');
+        if (!statusEl) return;
+
+        const ctx = statusEl.getContext('2d');
+        const chartStatus = window.chartStatus;
+
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: chartStatus.labels,
+                datasets: [{
+                    label: 'Status Service',
+                    data: chartStatus.data,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(75, 192, 192)'
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+    }
+
+    document.addEventListener("livewire:navigated", () => {
+        renderStatusChart();
+        renderJasaChart();
+    });
+
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        renderStatusChart();
+        renderJasaChart();
+    });
+
+    // Trigger ulang chart setelah Livewire selesai render
+    Livewire.hook('message.processed', () => {
+        renderStatusChart();
+        renderJasaChart();
+    });
+    
+    </script>
+    @endpush
+
 
 </div>

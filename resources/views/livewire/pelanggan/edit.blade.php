@@ -1,7 +1,8 @@
 <div>
     <h2 class="mt-4">Kelola Pelanggan</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('pelanggan.view') }}">Pelanggan</a></li>
         <li class="breadcrumb-item active">Edit Pelanggan</li>
     </ol>
     <div class="card mb-4">
@@ -20,43 +21,43 @@
             <form wire:submit.prevent="update">
                 <div class="mb-3">
                     <label>Nama </label>
-                    <input type="text" class="form-control" wire:model="form.nama" value="{{ old('form.nama', $pelanggan->nama)}}">
+                    <input type="text" class="form-control" wire:model="form.nama"
+                        value="{{ old('form.nama', $pelanggan->nama)}}">
                     @error('form.nama') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">
                     <label>Email</label>
-                    <input type="email" class="form-control" wire:model="email" value="{{ old('email', $pelanggan->email)}}" readonly>
+                    <input type="email" class="form-control" wire:model="email"
+                        value="{{ old('email', $pelanggan->email)}}" readonly>
                     @error('email') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
                 <div class="mb-3">
                     <label>No.Hp</label>
-                    <input type="text" class="form-control" wire:model="form.no_hp"  value="{{ old('form.no_hp', $pelanggan->no_hp)}}">
+                    <input type="text" class="form-control" wire:model="form.no_hp"
+                        value="{{ old('form.no_hp', $pelanggan->no_hp)}}">
                     @error('form.no_hp')
                     <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Keterangan</label>
-                    <div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" wire:model="form.keterangan"
-                                id="keteranganPribadi" value="pribadi">
-                            <label class="form-check-label" for="keteranganPribadi">Pribadi</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" wire:model="form.keterangan"
-                                id="keteranganPerusahaan" value="perusahaan">
-                            <label class="form-check-label" for="keteranganPerusahaan">Perusahaan</label>
-                        </div>
+                    <div class="btn-group">
+                        <input type="radio" id="pribadi" value="pribadi" wire:model="form.tipe" class="btn-check">
+                        <label for="pribadi" class="btn btn-outline-primary">pribadi</label>
+
+                        <input type="radio" id="perusahaan" value="perusahaan" wire:model="form.tipe" class="btn-check">
+                        <label for="perusahaan" class="btn btn-outline-primary">Perusahaan</label>
                     </div>
+                    {{-- --}}
                     @error('form.keterangan')
                     <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="mb-3">
                     <label>alamat</label>
-                    <textarea class="form-control" wire:model="form.alamat" id="" cols="20" rows="5">{{ old('form.alamat', $pelanggan->alamat)}}</textarea>
+                    <textarea class="form-control" wire:model="form.alamat" id="" cols="20"
+                        rows="5">{{ old('form.alamat', $pelanggan->alamat)}}</textarea>
                     @error('form.alamat') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
                 <button type="submit" class="btn btn-success">Simpan</button>

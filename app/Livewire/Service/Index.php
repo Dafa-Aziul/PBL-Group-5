@@ -12,11 +12,15 @@ use Illuminate\Support\Carbon;
 
 class Index extends Component
 {
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
     public $perPage = 5;
     public $search = '';
+
+    public $tanggalAwal;
+    public $tanggalAkhir;
+    public $showAll = false;
 
     // Array untuk menyimpan status masing-masing service by id
     public $statuses = [];
@@ -112,6 +116,87 @@ class Index extends Component
         }
     }
 
+    public function mount()
+    {
+        $this->search = '';
+        $this->tanggalAwal = null;
+        $this->tanggalAkhir = null;
+        $this->showAll = false;
+        // default: tampilkan hari ini saja
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function resetFilter()
+    {
+        $this->tanggalAwal = null;
+        $this->tanggalAkhir = null;
+        $this->search = '';
+        $this->showAll = false;
+        $this->resetPage();
+        $this->perPage = 5;
+    }
+
+    public function updatedShowAll()
+    {
+        if ($this->showAll) {
+            $this->tanggalAwal = null;
+            $this->tanggalAkhir = null;
+        }
+        $this->resetPage();
+    }
+
+    //chart jenis jasa
+    public function getChartJasa()
+    {
+        $today = Carbon::today();
+
+        $servicesHariIni = Service::with('jasas.jasa')
+            ->whereDate('created_at', $today)
+            ->get();
+
+        $allJasas = $servicesHariIni->flatMap(function ($service) {
+            return $service->jasas->map(function ($jasa) {
+                return [
+                    'nama_jasa' => $jasa->jasa->nama_jasa ?? 'Tidak Diketahui',
+                    'jumlah' => $jasa->jumlah ?? 1,
+                ];
+            });
+        });
+
+        $grouped = collect($allJasas)
+            ->groupBy('nama_jasa')
+            ->map(fn($group) => $group->sum('jumlah'));
+
+        return [
+            'labels' => $grouped->keys()->toArray(),
+            'data' => $grouped->values()->toArray(),
+        ];
+    }
+
+    public function getChartStatus()
+    {
+        $today = Carbon::today();
+
+        // Ambil semua service yang dibuat hari ini
+        $servicesHariIni = Service::whereDate('created_at', $today)->get();
+
+        // Group by kolom 'status' dan hitung jumlah tiap status
+        $grouped = $servicesHariIni->groupBy('status')->map->count();
+
+        return [
+            'labels' => $grouped->keys()->toArray(),
+            'data' => $grouped->values()->toArray(),
+        ];
+    }
+
+
+
+
+
     public function render()
     {
         $services = Service::with(['kendaraan.pelanggan'])
@@ -126,6 +211,12 @@ class Index extends Component
                     })
                     ->orWhere('keterangan', 'like', '%' . $this->search . '%');
             })
+            ->when(!$this->showAll, function ($query) {
+                $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
+                $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
+
+                $query->whereBetween('created_at', [$start, $end]);
+            })
             ->orderByDesc('created_at')
             ->paginate($this->perPage);
 
@@ -135,6 +226,32 @@ class Index extends Component
             }
         }
 
-        return view('livewire.service.index', compact('services'));
+        $today = Carbon::today();
+        $chartJasa = $this->getChartJasa();
+        $chartStatus = $this->getChartStatus();
+        // dd($chartStatus);
+
+        // Pastikan relasi dimuat
+        $jumlah = Service::with(['spareparts'])->get();
+
+        // Hitung jumlah jasa dari seluruh service
+        $jumlahService = Service::whereDate('created_at', $today)->count();
+
+        // Hitung jumlah sparepart yang digunakan hari ini
+        $jumlahSparepart = $jumlah->sum(function ($service) use ($today) {
+            return $service->spareparts
+                ->filter(function ($sparepart) use ($today) {
+                    return $sparepart->created_at->toDateString() === $today->toDateString();
+                })
+                ->sum('jumlah'); // gunakan count() kalau tidak ada kolom 'jumlah'
+        });
+
+        return view('livewire.service.index', compact(
+            'services',
+            'jumlahSparepart',
+            'jumlahService',
+            'chartJasa',
+            'chartStatus'
+        ));
     }
 }

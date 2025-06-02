@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class Show extends Component
 {
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
     public $perPage = 10;
@@ -39,6 +39,60 @@ class Show extends Component
     public function updatingFilterMinggu()
     {
         $this->resetPage();
+    }
+
+    // Tambahkan method baru di class Show
+
+    public function getAbsensiStatusChartData()
+    {
+        $bulan = $this->filterBulan ?: Carbon::now()->month;
+
+        $data = Absensi::select('status')
+            ->whereMonth('tanggal', $bulan)
+            ->groupBy('status')
+            ->selectRaw('status, COUNT(*) as total')
+            ->pluck('total', 'status');
+
+        // $data ini masih collection, jadi bisa pakai keys() dan values()
+        return [
+            'labels' => $data->keys()->toArray(),
+            'data' => $data->values()->toArray(),
+        ];
+    }
+
+    public function getAllStatusChartData()
+    {
+        $bulan = $this->filterBulan ?: Carbon::now()->month;
+
+        // Ambil semua data absensi untuk bulan itu
+        $absensi = Absensi::with('karyawan')
+            ->whereMonth('tanggal', $bulan)
+            ->get();
+
+        // Status yang ingin ditampilkan
+        $statusList = ['hadir', 'terlambat', 'izin', 'sakit', 'alpha', 'lembur'];
+
+        $result = [];
+
+        // Group by karyawan
+        $grouped = $absensi->groupBy('karyawan_id');
+
+        foreach ($grouped as $karyawanId => $items) {
+            $karyawanNama = optional($items->first()->karyawan)->nama ?? 'Tidak diketahui';
+            $statusCount = [];
+
+            // Hitung per status
+            foreach ($statusList as $status) {
+                $statusCount[$status] = $items->where('status', $status)->count();
+            }
+
+            $result[] = [
+                'nama' => $karyawanNama,
+                'status' => $statusCount,
+            ];
+        }
+
+        return $result;
     }
 
 
@@ -81,11 +135,13 @@ class Show extends Component
             // Ganti sortDirection ke ASC
             $this->sortDirection = 'asc';
         }
+        $chartData = $this->getAbsensiStatusChartData();
+        $chartStatus = $this->getAllStatusChartData();
 
 
 
         $absensis = $query->orderBy('tanggal', $this->sortDirection)->paginate($this->perPage);
-
-        return view('livewire.absensi.show', compact('absensis'));
+        // dd($chartStatus);
+        return view('livewire.absensi.show', compact('absensis', 'chartData', 'chartStatus'));
     }
 }
