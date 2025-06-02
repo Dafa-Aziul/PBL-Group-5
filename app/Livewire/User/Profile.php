@@ -67,7 +67,7 @@ class Profile extends Component
 
             session()->flash('success', 'Profile photo updated successfully!');
             $this->dispatch('close-cropper-modal');
-            return redirect()->route('profile.show'); // Redirect to profile page after saving
+            // return redirect()->route('profile.show'); // Redirect to profile page after saving
 
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to save photo: ' . $e->getMessage());

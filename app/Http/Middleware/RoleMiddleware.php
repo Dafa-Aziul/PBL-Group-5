@@ -19,7 +19,7 @@ class RoleMiddleware
 
         // Jika user tidak login atau tidak punya role yang sesuai
         if (!$user || !in_array($user->role, $roles)) {
-            return redirect()->back()->with('error', 'Kamu tidak punya akses ke halaman ini.');
+            abort(403, 'Kamu tidak punya akses ke halaman ini.');
         }
 
         return $next($request);

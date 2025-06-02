@@ -99,50 +99,50 @@
 
             <div>
                 <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-primary">
-                        <tr>
-                            <th>No.</th>
-                            <th>Kode Transaksi</th>
-                            <th>Kasir</th>
-                            <th>Pelanggan</th>
-                            <th>Subtotal</th>
-                            <th>Pajak (11%)</th>
-                            <th>Diskon (%)</th>
-                            <th>Total</th>
-                            <th>Status Pembayaran</th>
-                            <th>Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($penjualans as $penjualan)
-                        <tr style="cursor: pointer;" x-data
-                            @click="Livewire.navigate(`/penjualan/{{ $penjualan->id }}`)">
-                            <td class="text-center">{{ ($penjualans->firstItem() + $loop->iteration) - 1 }}</td>
-                            <td>{{ $penjualan->kode_transaksi }}</td>
-                            <td>{{ $penjualan->kasir->nama ?? '-' }}</td>
-                            <td>{{ $penjualan->pelanggan->nama ?? '-' }}</td>
-                            <td>Rp {{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
-                            <td>Rp {{ number_format($penjualan->pajak, 0, ',', '.') }}</td>
-                            <td>{{ number_format($penjualan->diskon, 0, ',', '.')  }} %</td>
-                            <td>Rp {{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
-                            <td>
-                                @if ($penjualan->status_pembayaran == 'lunas')
-                                <span class="badge bg-success">Lunas</span>
-                                @elseif ($penjualan->status_pembayaran == 'pending')
-                                <span class="badge bg-warning text-dark">Pending</span>
-                                @endif
-                            </td>
-                            <td>{{ $penjualan->keterangan }}</td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="12" class="text-center text-muted">Tidak ada transaksi yang ditemukan.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>No.</th>
+                                <th>Kode Transaksi</th>
+                                <th>Kasir</th>
+                                <th>Pelanggan</th>
+                                <th>Subtotal</th>
+                                <th>Pajak (11%)</th>
+                                <th>Diskon (%)</th>
+                                <th>Total</th>
+                                <th>Status Pembayaran</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($penjualans as $penjualan)
+                            <tr style="cursor: pointer;" x-data
+                                @click="Livewire.navigate(`/penjualan/{{ $penjualan->id }}`)">
+                                <td class="text-center">{{ ($penjualans->firstItem() + $loop->iteration) - 1 }}</td>
+                                <td>{{ $penjualan->kode_transaksi }}</td>
+                                <td>{{ $penjualan->kasir->nama ?? '-' }}</td>
+                                <td>{{ $penjualan->pelanggan->nama ?? '-' }}</td>
+                                <td>Rp {{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($penjualan->pajak, 0, ',', '.') }}</td>
+                                <td>{{ number_format($penjualan->diskon, 0, ',', '.') }} %</td>
+                                <td>Rp {{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
+                                <td>
+                                    @if ($penjualan->status_pembayaran == 'lunas')
+                                    <span class="badge bg-success">Lunas</span>
+                                    @elseif ($penjualan->status_pembayaran == 'pending')
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    @endif
+                                </td>
+                                <td>{{ $penjualan->keterangan }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="12" class="text-center text-muted">Tidak ada transaksi yang ditemukan.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -4,110 +4,110 @@
     let modalEl; // ✅ Deklarasikan sekali di scope tertinggi
 
     window.addEventListener('open-cropper-modal', () => {
-    modalEl = document.getElementById('cropPhotoModal');
-    const modal = new bootstrap.Modal(modalEl, {
-        backdrop: 'static',
-        keyboard: false
-    });
-
-    // Pasang event listener sekali untuk modalEl agar inisialisasi cropper di-trigger setelah modal muncul
-    modalEl.addEventListener('shown.bs.modal', () => {
-        const image = document.getElementById('cropperImage');
-        if (image && image.src) {
-            if (cropper) cropper.destroy();
-
-            cropper = new Cropper(image, {
-                aspectRatio: 1,
-                viewMode: 1,
-                autoCropArea: 1,
-                responsive: true,
-                restore: false,
-                checkCrossOrigin: false
-            });
-        }
-    }, { once: true }); // 'once: true' agar event hanya jalan sekali setiap modal dibuka
-
-    modal.show();
-});
-
-
-        window.addEventListener('close-cropper-modal', () => {
-            const modal = bootstrap.Modal.getInstance(modalEl); // ✅ Gunakan modalEl yang sudah dideklarasikan
-            if (modal) modal.hide();
-
-            setTimeout(() => {
-                const backdrop = document.querySelector('.modal-backdrop');
-                if (backdrop) backdrop.remove();
-
-                document.body.classList.remove('modal-open');
-                document.body.style.removeProperty('padding-right');
-            }, 300);
-
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-
-            if (modalEl) {
-                modalEl.removeEventListener('hidden.bs.modal', this.hideModal); // ✅ Referensi yang sama
-            }
+        modalEl = document.getElementById('cropPhotoModal');
+        const modal = new bootstrap.Modal(modalEl, {
+            backdrop: 'static',
+            keyboard: false
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const cropSaveBtn = document.getElementById('cropSaveBtn');
+        // Pasang event listener sekali untuk modalEl agar inisialisasi cropper di-trigger setelah modal muncul
+        modalEl.addEventListener('shown.bs.modal', () => {
+            const image = document.getElementById('cropperImage');
+            if (image && image.src) {
+                if (cropper) cropper.destroy();
 
-            if (cropSaveBtn) {
-                cropSaveBtn.addEventListener('click', () => {
-                    if (!cropper) {
-                        console.error('Cropper tidak ada');
-                        return;
-                    }
-
-                    // Get cropped canvas with optimized settings
-                    const canvas = cropper.getCroppedCanvas({
-                        width: 500,
-                        height: 500,
-                        minWidth: 256,
-                        minHeight: 256,
-                        maxWidth: 1024,
-                        maxHeight: 1024,
-                        fillColor: '#fff',
-                        imageSmoothingEnabled: true,
-                        imageSmoothingQuality: 'high'
-                    });
-
-                    if (!canvas) {
-                        console.error('Canvas tidak ada');
-                        return;
-                    }
-
-                    // Convert canvas to blob
-                    canvas.toBlob((blob) => {
-                        if (!blob) {
-                            console.error('Gagal membuat blob');
-                            return;
-                        }
-
-                        const reader = new FileReader();
-
-                        // Error handling
-                        reader.onerror = () => {
-                            console.error('FileReader error');
-                            return;
-                        };
-
-                        // Success handler
-                        reader.onloadend = () => {
-                            Livewire.find('{{ $this->getId() }}').call('saveCroppedPhoto', reader.result);
-                            // Close modal after dispatch
-                            window.dispatchEvent(new CustomEvent('close-cropper-modal'));
-                        };
-
-                        reader.readAsDataURL(blob);
-                    }, 'image/png', 0.95); // 95% quality
+                cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    responsive: true,
+                    restore: false,
+                    checkCrossOrigin: false
                 });
             }
-        });
+        }, { once: true }); // 'once: true' agar event hanya jalan sekali setiap modal dibuka
+
+        modal.show();
+    });
+
+
+    window.addEventListener('close-cropper-modal', () => {
+        const modal = bootstrap.Modal.getInstance(modalEl); // ✅ Gunakan modalEl yang sudah dideklarasikan
+        if (modal) modal.hide();
+
+        setTimeout(() => {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+        }, 300);
+
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+
+        if (modalEl) {
+            modalEl.removeEventListener('hidden.bs.modal', this.hideModal); // ✅ Referensi yang sama
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const cropSaveBtn = document.getElementById('cropSaveBtn');
+
+        if (cropSaveBtn) {
+            cropSaveBtn.addEventListener('click', () => {
+                if (!cropper) {
+                    console.error('Cropper tidak ada');
+                    return;
+                }
+
+                // Get cropped canvas with optimized settings
+                const canvas = cropper.getCroppedCanvas({
+                    width: 500,
+                    height: 500,
+                    minWidth: 256,
+                    minHeight: 256,
+                    maxWidth: 1024,
+                    maxHeight: 1024,
+                    fillColor: '#fff',
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+
+                if (!canvas) {
+                    console.error('Canvas tidak ada');
+                    return;
+                }
+
+                // Convert canvas to blob
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        console.error('Gagal membuat blob');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+
+                    // Error handling
+                    reader.onerror = () => {
+                        console.error('FileReader error');
+                        return;
+                    };
+
+                    // Success handler
+                    reader.onloadend = () => {
+                        Livewire.find('{{ $this->getId() }}').call('saveCroppedPhoto', reader.result);
+                        // Close modal after dispatch
+                        window.dispatchEvent(new CustomEvent('close-cropper-modal'));
+                    };
+
+                    reader.readAsDataURL(blob);
+                }, 'image/png', 0.95); // 95% quality
+            });
+        }
+    });
 </script>
 @endpush
 

@@ -185,7 +185,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Penjualan
     Route::prefix('penjualan')->middleware('role:superadmin,admin,owner')->group(function () {
         Route::get('/', PenjualanIndex::class)->name('penjualan.view');
-        Route::get('/create', PenjualanCreate::class)->name('penjualan.create');
+        Route::get('/create', PenjualanCreate::class)->name('penjualan.create')->withoutMiddleware('role:owner');
         Route::get('/{id}', PenjualanShow::class)->name('penjualan.show');
     });
 });
