@@ -303,7 +303,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 
 
 
-
+    @can('akses-admin-owner')
     {{-- Bagian Chart Transaksi --}}
     <div class="row d-flex align-items-stretch my-3">
         <div class="col-12">
@@ -387,6 +387,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 
         </div>
     </div>
+    @endcan
     {{-- Script Chart --}}
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
