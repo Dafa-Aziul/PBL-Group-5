@@ -4,10 +4,9 @@ namespace App\Livewire\Absensi;
 
 use App\Models\Absensi;
 use App\Models\Karyawan;
+use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\WithoutUrlPagination;
-use Carbon\Carbon;
 
 class Show extends Component
 {
@@ -19,73 +18,185 @@ class Show extends Component
     public $filterStatus = '';
     public $filterBulan = '';
     public $filterMinggu = '';
-    public $sortDirection = 'desc'; // 'asc' atau 'desc'
+    public $sortDirection = 'desc';
+    public $tanggalAwal;
+    public $tanggalAkhir;
 
-    // Reset pagination saat filter berubah
+    public function mount()
+    {
+        $this->tanggalAwal = null;
+        $this->tanggalAkhir = null;
+        // default: tampilkan hari ini saja
+    }
+
+    public function updatedTanggalAkhir($value)
+    {
+        if ($this->tanggalAwal && $this->tanggalAkhir) {
+            if (Carbon::parse($this->tanggalAkhir)->lt(Carbon::parse($this->tanggalAwal))) {
+                $this->addError('tanggalAkhir', 'Tanggal akhir tidak boleh lebih awal dari tanggal awal.');
+                $this->tanggalAkhir = null; // Reset atau bisa disesuaikan
+            } else {
+                $this->resetErrorBag('tanggalAkhir');
+            }
+        }
+        $this->emitChartData();
+    }
+
     public function updatingSearch()
     {
-        $this->resetPage();
+        $this->emitChartData();
     }
 
-    public function updatingFilterStatus()
+    public function updatedFilterStatus()
     {
-        $this->resetPage();
+        $this->emitChartData();
     }
 
-    public function updatingFilterBulan()
+    public function updatedFilterBulan()
     {
-        $this->resetPage();
-    }
-    public function updatingFilterMinggu()
-    {
-        $this->resetPage();
+        $this->filterMinggu = ''; // Reset week filter when month changes
+        $this->emitChartData();
     }
 
+    public function updatedFilterMinggu()
+    {
+        $this->emitChartData();
+    }
+
+    public function emitChartData()
+    {
+        $this->dispatch('chart-updated', chartData: $this->getAbsensiStatusChartData());
+        $this->dispatch('chart-bar-updated', chartStatus: $this->getAllStatusChartData());
+    }
+
+    public function getAbsensiStatusChartData()
+    {
+        $query = Absensi::query()
+            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterBulan, fn($q) => $q->whereMonth('tanggal', $this->filterBulan))
+            ->when($this->search, function ($q) {
+                $q->whereHas('karyawan', function ($subQuery) {
+                    $subQuery->where('nama', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->tanggalAwal && $this->tanggalAwal !== '', function ($query) {
+                $start = Carbon::parse($this->tanggalAwal)->startOfDay();
+                $end = $this->tanggalAkhir
+                    ? Carbon::parse($this->tanggalAkhir)->endOfDay()
+                    : Carbon::parse($this->tanggalAwal)->endOfDay();
+                $query->whereBetween('tanggal', [$start, $end]);
+            });
+
+        $data = $query->select('status')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $allStatuses = ['hadir', 'terlambat', 'izin', 'sakit', 'alpha', 'lembur'];
+
+        return [
+            'labels' => array_map('ucfirst', $allStatuses),
+            'data' => array_map(fn($status) => $data[$status] ?? 0, $allStatuses),
+        ];
+    }
+
+    public function getAllStatusChartData()
+    {
+        $statuses = ['hadir', 'terlambat', 'izin', 'sakit', 'alpha', 'lembur'];
+
+        $karyawans = Karyawan::when($this->search !== '', function ($q) {
+            $q->where('nama', 'like', '%' . $this->search . '%');
+        })->with(['absensis' => function ($query) {
+            if ($this->tanggalAwal && $this->tanggalAwal !== '') {
+                $start = Carbon::parse($this->tanggalAwal)->startOfDay();
+                $end = $this->tanggalAkhir
+                    ? Carbon::parse($this->tanggalAkhir)->endOfDay()
+                    : Carbon::parse($this->tanggalAwal)->endOfDay();
+                $query->whereBetween('tanggal', [$start, $end]);
+            }
+
+            $query->when($this->filterStatus, function ($q) {
+                $q->where('status', $this->filterStatus);
+            });
+
+            $query->when($this->filterBulan, function ($q) {
+                $q->whereMonth('tanggal', $this->filterBulan);
+            });
+        }])->get();
+
+
+        $labels = $karyawans->pluck('nama')->toArray();
+
+        $defaultColors = [
+            'hadir' => '#4caf50',
+            'terlambat' => '#ff9800',
+            'izin' => '#2196f3',
+            'sakit' => '#f44336',
+            'alpha' => '#9e9e9e',
+            'lembur' => '#673ab7',
+        ];
+
+        $datasets = [];
+
+        foreach ($statuses as $status) {
+            $datasets[] = [
+                'label' => ucfirst($status),
+                'data' => $karyawans->map(fn($k) => $k->absensis->where('status', $status)->count())->toArray(),
+                'backgroundColor' => $defaultColors[$status],
+            ];
+        }
+
+        return [
+            'labels' => $labels,
+            'datasets' => $datasets,
+        ];
+    }
+
+
+    public function resetFilters()
+    {
+        $this->reset(['filterStatus', 'filterBulan', 'filterMinggu']);
+        $this->resetPage();
+        $this->emitChartData();
+    }
 
     public function render()
     {
-        $query = Absensi::with('karyawan');
-        if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $q->where('tanggal', 'like', '%' . $this->search . '%')
-                    ->orWhere('jam_masuk', 'like', '%' . $this->search . '%')
-                    ->orWhere('jam_keluar', 'like', '%' . $this->search . '%')
-                    ->orWhere('status', 'like', '%' . $this->search . '%')
-                    ->orWhere('keterangan', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('karyawan', function ($q2) {
-                        $q2->where('nama', 'like', '%' . $this->search . '%');
-                    });
-            });
-        }
+        $query = Absensi::with('karyawan')
+            ->when($this->search, function ($q) {
+                $q->where(function ($q) {
+                    $q->where('tanggal', 'like', "%{$this->search}%")
+                        ->orWhere('jam_masuk', 'like', "%{$this->search}%")
+                        ->orWhere('jam_keluar', 'like', "%{$this->search}%")
+                        ->orWhere('status', 'like', "%{$this->search}%")
+                        ->orWhere('keterangan', 'like', "%{$this->search}%")
+                        ->orWhereHas('karyawan', fn($q) => $q->where('nama', 'like', "%{$this->search}%"));
+                });
+            })->when($this->tanggalAwal && $this->tanggalAwal !== '', function ($query) {
+                $start = Carbon::parse($this->tanggalAwal)->startOfDay();
+                $end = $this->tanggalAkhir
+                    ? Carbon::parse($this->tanggalAkhir)->endOfDay()
+                    : Carbon::parse($this->tanggalAwal)->endOfDay();
+                $query->whereBetween('tanggal', [$start, $end]);
+            })
+            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterBulan, fn($q) => $q->whereMonth('tanggal', $this->filterBulan))
+            ->when($this->filterMinggu && $this->filterBulan, function ($q) {
+                $tahun = Carbon::now()->year;
+                $startDate = Carbon::createFromDate($tahun, $this->filterBulan, 1)
+                    ->addWeeks($this->filterMinggu - 1)
+                    ->startOfWeek(Carbon::MONDAY);
+                $endDate = $startDate->copy()->endOfWeek(Carbon::SUNDAY);
+                $q->whereBetween('tanggal', [$startDate, $endDate]);
+            })
+            ->orderBy('tanggal', $this->sortDirection);
 
-        if (!empty($this->filterStatus)) {
-            $query->where('status', $this->filterStatus);
-        }
+        $absensis = $query->paginate($this->perPage);
 
-        if (!empty($this->filterBulan)) {
-            $query->whereMonth('tanggal', $this->filterBulan);
-        }
-
-        if (!empty($this->filterMinggu) && !empty($this->filterBulan)) {
-            $tahun = Carbon::now()->year;
-            $bulan = str_pad($this->filterBulan, 2, '0', STR_PAD_LEFT);
-
-            $startOfMonth = Carbon::createFromDate($tahun, $bulan, 1);
-            $startDate = $startOfMonth->copy()->addWeeks($this->filterMinggu - 1)->startOfWeek(Carbon::MONDAY);
-            $endDate = $startDate->copy()->endOfWeek(Carbon::SUNDAY);
-
-            if ($startDate->month == $this->filterBulan) {
-                $query->whereBetween('tanggal', [$startDate->toDateString(), $endDate->toDateString()]);
-            }
-
-            // Ganti sortDirection ke ASC
-            $this->sortDirection = 'asc';
-        }
-
-
-
-        $absensis = $query->orderBy('tanggal', $this->sortDirection)->paginate($this->perPage);
-
-        return view('livewire.absensi.show', compact('absensis'));
+        return view('livewire.absensi.show', [
+            'absensis' => $absensis,
+            'chartData' => $this->getAbsensiStatusChartData(),
+            'chartStatus' => $this->getAllStatusChartData()
+        ]);
     }
 }

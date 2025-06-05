@@ -1,3 +1,122 @@
+{{-- @push('scripts')
+<script>
+    let chartStatus, chartJenis;
+        let myChart = null;
+        let jenisChart = null;
+
+        function renderStatusChart() {
+            const ctx = document.getElementById('myChart');
+
+            window.chartData = @json($chartData);
+            window.chartJenis = @json($chartJenis);
+
+            if (!ctx || !window.chartData) return;
+
+            const labels = window.chartData.labels;
+            const values = window.chartData.data;
+
+            if (chartStatus) chartStatus.destroy(); // Hapus chart lama jika ada
+
+            chartStatus = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Status Pembayaran',
+                        data: values,
+                        backgroundColor: [
+                            'rgb(75, 192, 192)', // Lunas
+                            'rgb(255, 205, 86)'  // Pending
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderJenisChart() {
+            const ctx = document.getElementById('jenisChart');
+
+            if (!ctx || !window.chartJenis) return;
+
+            const labels = window.chartJenis.labels;
+            const values = window.chartJenis.data;
+
+            if (chartJenis) chartJenis.destroy(); // Hapus chart lama jika ada
+
+            chartJenis = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jenis Service',
+                        data: values,
+                        backgroundColor: [
+                            'rgb(255, 99, 132)',
+                            'rgb(54, 162, 235)'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('chart-updated', function (event) {
+            const chartData = event.detail.chartData;
+            const chartJenis = event.detail.chartJenis;
+
+            // Render ulang grafik (pastikan kamu sudah buat fungsi ini)
+            renderStatusChart(chartData);
+            renderJenisChart(chartJenis);
+        });
+
+        //    document.addEventListener('livewire:load', () => {
+        //     Livewire.on('chartUpdated', ({ chartData, chartJenis }) => {
+        //         renderStatusChart(chartData);
+        //         renderJenisChart(chartJenis);
+        //     });
+        // });
+
+
+
+
+        document.addEventListener("livewire:navigated", () => {
+            renderStatusChart();
+            renderJenisChart();
+        });
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderStatusChart();
+            renderJenisChart();
+        });
+
+        // Trigger ulang chart setelah Livewire selesai render
+        Livewire.hook('message.processed', () => {
+            renderStatusChart();
+            renderJenisChart();
+        });
+
+
+
+</script>
+@endpush --}}
 <div>
     <h2 class="mt-4">Manajemen Transaksi</h2>
     <ol class="breadcrumb mb-4">
@@ -5,42 +124,7 @@
                 href="{{ route('sparepart.view') }}">Transaksi</a></li>
         <li class="breadcrumb-item active">Daftar Transaksi</li>
     </ol>
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-            <div class="card card-jumlah h-100 card-hover">
-                <div class="card-body">
-                    <h3 class="card-title text-success">
-                        <i class="fa-solid fa-file-invoice-dollar"></i> Total Transaksi Hari Ini
-                    </h3>
-                    <hr class="border border-2 opacity-50">
-                </div>
-            </div>
-        </div>
 
-        <div class="col-12 col-md-4">
-            <div class="card card-jumlah h-100 card-hover">
-                <div class="card-body">
-                    <h3 class="card-title text-success">
-                        <i class="fa-solid fa-money-bill-1-wave"></i> Total Pendapatan Hari Ini
-                    </h3>
-                    <hr class="border border-2 opacity-50">
-
-
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4">
-            <div class="card card-jumlah h-100 card-hover">
-                <div class="card-body">
-                    <h3 class="card-title text-success">
-                        <i class="fa-solid fa-universal-access"></i> Status Pembayaran
-                    </h3>
-                    <hr class="border border-2 opacity-50">
-                </div>
-            </div>
-        </div>
-    </div>
 
 
     <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
@@ -67,7 +151,7 @@
 
 
         <!-- Reset Button -->
-        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2    ">
+        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
             <!-- Checkbox "Semua" -->
             <div>
                 <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">

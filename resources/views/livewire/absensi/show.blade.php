@@ -17,31 +17,70 @@
     </div>
     @endif
 
-    <div class="row g-2 mb-3">
-
-        <!-- Filter Bulan -->
-        <div class="col-6 col-md-3">
-            <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
-                <option value="">Semua Bulan</option>
-                @foreach(range(1, 12) as $bulan)
-                <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
-                </option>
-                @endforeach
-            </select>
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-4">
+            <div class="d-flex flex-column h-100 gap-3">
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-money-bill-1-wave"></i> Rekap Status Absensi
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <div class="d-flex justify-content-center p-5">
+                            <canvas style="width: 100%; height: 100%; display: block;" height="400px"
+                                id="myChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Filter Minggu -->
-        <div class="col-6 col-md-3">
-            <select class="form-select" wire:model.live="filterMinggu">
-                <option value="">Semua Minggu</option>
-                @for ($i = 1; $i <= 5; $i++) <option value="{{ $i }}">Minggu ke-{{ $i }}</option>
-                    @endfor
-            </select>
+        <div class="col-12 col-lg-8">
+            <div class="d-flex flex-column h-100 gap-3">
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-user-tie"></i> Rekap Absen Karyawan
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <div class="container">
+                            <div class="d-flex justify-content-center p-5">
+                                <canvas style="width: 50%; height: 100%; display: block;" height="400px"
+                                    id="statusChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
+
+        <div class="col-12 col-md-4 d-flex align-items-center gap-3">
+            <!-- Container form untuk dari dan sampai -->
+            <div class="d-flex flex-column flex-md-row gap-3 w-100">
+                <!-- From -->
+                <div class="d-flex align-items-center gap-2 me-md-0 mb-2 mb-md-0">
+                    <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
+                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control">
+                </div>
+
+                <!-- To -->
+                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                    <label for="tanggalAkhir" class="form-label mb-0" style="width: 50px;">To :</label>
+                    <input type="date" id="tanggalAkhir" wire:model.lazy="tanggalAkhir" class="form-control">
+                </div>
+
+            </div>
         </div>
 
-        <!-- Filter Status -->
-        <div class="col-6 col-md-3">
-            <select class="form-select" wire:model.live="filterStatus" style="cursor:pointer;">
+
+        <!-- Reset Button -->
+        <div class="col-12 col-md-4 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
+            <!-- Checkbox "Semua" -->
+            <select class="form-select" wire:model.change="filterStatus" style="cursor:pointer;">
                 <option value="">Semua Status</option>
                 <option value="hadir">Hadir</option>
                 <option value="terlambat">Terlambat</option>
@@ -50,18 +89,15 @@
                 <option value="sakit">Sakit</option>
                 <option value="alpha">Alpha</option>
             </select>
-        </div>
-
-        <!-- Sort Tanggal -->
-        <div class="col-6 col-md-3">
-            <select class="form-select" wire:model.live="sortDirection">
+            <select class="form-select" wire:model.change="sortDirection">
                 <option value="desc">Terbaru</option>
                 <option value="asc">Terlama</option>
             </select>
+            <button class="btn btn-outline-secondary w-100" wire:click="resetFilters">Reset Filter</button>
         </div>
 
-    </div>
 
+    </div>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
@@ -84,7 +120,7 @@
                 <!-- Search -->
                 <div class="position-relative col-5 col-md-3">
                     <input type="text" class="form-control ps-5" placeholder="Search"
-                        wire:model.live.debounce.100ms="search" />
+                        wire:model.live.debounce.500ms="search" />
                     <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                 </div>
             </div>
@@ -129,14 +165,14 @@
 
                             {{-- Foto masuk, dengan fallback default --}}
                             <td class="text-center">
-                                <img src="{{ $absensi->foto_masuk ? asset('storage/' . $absensi->foto_masuk) : asset('foto/default.png') }}"
+                                <img src="{{ $absensi->foto_masuk ? asset('storage/absensi/foto_masuk/' . $absensi->foto_masuk) : asset('images/default.jpg') }}"
                                     alt="Foto Masuk" class="img-thumbnail"
                                     style="max-width: 100px; max-height: 100px; object-fit: contain;">
                             </td>
 
                             {{-- Foto keluar, dengan fallback default --}}
                             <td class="text-center">
-                                <img src="{{ $absensi->foto_keluar ? asset('storage/' . $absensi->foto_keluar) : asset('foto/default.png') }}"
+                                <img src="{{ $absensi->foto_keluar ? asset('storage/absensi/foto_keluar/' . $absensi->foto_keluar) : asset('foto/default.png') }}"
                                     alt="Foto Keluar" class="img-thumbnail"
                                     style="max-width: 100px; max-height: 100px; object-fit: contain;">
                             </td>
@@ -161,3 +197,272 @@
         </div>
     </div>
 </div>
+@push('scripts')
+<script>
+    (function() {
+        let myChartInstance = null;
+        let statusChartInstance = null;
+        let chartInitialized = false;
+        let livewireListenersAttached = false;
+
+        function safeDestroyChart(instance) {
+            if (instance) {
+                try {
+                    instance.destroy();
+                } catch (e) {
+                    console.warn('Gagal menghancurkan chart:', e);
+                }
+                instance = null;
+            }
+            return instance;
+        }
+
+        function renderChart(chartData) {
+            const ctx = document.getElementById('myChart');
+            if (!ctx) {
+                console.warn('Canvas myChart tidak ditemukan');
+                return;
+            }
+
+            if (chartData && chartData.chartData) {
+                chartData = chartData.chartData;
+            }
+
+            const defaultEmptyData = {
+                labels: ['Tidak ada data'],
+                data: [1],
+                backgroundColor: ['#CCCCCC']
+            };
+
+            if (!chartData || !Array.isArray(chartData.labels) || !Array.isArray(chartData.data) || chartData.data.length === 0) {
+                console.warn('Data kosong, menampilkan chart default');
+                chartData = defaultEmptyData;
+            } else {
+                const statusColors = {
+                    'Hadir': '#4BC0C0',
+                    'Terlambat': '#FFCE56',
+                    'Izin': '#36A2EB',
+                    'Alpha': '#FF6384',
+                    'Sakit': '#9966FF',
+                    'Lembur': '#FF9F40'
+                };
+                chartData.backgroundColor = chartData.labels.map(label => statusColors[label] || '#CCCCCC');
+            }
+
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                existingChart.data.labels = chartData.labels;
+                existingChart.data.datasets[0].data = chartData.data;
+                existingChart.data.datasets[0].backgroundColor = chartData.backgroundColor;
+                existingChart.update();
+                myChartInstance = existingChart;
+            } else {
+                myChartInstance = safeDestroyChart(myChartInstance);
+
+                myChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: 'Status Absensi',
+                            data: chartData.data,
+                            backgroundColor: chartData.backgroundColor,
+                            borderWidth: 1,
+                            hoverOffset: 10
+                        }]
+                    },
+                    options: getChartOptions()
+
+                });
+            }
+        }
+
+        function renderStatusChart(chartStatus) {
+            const ctx = document.getElementById('statusChart');
+            if (!ctx) {
+                console.warn('Canvas statusChart tidak ditemukan');
+                return;
+            }
+
+            if (!chartStatus || !Array.isArray(chartStatus.labels) || !Array.isArray(chartStatus.datasets) || chartStatus.datasets.length === 0) {
+                console.warn('Data kosong untuk statusChart, tidak dapat menampilkan');
+                return;
+            }
+
+            // Warna status sesuai label dataset
+            const statusColors = {
+                'Hadir': '#4BC0C0',
+                'Terlambat': '#FFCE56',
+                'Izin': '#36A2EB',
+                'Alpha': '#FF6384',
+                'Sakit': '#9966FF',
+                'Lembur': '#FF9F40'
+            };
+
+            // Tambahkan warna ke setiap dataset
+            const datasetsWithColor = chartStatus.datasets.map(ds => ({
+                ...ds,
+                backgroundColor: statusColors[ds.label] || '#CCCCCC',
+                borderWidth: 1,
+            }));
+
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                existingChart.data.labels = chartStatus.labels;
+                existingChart.data.datasets = datasetsWithColor;
+                existingChart.update();
+            } else {
+                // Pastikan jika sebelumnya ada chart, dihancurkan dulu
+                if (typeof statusChartInstance !== 'undefined' && statusChartInstance) {
+                    statusChartInstance.destroy();
+                }
+
+                statusChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartStatus.labels,
+                        datasets: datasetsWithColor,
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.parsed.y || 0;
+                                        return `${label}: ${value}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+
+        function getChartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 20,
+                            font: {
+                                family: 'system-ui, -apple-system, sans-serif'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                try {
+                                    const data = context?.dataset?.data;
+                                    const total = Array.isArray(data) ? data.reduce((a, b) => a + b, 0) : 0;
+                                    const value = context.raw ?? 0;
+                                    const label = context.label ?? 'Tidak diketahui';
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+
+                                    if (label === 'Tidak ada data') {
+                                        return 'Tidak ada data absensi';
+                                    }
+                                    return `${label}: ${value} (${percentage}%)`;
+                                } catch (e) {
+                                    console.warn('Tooltip error:', e);
+                                    return 'Data tidak tersedia';
+                                }
+                            }
+                        }
+                    }
+                },
+                cutout: '65%',
+                animation: {
+                    animationRotate: true,
+                    animationScale: false,
+                },
+            };
+        }
+
+        function attachLivewireListeners() {
+            if (livewireListenersAttached || !window.Livewire) return;
+
+            Livewire.on('chart-updated', (event) => {
+                const data = event?.chartData ?? event;
+                renderChart(data);
+            });
+
+            // Listener untuk chart status (bar chart kehadiran, dsb)
+            Livewire.on('chart-bar-updated', (event) => {
+                const statusData = event?.chartStatus ?? event;
+                renderStatusChart(statusData); // Panggil fungsi khusus chart status
+            });
+
+            livewireListenersAttached = true;
+        }
+
+        function initializeChart() {
+            if (chartInitialized) return;
+
+            if (window.Livewire) {
+                attachLivewireListeners();
+            } else {
+                document.addEventListener('livewire:load', attachLivewireListeners);
+            }
+
+            renderChart(@json($chartData));
+            renderStatusChart(@json($chartStatus)); // pastikan ini kamu passing dari backend
+
+            chartInitialized = true;
+        }
+
+        document.addEventListener('livewire:navigated', () => {
+            chartInitialized = false;
+            livewireListenersAttached = false;
+
+            setTimeout(() => {
+                if (document.getElementById('myChart')) {
+                    initializeChart();
+                }
+            }, 100);
+        });
+
+        if (document.readyState === 'complete') {
+            initializeChart();
+        } else {
+            document.addEventListener('DOMContentLoaded', initializeChart);
+        }
+
+        document.addEventListener('livewire:before-unload', () => {
+            myChartInstance = safeDestroyChart(myChartInstance);
+            statusChartInstance = safeDestroyChart(statusChartInstance);
+            livewireListenersAttached = false;
+        });
+    })();
+
+</script>
+@endpush

@@ -166,38 +166,40 @@
 </div>
 
 @push('scripts')
-<script>
-    const video = document.getElementById('camera');
-    const canvas = document.getElementById('snapshot');
-    const input = document.getElementById('fotoInput');
+    @if ($type === 'check-in' || $type === 'check-out')
+        <script>
+            const video = document.getElementById('camera');
+            const canvas = document.getElementById('snapshot');
+            const input = document.getElementById('fotoInput');
 
-    if (video) {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => video.srcObject = stream)
-            .catch(e => alert('Tidak bisa akses kamera: ' + e.message));
-    }
+            if (video) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(stream => video.srcObject = stream)
+                    .catch(e => alert('Tidak bisa akses kamera: ' + e.message));
+            }
 
-    navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => video.srcObject = stream)
-        .catch(e => alert('Tidak bisa akses kamera: ' + e.message));
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => video.srcObject = stream)
+                .catch(e => alert('Tidak bisa akses kamera: ' + e.message));
 
-    function takePicture() {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(blob => {
-            const file = new File([blob], "absen.jpg", { type: "image/jpeg" });
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            input.files = dataTransfer.files;
-            input.dispatchEvent(new Event('change', { bubbles: true }));
-            @this.upload('{{ $type === "check-in" ? "form.foto_masuk" : "form.foto_keluar" }}', file, (success) => {
-        console.log("Upload sukses!");
-    }, (error) => {
-        console.error("Upload gagal:", error);
-    });
-        }, 'image/jpeg');
+            function takePicture() {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob(blob => {
+                    const file = new File([blob], "absen.jpg", { type: "image/jpeg" });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    input.files = dataTransfer.files;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    @this.upload('{{ $type === "check-in" ? "form.foto_masuk" : "form.foto_keluar" }}', file, (success) => {
+                console.log("Upload sukses!");
+            }, (error) => {
+                console.error("Upload gagal:", error);
+            });
+                }, 'image/jpeg');
 
-    }
-</script>
+            }
+        </script>
+    @endif
 @endpush

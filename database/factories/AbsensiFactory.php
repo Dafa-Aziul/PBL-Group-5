@@ -24,8 +24,8 @@ class AbsensiFactory extends Factory
             'jam_keluar' => $jamKeluar->format('H:i'),
             'status' => $status,
             'keterangan' => $this->faker->sentence(),
-            'foto_masuk' => 'absensi/foto_masuk/default.png',
-            'foto_keluar' => 'absensi/foto_keluar/default.png',
+            'foto_masuk' => 'default.jpg',
+            'foto_keluar' => 'default.jpg',
         ];
     }
 }
