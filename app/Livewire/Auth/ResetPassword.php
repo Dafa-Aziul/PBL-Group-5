@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[layout('layouts.guest')]
+#[layout('layouts.auth')]
 #[Title('Reset Password')]
 class ResetPassword extends Component
 {

@@ -22,7 +22,7 @@ use App\Livewire\Auth\ResetPassword;
 // jenis kendaraan
 use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Dashboard;
-
+use App\Livewire\FrontEnd\Home;
 // jasa
 use App\Livewire\Gudang\Create as GudangCreate;
 use App\Livewire\Jasa\Create as JasaCreate;
@@ -92,9 +92,11 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', Home::class);
 
 Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 

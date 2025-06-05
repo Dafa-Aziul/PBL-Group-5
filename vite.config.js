@@ -26,7 +26,14 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/sass/app.scss', 'resources/css/styles.css' ,'resources/js/app.js', 'resources/css/app.css'],
+            input:
+                [
+                    'resources/sass/app.scss',
+                    'resources/css/styles.css',
+                    'resources/js/app.js',
+                    'resources/js/scripts.js',
+                    'resources/js/chart.js',
+                ],
             refresh: true,
         }),
         tailwindcss(),

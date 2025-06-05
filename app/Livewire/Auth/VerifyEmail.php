@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('layouts.guest')]
+#[Layout('layouts.auth')]
 class VerifyEmail extends Component
 {
     /**

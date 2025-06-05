@@ -8,14 +8,6 @@
         <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('images/kopcv.jpg') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/kopcv.jpg') }}">
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/kopcv.jpg') }}">
-        {{--
-        <link rel="manifest" href="../../assets/img/favicon/site.webmanifest"> --}}
-        {{--
-        <link rel="mask-icon" href="{{ assest('images/kopcv.jpg') }}" color="#ffffff"> --}}
-        {{--
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-            integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-        --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
         @vite(['resources/sass/app.scss'])
@@ -45,6 +37,8 @@
         </div>
         @livewireScripts
         @stack('scripts')
+        @vite('resources/js/app.js')
+        @vite('resources/js/scripts.js')
+        @vite('resources/js/chart.js')
     </body>
-    @vite('resources/js/app.js')
 </html>
