@@ -24,7 +24,7 @@ return new class extends Migration
             $table->decimal('sub_total', 10, 2);
             $table->decimal('pajak', 10, 2)->default(0);
             $table->decimal('diskon', 10, 2)->default(0);
-            $table->decimal('total', 10, 2);
+            $table->decimal('grand_total', 10, 2);
 
             $table->enum('status_pembayaran', [
                 'lunas',

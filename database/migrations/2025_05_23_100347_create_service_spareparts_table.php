@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('sparepart_id')->constrained('spareparts');
             $table->decimal('harga',10,2);
             $table->integer('jumlah');
-            $table->decimal('subtotal', 10,2);
+            $table->decimal('sub_total', 10,2);
             $table->timestamps();
         });
     }

@@ -20,7 +20,7 @@ class ServiceSparepart extends Model
         'sparepart_id',     // foreign key ke tabel spareparts
         'jumlah',
         'harga',
-        'subtotal',
+        'sub_total',
     ];
 
     // Relasi ke service

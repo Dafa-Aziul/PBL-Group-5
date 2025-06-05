@@ -13,7 +13,7 @@ class Penjualan extends Model
         'sparepart_id',
         'jumlah',
         'harga',
-        'subtotal',
+        'sub_total',
     ];
 
     public function transaksi()

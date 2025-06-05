@@ -5,6 +5,7 @@ namespace App\Livewire\Penjualan;
 use App\Livewire\Forms\PenjualanForm;
 use App\Models\Gudang;
 use App\Models\Pelanggan;
+use App\Models\Pembayaran;
 use App\Models\Penjualan;
 use App\Models\Sparepart;
 use App\Models\Transaksi;
@@ -30,20 +31,20 @@ class Create extends Component
         $this->spareparts = Sparepart::all();
 
         $this->form->kasir_id = Auth::id();
-        $this->hitungTotal(); // hitung dulu total sparepart agar pajak & total benar
+        $this->hitungTotal(); // hitung dulu grand_total sparepart agar pajak & grand_total benar
     }
 
 
     public function hitungTotal()
     {
-        $this->totalSparepart = collect($this->sparepartList)->sum('subtotal');
+        $this->totalSparepart = collect($this->sparepartList)->sum('sub_total');
         $this->form->pajak = round(0.11 * $this->totalSparepart, 2);
 
         $diskonPersen = floatval($this->form->diskon ?? 0);
         $this->total_diskon = $this->totalSparepart * ($diskonPersen / 100);
 
         $this->form->sub_total = $this->totalSparepart;
-        $this->form->total = $this->totalSparepart + $this->form->pajak - $this->total_diskon;
+        $this->form->grand_total = $this->totalSparepart + $this->form->pajak - $this->total_diskon;
     }
 
 
@@ -61,7 +62,7 @@ class Create extends Component
         ]);
 
         $this->sparepartList[$this->editIndex]['jumlah'] = $this->editJumlah;
-        $this->sparepartList[$this->editIndex]['subtotal'] =
+        $this->sparepartList[$this->editIndex]['sub_total'] =
             $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
 
         $this->hitungTotal();
@@ -104,7 +105,7 @@ class Create extends Component
             'nama' => $sparepart->nama,
             'jumlah' => $this->jumlahSparepart,
             'harga' => $sparepart->harga,
-            'subtotal' => $sparepart->harga * $this->jumlahSparepart,
+            'sub_total' => $sparepart->harga * $this->jumlahSparepart,
         ];
 
         $this->reset(['selectedSparepartId', 'jumlahSparepart']);
@@ -129,10 +130,10 @@ class Create extends Component
             $this->form->diskon = $cleaned === '' ? 0 : intval($cleaned);
         }
 
-        // Hitung total diskon dan total keseluruhan
+        // Hitung grand_total diskon dan grand_total keseluruhan
         $diskonPersen = floatval($this->form->diskon);
         $this->total_diskon = $this->form->sub_total * ($diskonPersen / 100);
-        $this->form->total = $this->form->sub_total + $this->form->pajak - $this->total_diskon;
+        $this->form->grand_total = $this->form->sub_total + $this->form->pajak - $this->total_diskon;
     }
     public function store()
     {
@@ -148,7 +149,7 @@ class Create extends Component
                 'sparepart_id' => $sparepart['sparepart_id'],
                 'harga' => $sparepart['harga'],
                 'jumlah' => $sparepart['jumlah'],
-                'subtotal' => $sparepart['subtotal'],
+                'sub_total' => $sparepart['sub_total'],
             ]);
 
             // dd($penjualan);
@@ -164,6 +165,15 @@ class Create extends Component
                     $transaksi->transaksi,
                     optional($transaksi->pelanggan)->nama ?? '-'
                 ),
+            ]);
+        }
+        if ($validated['status_pembayaran'] === 'lunas') {
+            Pembayaran::create([
+                'transaksi_id' => $transaksi->id,
+                'tanggal_bayar' => now(),
+                'jumlah_bayar' => $transaksi->grand_total,
+                'status_pembayaran' => 'lunas',
+                'ket' => 'Pembayaran otomatis saat transaksi dibuat',
             ]);
         }
 

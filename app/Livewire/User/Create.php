@@ -17,93 +17,55 @@ class Create extends Component
     public $password_confirmation = '';
     public $showModal = false;
 
+
     function validateInput()
     {
         $this->form->validate();
-        $this->showModal = true;
+        $this->dispatch('open-confirm-password-modal');
         return $this->form->all();
     }
 
     public function submit()
     {
-        // Trim whitespace dari input
         $this->password_confirmation = trim($this->password_confirmation);
 
-        // Validasi input tidak kosong
         if (empty($this->password_confirmation)) {
-            session()->flash('message', 'Password tidak boleh kosong.');
-            return;
+            return $this->fail('Password tidak boleh kosong.');
         }
 
-        // Cek batas percobaan (harus di awal)
-        if ($this->attempts == 3) {
-            session()->flash('message', 'Anda telah melebihi batas percobaan password!');
-            return redirect()->route('user.view');
+        if ($this->attempts >= 3) {
+            return $this->fail('Anda telah melebihi batas percobaan password!', true);
         }
 
-        // Verifikasi password admin
-        if (Hash::check($this->password_confirmation, Auth::user()->password)) {
-            $validated = $this->validateInput();
-
-            // Password default yang lebih aman
-            $validated['password'] = $validated['password']
-                ? bcrypt($validated['password'])
-                : bcrypt('password'); // Gunakan random string
-
-            try {
-                $user = User::create($validated);
-                event(new Registered($user));
-
-                Karyawan::create([
-                    'user_id' => $user->id,
-                    'nama' => $user->name,
-                    'jabatan' => $user->role,
-                    'status' => 'aktif',
-                    // tambahkan field lain sesuai struktur tabel kamu
-                ]);
-
-                session()->flash('success', 'User berhasil ditambahkan!');
-                return redirect()->route('user.view');
-            } catch (\Exception $e) {
-                session()->flash('message', 'Gagal menambahkan user: ' . $e->getMessage());
-            }
-        } else {
-            $this->attempts++; // Tambah counter percobaan
-            session()->flash('message', 'Password tidak sesuai. Percobaan ' . $this->attempts . '/3');
+        if (!Hash::check($this->password_confirmation, Auth::user()->password)) {
+            $this->attempts++;
             $this->reset('password_confirmation');
 
-            // Jika melebihi batas setelah incrementvs
-            
-            if ($this->attempts == 3) {
-                session()->flash('message', 'Anda telah melebihi batas percobaan password!');
-                session()->flash('error', 'gagal menambahkan user: Anda telah melebihi batas percobaan password!');
-                return redirect()->route('user.view');
-                // Tambahkan delay atau lockout period jika perlu
+            if ($this->attempts >= 3) {
+                return $this->fail('Anda telah melebihi batas percobaan password!', true);
             }
+
+            return $this->fail('Password tidak sesuai. Percobaan ' . $this->attempts . '/3');
+        }
+
+        try {
+            $validated = $this->validateInput();
+            $user = User::create($validated);
+            event(new Registered($user));
+            session()->flash('success', 'User berhasil ditambahkan!');
+            return redirect()->route('user.view');
+        } catch (\Exception $e) {
+            return $this->fail('Gagal menambahkan user: ' . $e->getMessage());
         }
     }
 
-    // public function submit()
-    // {
-    //     if (Hash::check($this->password_confirmation, Auth::user()->password)) { 
-    //         $validated = $this->validateInput();
+    protected function fail($message, $redirect = false)
+    {
+        session()->flash('message', $message);
+        session()->flash('error', $message);
+        return $redirect ? redirect()->route('user.view') : null;
+    }
 
-    //         // Password default jika kosong
-    //         $validated['password'] = $validated['password']
-    //         ? bcrypt($validated['password'])
-    //         : bcrypt('password');
-    //         $user=User::create($validated);
-
-    //         event(new Registered($user));
-
-    //         session()->flash('success', 'User berhasil ditambahkan!');
-    //         return redirect()->route('user.view')->with('wire:navigate', true);
-    //     } else {
-    //         // Increment jumlah percobaan password
-    //         session()->flash('message', 'Password tidak sesuai. Coba lagi.');
-    //         $this->reset('password_confirmation');   
-    //     }
-    // }
     public function render()
     {
         return view('livewire.user.create');

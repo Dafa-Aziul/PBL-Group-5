@@ -47,7 +47,7 @@ class ServiceDetail extends Component
     {
         Log::info('Hitung Total dipanggil');
         $this->totalJasa = collect($this->jasaList)->sum('harga');
-        $this->totalSparepart = collect($this->sparepartList)->sum('subtotal');
+        $this->totalSparepart = collect($this->sparepartList)->sum('sub_total');
         $this->totalSemua = $this->totalJasa + $this->totalSparepart;
         $this->service->update(['estimasi_harga' => $this->totalSemua]);
     }
@@ -76,11 +76,11 @@ class ServiceDetail extends Component
                 'nama' => $item->sparepart->nama,
                 'jumlah' => $item->jumlah,
                 'harga' => $item->harga,
-                'subtotal' => $item->subtotal,
+                'sub_total' => $item->sub_total,
             ];
         })->toArray();
 
-        $this->hitungTotal(); // hitung ulang total awal
+        $this->hitungTotal(); // hitung ulang grand_total awal
     }
 
     public function openEditModal($index)
@@ -102,8 +102,8 @@ class ServiceDetail extends Component
         // Update jumlah di sparepartList
         $this->sparepartList[$this->editIndex]['jumlah'] = $this->editJumlah;
 
-        // Bisa update subtotal juga, misalnya:
-        $this->sparepartList[$this->editIndex]['subtotal'] = $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
+        // Bisa update sub_total juga, misalnya:
+        $this->sparepartList[$this->editIndex]['sub_total'] = $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
 
         // $this->emit('sparepartListUpdated', $this->sparepartList); // Jika perlu
 
@@ -177,14 +177,14 @@ class ServiceDetail extends Component
             return;
         }
 
-        $subtotal = $sparepart->harga * $this->jumlahSparepart;
+        $sub_total = $sparepart->harga * $this->jumlahSparepart;
 
         $this->sparepartList[] = [
             'sparepart_id' => $sparepart->id,
             'nama' => $sparepart->nama,
             'jumlah' => $this->jumlahSparepart,
             'harga' => $sparepart->harga,
-            'subtotal' => $subtotal,
+            'sub_total' => $sub_total,
         ];
 
         $this->selectedSparepartId = '';
@@ -229,7 +229,7 @@ class ServiceDetail extends Component
                 'sparepart_id' => $sparepart['sparepart_id'],
                 'harga' => $sparepart['harga'],
                 'jumlah' => $sparepart['jumlah'],
-                'subtotal' => $sparepart['subtotal'],
+                'sub_total' => $sparepart['sub_total'],
             ]);
 
             Gudang::create([

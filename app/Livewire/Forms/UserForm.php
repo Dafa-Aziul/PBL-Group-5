@@ -12,7 +12,7 @@ class UserForm extends Form
     #[Validate('required|email|unique:users,email')]
     public string $email = '';
     #[Validate('required|in:admin,mekanik,owner')]
-    public string $role = '';   
+    public string $role = '';
     #[Validate('nullable|string|min:8|regex:/[A-Z]/|regex:/[^a-zA-Z\d]/')]
     public string $password = '';
 }

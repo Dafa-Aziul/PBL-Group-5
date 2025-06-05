@@ -105,10 +105,10 @@
 
 
                 <div class="mb-3">
-                    <label>Model Kendaraan</label>
-                    <input type="text" class="form-control" wire:model="form.model_kendaraan"
-                        value="{{ old ('form.model_kendaraan', $sparepart->model_kendaraan) }}">
-                    @error('form.model_kendaraan') <span class="text-danger">{{ $message }}</span> @enderror
+                    <label>Tipe Kendaraan</label>
+                    <input type="text" class="form-control" wire:model="form.tipe_kendaraan"
+                        value="{{ old ('form.tipe_kendaraan', $sparepart->tipe_kendaraan) }}">
+                    @error('form.tipe_kendaraan') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">
@@ -127,7 +127,7 @@
                         <label class="form-label fw-bold">Gambar Lama</label>
                         @if (!empty($form->foto_lama))
                         <div class="border rounded p-2 text-center" style="min-height: 220px; background: #f8f9fa;">
-                            <img src="{{ asset('storage/' . $form->foto_lama) }}" alt="Gambar Lama"
+                            <img src="{{ asset('storage/images/sparepart/' . $form->foto_lama) }}" alt="Gambar Lama"
                                 class="img-fluid rounded" style="max-height: 200px; object-fit: contain;">
                         </div>
                         @else

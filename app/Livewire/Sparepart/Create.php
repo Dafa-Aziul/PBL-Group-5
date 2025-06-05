@@ -10,7 +10,7 @@ use Livewire\Component;
 
 class Create extends Component
 {
-    use WithFileUploads; // ✅ WAJIB ditambahkan
+    use WithFileUploads;
 
     public SparepartForm $form;
 
@@ -18,29 +18,32 @@ class Create extends Component
     public string $kode = '';
 
 
-    public function submit(){
-        // Validasi hanya properti kode di komponen ini
+    public function submit()
+    {
+        // Default harga ke 0 jika tidak diisi
         $this->form->harga = $this->form->harga ?? 0;
 
-        // Validasi form (SparepartForm)
-        $validated = $this->form->validate();
+        // Validasi
+        $formData = $this->form->validate();
+        $this->validateOnly('kode');
 
-        // Validasi kode unik dari komponen ini
-        $validatedKode = $this->validateOnly('kode');
-
-        // Simpan foto jika ada
+        // Proses upload foto
         if ($this->form->foto) {
-            $path = $this->form->foto->store('images/sparepart', 'public');
-            $filename = basename($path);
-            $validated['foto'] = 'images/sparepart/' . $filename;
+            $formData['foto'] = $this->storePhoto($this->form->foto);
         }
 
-        // Gabungkan kode + form
-        $data = array_merge(['kode' => $this->kode], $validated);
+        // Simpan ke database
+        $data = array_merge(['kode' => $this->kode], $formData);
         Sparepart::create($data);
 
         session()->flash('success', 'Sparepart berhasil ditambahkan!');
         return redirect()->route('sparepart.view')->with('wire:navigate', true);
+    }
+
+    protected function storePhoto($foto): string
+    {
+        $path = $foto->store('images/sparepart', 'public');
+        return basename($path);
     }
 
     public function render()

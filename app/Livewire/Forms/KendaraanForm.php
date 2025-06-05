@@ -14,8 +14,29 @@ class KendaraanForm extends Form
     public $no_polisi = '';
 
     #[Validate('required|string|max:50')]
-    public $model_kendaraan = '';
+    public $tipe_kendaraan = '';
 
     #[Validate('required|integer|min:0')]
     public $odometer = '';
+
+    public function resetForm()
+    {
+        $this->jenis_kendaraan_id = '';
+        $this->no_polisi = '';
+        $this->tipe_kendaraan = '';
+        $this->odometer = '';
+    }
+    public function simpan($pelanggan)
+    {
+        $this->validate();
+
+        $kendaraan = $pelanggan->kendaraans()->create([
+            'jenis_kendaraan_id' => $this->jenis_kendaraan_id,
+            'no_polisi' => $this->no_polisi,
+            'tipe_kendaraan' => $this->tipe_kendaraan,
+            'odometer' => $this->odometer,
+        ]);
+
+        return $kendaraan;
+    }
 }

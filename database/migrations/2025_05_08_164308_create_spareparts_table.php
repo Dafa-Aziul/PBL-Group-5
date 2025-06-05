@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('satuan');
             $table->integer('stok');
             $table->decimal('harga', 10, 2);
-            $table->string('model_kendaraan');
+            $table->string('tipe_kendaraan');
             $table->string('foto')->nullable();
             $table->string('ket');
             $table->timestamps();

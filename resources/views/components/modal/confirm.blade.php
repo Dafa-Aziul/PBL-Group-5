@@ -5,7 +5,7 @@ $targetModal = $attributes->get('targetModal', '');
 $action = $attributes->get('action', '');
 $content = $attributes->get('content', '');
 @endphp
-<div class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+<div wire:ignore.self class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
     wire:ignore.self>
     <div class="modal-dialog">
         <div class="modal-content">

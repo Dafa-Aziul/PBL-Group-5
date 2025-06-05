@@ -90,14 +90,14 @@ class Index extends Component
         $totalPenjualan = Penjualan::whereDate('created_at', $today)
             ->with('transaksi')
             ->get()
-            ->sum(fn($penjualan) => $penjualan->transaksi->total ?? 0);
+            ->sum(fn($penjualan) => $penjualan->transaksi->grand_total ?? 0);
         $jumlahSparepart = Penjualan::whereDate('created_at', $today)->sum('jumlah');
         $chartDetail = $this->getChartDetail();
 
 
         $penjualans = Transaksi::with(['pelanggan'])
             ->where('jenis_transaksi', 'penjualan')
-            ->when(!$this->showAll, function ($query) {
+            ->when(!$this->showAll && !$this->search, function ($query) {
                 $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
                 $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
 

@@ -24,7 +24,7 @@ class SparepartForm extends Form
     public ?float $harga = 0.0;
 
     #[Validate('required|string|max:255')]
-    public string $model_kendaraan = '';
+    public string $tipe_kendaraan = '';
 
     // Properti untuk upload foto baru (nullable)
     #[Validate('nullable|image|mimes:jpg,jpeg,png|max:2048')]
@@ -44,7 +44,7 @@ class SparepartForm extends Form
         $this->satuan = $sparepart->satuan;
         $this->stok = $sparepart->stok;
         $this->harga = (float) ($sparepart->harga ?? 0);
-        $this->model_kendaraan = $sparepart->model_kendaraan;
+        $this->tipe_kendaraan = $sparepart->tipe_kendaraan;
         $this->ket = $sparepart->ket;
         $this->foto_lama = $sparepart->foto;
     }

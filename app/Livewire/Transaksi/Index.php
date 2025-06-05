@@ -193,10 +193,10 @@ class Index extends Component
         // $chartJenis = $this->getChartJenis();
 
         $totalTransaksiHariIni = Transaksi::whereDate('created_at', $today)->count();
-        $totalPendapatanHariIni = Transaksi::whereDate('created_at', $today)->sum('total');
+        $totalPendapatanHariIni = Transaksi::whereDate('created_at', $today)->sum('grand_total');
 
         $transaksis = Transaksi::with(['kasir', 'pelanggan'])
-            ->when(!$this->showAll, function ($query) {
+            ->when(!$this->showAll && !$this->search, function ($query) {
                 $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
                 $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
 
@@ -210,6 +210,7 @@ class Index extends Component
                     ->orWhere('status_pembayaran', 'like', '%' . $this->search . '%')
                     ->orWhere('keterangan', 'like', '%' . $this->search . '%');
             })
+            ->orderByDesc('created_at')
             ->paginate($this->perPage);
 
         // return view('livewire.transaksi.index', compact(

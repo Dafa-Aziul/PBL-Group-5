@@ -43,29 +43,6 @@
                         <i
                             class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
                     </div>
-
-                    {{-- FILTER --}}
-                    {{-- <div class="d-flex gap-2">
-                        <select class="form-select" wire:model.live="filterKaryawan">
-                            <option value="">Semua Karyawan</option>
-                            @foreach ($karyawans as $karyawan)
-                            <option value="{{ $karyawan->id }}">{{ $karyawan->nama }}</option>
-                            @endforeach
-                        </select>
-
-                        <select class="form-select" wire:model="filterBulan">
-                            <option value="">Semua Bulan</option>
-                            @for ($m = 1; $m <= 12; $m++) <option value="{{ $m }}">{{
-                                \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}</option>
-                                @endfor
-                        </select>
-
-                        <select class="form-select" wire:model="filterMinggu">
-                            <option value="">Semua Minggu</option>
-                            @for ($w = 1; $w <= 5; $w++) <option value="{{ $w }}">Minggu ke-{{ $w }}</option>
-                                @endfor
-                        </select>
-                    </div> --}}
                 </div>
 
 

@@ -204,14 +204,14 @@ class Index extends Component
                 $query->where('kode_service', 'like', '%' . $this->search . '%')
                     ->orWhereHas('kendaraan', function ($q) {
                         $q->where('no_polisi', 'like', '%' . $this->search . '%')
-                            ->orWhere('model_kendaraan', 'like', '%' . $this->search . '%')
+                            ->orWhere('tipe_kendaraan', 'like', '%' . $this->search . '%')
                             ->orWhereHas('pelanggan', function ($sub) {
                                 $sub->where('nama', 'like', '%' . $this->search . '%');
                             });
                     })
                     ->orWhere('keterangan', 'like', '%' . $this->search . '%');
             })
-            ->when(!$this->showAll, function ($query) {
+            ->when(!$this->showAll && !$this->search, function ($query) {
                 $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
                 $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
 

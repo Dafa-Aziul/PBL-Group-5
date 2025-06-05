@@ -21,7 +21,7 @@ class SparepartsSeeder extends Seeder
                 'satuan' => 'Set',
                 'stok' => 50,
                 'harga' => 120000,
-                'model_kendaraan' => 'Honda Beat',
+                'tipe_kendaraan' => 'Honda Beat',
                 'foto' => null,
                 'ket' => 'Kampas rem depan'
             ],
@@ -32,7 +32,7 @@ class SparepartsSeeder extends Seeder
                 'satuan' => 'Pcs',
                 'stok' => 100,
                 'harga' => 30000,
-                'model_kendaraan' => 'Yamaha Mio',
+                'tipe_kendaraan' => 'Yamaha Mio',
                 'foto' => null,
                 'ket' => 'Busi standar motor bebek'
             ],
@@ -43,7 +43,7 @@ class SparepartsSeeder extends Seeder
                 'satuan' => 'Botol',
                 'stok' => 75,
                 'harga' => 45000,
-                'model_kendaraan' => 'Umum',
+                'tipe_kendaraan' => 'Umum',
                 'foto' => null,
                 'ket' => 'Oli mesin 10W-40 untuk motor harian'
             ],

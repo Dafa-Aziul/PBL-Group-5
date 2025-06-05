@@ -22,7 +22,7 @@ class Transaksi extends Model
         'sub_total',
         'pajak',
         'diskon',
-        'total',
+        'grand_total',
         'status_pembayaran',
         'keterangan',
     ];

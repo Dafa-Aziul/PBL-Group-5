@@ -19,7 +19,7 @@ class Sparepart extends Model
         'satuan',
         'stok',
         'harga',
-        'model_kendaraan',
+        'tipe_kendaraan',
         'foto',
         'ket',
     ];
@@ -32,7 +32,7 @@ class Sparepart extends Model
             ->orWhere('satuan', 'like', "%{$value}%")
             ->orWhere('stok', 'like', "%{$value}%")
             ->orWhere('harga', 'like', "%{$value}%")
-            ->orWhere('model_kendaraan', 'like', "%{$value}%")
+            ->orWhere('tipe_kendaraan', 'like', "%{$value}%")
             ->orWhere('ket', 'like', "%{$value}%");
     }
 

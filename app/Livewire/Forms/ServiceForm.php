@@ -9,25 +9,25 @@ class ServiceForm extends Form
 {
 
     #[Validate('required|exists:kendaraans,id')]
-    public $kendaraan_id;
+    public ?int $kendaraan_id = null;
 
     #[Validate('required|exists:karyawans,id')]
-    public $montir_id;
+    public ?int $montir_id = null;
 
     #[Validate('required|numeric')]
-    public $odometer;
+    public ?int $odometer = null;
 
     #[Validate('required|string')]
-    public $deskripsi_keluhan;
+    public ?string $deskripsi_keluhan = null;
 
     #[Validate('nullable|in:dalam antrian,dianalisis,analisis selesai,dalam proses,selesai,batal')]
-    public $status = 'dalam antrian';
+    public ?string $status = 'dalam antrian';
 
     #[Validate('nullable|date')]
-    public $tanggal_mulai_service;
+    public ?string $tanggal_mulai_service = null;
 
     #[Validate('nullable|string')]
-    public $keterangan;
+    public ?string $keterangan = null;
 
     public function fillFormModel($service)
     {

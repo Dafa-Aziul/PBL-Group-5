@@ -34,10 +34,10 @@
                 {{-- Pilih Kendaraan berdasarkan Pelanggan --}}
                 <div class="mb-3">
                     <label>Kendaraan</label>
-                    <select wire:model="form.kendaraan_id" class="form-select" @disabled(!$pelanggan_id)>
+                    <select wire:model.live="form.kendaraan_id" class="form-select" @disabled(!$pelanggan_id)>
                         <option value="">-- Pilih Kendaraan --</option>
                         @forelse ($kendaraans as $k)
-                        <option value="{{ $k->id }}">{{ $k->no_polisi }} - {{ $k->model_kendaraan }}</option>
+                        <option value="{{ $k->id }}">{{ $k->no_polisi }} - {{ $k->tipe_kendaraan }}</option>
                         @empty
                         <option disabled>Tidak ada kendaraan ditemukan</option>
                         @endforelse
@@ -66,7 +66,7 @@
                 {{-- Tambahkan field lain sesuai kebutuhan --}}
                 <div class="mb-3">
                     <label>Odometer</label>
-                    <input wire:model="form.odometer" type="number" class="form-control">
+                    <input wire:model="form.odometer" type="number" class="form-control" placeholder="{{ $selectedKendaraan?->odometer ? 'Terakhir: ' . $selectedKendaraan->odometer . ' Km' : 'Masukkan odometer sekarang' }}">
                     @error('form.odometer') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

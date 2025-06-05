@@ -28,62 +28,94 @@ class Index extends Component
         $this->resetPage(); // Kembali ke halaman 1 saat pencarian berubah
     }
 
+    // Method publik untuk delete user, handling flow
     public function delete($id)
     {
-        // Validasi input tidak kosong
         $this->password_confirmation = trim($this->password_confirmation);
 
+        if (!$this->validatePasswordNotEmpty()) return;
+        if (!$this->checkAttemptsLimit()) return;
+        if (!$this->verifyPassword()) return;
+
+        $this->performDelete($id);
+    }
+
+    // Validasi password tidak boleh kosong
+    private function validatePasswordNotEmpty(): bool
+    {
         if (empty($this->password_confirmation)) {
-            session()->flash('message', 'Password tidak boleh kosong.');
-            return;
+            $this->flashMessage('Password tidak boleh kosong.', 'message');
+            return false;
         }
+        return true;
+    }
 
-        // Cek batas percobaan
+    // Cek apakah sudah melewati batas percobaan
+    private function checkAttemptsLimit(): bool
+    {
         if ($this->attempts >= 3) {
-            session()->flash('message', 'Anda telah melebihi batas percobaan password!');
-            return redirect()->route('user.view');
+            $this->flashMessage('Anda telah melebihi batas percobaan password!', 'message');
+            return false;
         }
+        return true;
+    }
 
-        // Verifikasi password admin
+    // Verifikasi password, tambah attempts jika salah
+    private function verifyPassword(): bool
+    {
         if (!Hash::check($this->password_confirmation, Auth::user()->password)) {
-            $this->attempts++; // Tambah counter percobaan
-            $remainingAttempts = 3 - $this->attempts;
-
-            session()->flash('message', 'Password tidak sesuai. Percobaan ' . $this->attempts . '/3');
+            $this->attempts++;
             $this->reset('password_confirmation');
 
-            if ($this->attempts >= 3) {
-                session()->flash('error', 'Anda telah melebihi batas percobaan password! Akses ditolak.');
-                return redirect()->route('user.view');
-            }
-            return;
-        }
+            $remaining = 3 - $this->attempts;
+            $this->flashMessage("Password tidak sesuai. Percobaan {$this->attempts}/3", 'message');
 
-        // Jika password benar, lanjutkan proses delete
+            if ($this->attempts >= 3) {
+                $this->flashMessage('Anda telah melebihi batas percobaan password! Akses ditolak.', 'error');
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // Proses hapus user dan update status karyawan terkait
+    private function performDelete(int $id): void
+    {
         try {
             $user = User::findOrFail($id);
-
-            // Soft delete user
             $user->delete();
 
-            // Update status karyawan terkait
-            $karyawan = Karyawan::where('user_id', $id)->first();
-            if ($karyawan) {
-                $karyawan->update([
-                    'status' => 'tidak aktif',
-                ]);
-            }
+            $this->updateKaryawanStatus($id);
 
-            // Reset Livewire state dan flash message
-            session()->flash('success', 'User berhasil dihapus.');
-            $this->password_confirmation = null;
-            $this->attempts = 0;
+            $this->resetDeleteState();
+            $this->flashMessage('User berhasil dihapus.', 'success');
 
-            // Tutup modal konfirmasi password
             $this->dispatch('closeConfirmPasswordModal', $id);
         } catch (\Exception $e) {
-            session()->flash('error', 'Gagal menghapus user: ' . $e->getMessage());
+            $this->flashMessage('Gagal menghapus user: ' . $e->getMessage(), 'error');
         }
+    }
+
+    // Update status karyawan yang terkait dengan user
+    private function updateKaryawanStatus(int $userId): void
+    {
+        $karyawan = Karyawan::where('user_id', $userId)->first();
+        if ($karyawan) {
+            $karyawan->update(['status' => 'tidak aktif']);
+        }
+    }
+
+    // Reset state yang terkait dengan delete & password confirmation
+    private function resetDeleteState(): void
+    {
+        $this->password_confirmation = null;
+        $this->attempts = 0;
+    }
+
+    // Helper untuk flash message ke session
+    private function flashMessage(string $message, string $type = 'message'): void
+    {
+        session()->flash($type, $message);
     }
 
     public function render()

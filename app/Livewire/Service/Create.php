@@ -27,6 +27,14 @@ class Create extends Component
 
     public function mount()
     {
+        $this->pelanggan_id = request()->query('pelanggan_id');
+        $selectedKendaraan = request()->query('selectedKendaraan');
+
+        if ($selectedKendaraan) {
+            $this->form->kendaraan_id = $selectedKendaraan;
+            $this->selectedKendaraan = Kendaraan::find($selectedKendaraan);
+        }
+
         $this->pelanggans = Pelanggan::all();
         $this->montirs = Karyawan::where('jabatan', 'mekanik')->get();
     }
@@ -70,7 +78,7 @@ class Create extends Component
         $data = array_merge($validated, [
             'kode_service' => $this->kode_service,
             'no_polisi' => $this->selectedKendaraan->no_polisi,
-            'model_kendaraan' => $this->selectedKendaraan->model_kendaraan,
+            'tipe_kendaraan' => $this->selectedKendaraan->tipe_kendaraan,
             'tanggal_mulai_service' => Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'),
         ]);
 

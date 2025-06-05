@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="form-control bg-light mb-1">
-                        <strong>Model Kendaraan:</strong> {{ $service->model_kendaraan ?? '-' }}
+                        <strong>Tipe Kendaraan:</strong> {{ $service->tipe_kendaraan ?? '-' }}
                     </div>
 
                     <div class="form-control bg-light mb-1">
@@ -149,7 +149,7 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga, 0, ',', '.') }}</td>
-                                        <td class="text-end fw-semibold text-primary">Rp {{ number_format($sp->subtotal,
+                                        <td class="text-end">Rp {{ number_format($sp->subtotal,
                                             0, ',', '.') }}</td>
                                     </tr>
                                     @endforeach
@@ -171,7 +171,7 @@
                     <div class="alert alert-info d-flex align-items-center" role="alert">
                         <i class="fas fa-calculator me-2"></i>
                         <div>
-                            <strong>Total Biaya:</strong>
+                            <strong>Subtotal:</strong>
                             <span class="text-success fs-5 ms-2">Rp {{ number_format($service->estimasi_harga, 0, ',',
                                 '.')
                                 }}</span>
@@ -200,9 +200,9 @@
                             @error('') <span class="text-danger">{{ $message }}</span> @enderror
                         </div>
                         <div class="mb-3">
-                            <label for="total">Total</label>
+                            <label for="total">Grand Total</label>
                             <div class="form-control mb-1">
-                                Rp {{ number_format($this->form->total, 0, ',', '.')}}
+                                Rp {{ number_format($this->form->grand_total, 0, ',', '.')}}
                             </div>
                         </div>
                     </div>

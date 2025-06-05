@@ -14,14 +14,6 @@ class Index extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search;
-    // public function render()
-    // {
-    //     $jenis_kendaraans = Karyawan::all();
-    //     // return view('livewire.jenis-kendaraan.index',compact('jenis_kendaraans'));
-    //     return view('livewire.karyawan.index', [
-    //         'karyawans' => Karyawan::search($this->search)->paginate($this->perPage),
-    //     ]);
-    // }
 
     public function updatingSearch()
     {
@@ -55,12 +47,4 @@ class Index extends Component
         return view('livewire.karyawan.index', compact('karyawans'));
     }
 
-    // public function render()
-    // {
-    //     $karyawans = Karyawan::with('user')->get();
-    //     return view('livewire.karyawan.index', [
-    //         'karyawans' => Karyawan::search($this->search)->paginate($this->perPage),
-    //     ]);
-    //     // return view('livewire.karyawan.index', compact('karyawans'));
-    // }
 }

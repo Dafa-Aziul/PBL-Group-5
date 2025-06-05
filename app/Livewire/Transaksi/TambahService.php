@@ -25,19 +25,11 @@ class TambahService extends Component
         $this->service_id = $this->service->id;
         $this->form->fillFormModel($this->service);
 
-        // Hitung sub total
-
-        // Hitung pajak dan total
+        // Hitung sub grand_total
+        // Hitung pajak dan grand_total
         $this->form->pajak = round(0.11 * $this->form->sub_total, 2);
-        $this->form->total = $this->form->sub_total + $this->form->pajak;
+        $this->form->grand_total = $this->form->sub_total + $this->form->pajak;
     }
-
-    // public function updateTotal()
-    // {
-    //     $diskonPersen = floatval($this->form->diskon);
-    //     $this->total_diskon = $this->form->sub_total * ($diskonPersen / 100);
-    //     $this->form->total = $this->form->sub_total + $this->form->pajak - $this->total_diskon;
-    // }
 
     public function updatedFormDiskon($value)
     {
@@ -50,10 +42,10 @@ class TambahService extends Component
             $this->form->diskon = $cleaned === '' ? 0 : intval($cleaned);
         }
 
-        // Hitung total diskon dan total keseluruhan
+        // Hitung grand_total diskon dan grand_total keseluruhan
         $diskonPersen = floatval($this->form->diskon);
         $this->total_diskon = $this->form->sub_total * ($diskonPersen / 100);
-        $this->form->total = $this->form->sub_total + $this->form->pajak - $this->total_diskon;
+        $this->form->grand_total = $this->form->sub_total + $this->form->pajak - $this->total_diskon;
     }
 
     public function store()
@@ -69,7 +61,7 @@ class TambahService extends Component
         $serviceDetail = ServiceDetail::create([
             'transaksi_id' => $transaksi->id,
             'service_id' => $this->service_id,
-            'sub_total' => $this->form->total,
+            'sub_total' => $this->form->grand_total,
 
         ]);
         // Jika status pembayaran lunas, otomatis catat pembayaran penuh
@@ -77,7 +69,7 @@ class TambahService extends Component
             Pembayaran::create([
                 'transaksi_id' => $transaksi->id,
                 'tanggal_bayar' => now(),
-                'jumlah_bayar' => $transaksi->total,
+                'jumlah_bayar' => $transaksi->grand_total,
                 'status_pembayaran' => 'lunas',
                 'ket' => 'Pembayaran otomatis saat transaksi dibuat',
             ]);
@@ -89,7 +81,7 @@ class TambahService extends Component
     public function render()
     {
         $totalJasa = $this->service->jasas->sum('harga');
-        $totalSparepart = $this->service->spareparts->sum('subtotal');
+        $totalSparepart = $this->service->spareparts->sum('sub_total');
         $totalEstimasi = $totalJasa + $totalSparepart;
         return view('livewire.transaksi.tambah-service', [
             'totalJasa' => $totalJasa,

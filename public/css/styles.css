@@ -4501,6 +4501,15 @@ font-weight: 600;
   }
 }
 
+@keyframes popUp {
+    0%   { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pop {
+    animation: popUp 0.6s ease-out;
+}
+
 .accordion {
   --bs-accordion-color: #212529;
   --bs-accordion-bg: #fff;
@@ -4525,6 +4534,7 @@ font-weight: 600;
   --bs-accordion-active-color: #0c63e4;
   --bs-accordion-active-bg: #e7f1ff;
 }
+
 
 .accordion-button {
   position: relative;

@@ -60,7 +60,7 @@
                         </div>
 
                         <div class="form-control bg-light mb-1">
-                            <strong>Model Kendaraan:</strong> {{ $service->model_kendaraan ?? '-' }}
+                            <strong>Tipe Kendaraan:</strong> {{ $service->tipe_kendaraan ?? '-' }}
                         </div>
 
                         <div class="form-control bg-light mb-1">
@@ -227,7 +227,7 @@
                                             {{ $sparepart['jumlah'] }}
                                         </td>
                                         <td>Rp {{ number_format($sparepart['harga'], 0, ',', '.') }}</td>
-                                        <td>Rp {{ number_format($sparepart['subtotal'], 0, ',', '.') }}</td>
+                                        <td>Rp {{ number_format($sparepart['sub_total'], 0, ',', '.') }}</td>
                                         <td style="width: 40px; padding: 0.2rem; text-align: center;">
                                             <button wire:click="removeSparepart({{ $index }})" type="button"
                                                 class="btn btn-outline-danger p-0" style="width: 28px; height: 28px;"

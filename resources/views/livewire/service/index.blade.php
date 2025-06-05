@@ -3,7 +3,7 @@
     document.addEventListener('livewire:init', () => {
         Livewire.on('tampilkanModalTransaksi', (serviceId) => {
             console.log('Menerima event tampilkanModalTransaksi:', serviceId); // Debug cek event sampai
-            const modalEl = document.getElementById(`modalTransaksi-${serviceId}`);
+            const modalEl = document.getElementById(modalTransaksi-${serviceId});
             if (modalEl) {
                 const modal = new bootstrap.Modal(modalEl);
                 modal.show();
@@ -16,7 +16,6 @@
 @endpush
 
 <div>
-
     <h2 class="mt-4">Kelola Service</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
@@ -35,7 +34,6 @@
         </div>
     </div>
     @endif
-
     <div class="row g-3 mb-4">
         {{-- Kanan atas: Status + Jenis dalam satu kolom besar (75%) --}}
         <div class="col-12 col-lg-4">
@@ -104,8 +102,6 @@
         </div>
     </div>
 
-
-
     <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
 
         <div class="col-12 col-md-4 d-flex align-items-center gap-3">
@@ -156,10 +152,12 @@
                 <span class="d-none d-md-inline ms-1">Daftar service</span>
             </div>
             <div>
+                @can('admin')
                 <a class="btn btn-primary float-end" href="{{ route('service.create') }}" wire:navigate><i
                         class="fas fa-plus"></i>
                     <span class="d-none d-md-inline ms-1">Tambah service</span>
                 </a>
+                @endcan
 
             </div>
         </div>
@@ -193,25 +191,28 @@
                                 <th>Kode service</th>
                                 <th>Pelanggan</th>
                                 <th>Nomor Polisi</th>
-                                <th>Model Kendaraan</th>
+                                <th>Tipe Kendaraan</th>
                                 <th>status</th>
                                 <th>Tanggal Mulai</th>
                                 <th>tanggal Selesai</th>
                                 <th>keterangan</th>
+                                @can('admin')
                                 <th>Aksi</th>
+                                @endcan
                             </tr>
                         </thead>
                         </tfoot>
                         <tbody>
                             @forelse ($services as $service)
-                            <tr style="cursor:pointer;" x-data @click="Livewire.navigate(`/service/{{ $service->id }}`)"
+                            <tr style="cursor:pointer;" x-data @click="Livewire.navigate(/service/{{ $service->id }})"
                                 class="align-middle">
                                 <td class="text-center">{{ ($services->firstItem() + $loop->iteration) - 1 }}</td>
                                 <td>{{ $service->kode_service }}</td>
                                 <td>{{ $service->kendaraan->pelanggan->nama }}</td>
                                 <td>{{ $service->no_polisi }}</td>
-                                <td>{{ $service->model_kendaraan }}</td>
+                                <td>{{ $service->tipe_kendaraan }}</td>
                                 <td @click.stop class="text-center">
+                                    @can('admin')
                                     @if(in_array($service->status, ['selesai', 'batal']))
                                     @if($service->status == 'selesai')
                                     <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
@@ -269,6 +270,19 @@
                                         </div>
                                     </div>
                                     @endif
+                                    @endcan
+
+                                    @if (auth()->user()->role != 'admin' && auth()->user()->role != 'superadmin')
+                                    @if (in_array($service->status, ['selesai', 'batal']))
+                                    <div class="badge bg-secondary d-inline-flex align-items-center py-2 px-3 fs-7">
+                                        <i class="fas fa-info-circle me-1"></i> {{ ucfirst($service->status) }}
+                                    </div>
+                                    @else
+                                    <div class="badge bg-warning d-inline-flex align-items-center py-2 px-3 fs-7">
+                                        <i class="fas fa-spinner me-1"></i> {{ ucfirst($service->status) }}
+                                    </div>
+                                    @endif
+                                    @endif
                                 </td>
 
                                 <td>{{ \Carbon\Carbon::parse($service->tanggal_mulai_service)->translatedFormat('d F Y
@@ -283,6 +297,7 @@
                                     }}
                                 </td>
                                 <td>{{ $service->keterangan }}</td>
+                                @can('admin')
                                 <td class="text-center" @click.stop>
                                     @if (!in_array($service->status, ['selesai', 'batal']))
                                     <a href="{{ route('service.edit', ['id' => $service->id]) }}"
@@ -307,6 +322,7 @@
                                     </a>
                                     @endif
                                 </td>
+                                @endcan
                             </tr>
                             @empty
                             <tr>
@@ -321,7 +337,7 @@
     </div>
 
     @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> --}}
 
     <script>
         function renderJasaChart() {
@@ -412,6 +428,5 @@
     
     </script>
     @endpush
-
 
 </div>

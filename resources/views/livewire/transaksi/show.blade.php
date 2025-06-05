@@ -161,10 +161,13 @@
                     </div>
 
                     @if($transaksi->status_pembayaran != 'lunas')
-                    <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
-                        data-bs-target="#paymentModal">
-                        <i class="fas fa-money-bill-wave"></i> Bayar Sekarang
-                    </button>
+                    @can('admin')
+                        <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
+                            data-bs-target="#paymentModal">
+                            <i class="fas fa-money-bill-wave"></i> <span class="d-none d-md-inline ms-1">Bayar
+                                Sekarang</span>
+                        </button>
+                    @endcan
                     @endif
                 </div>
                 <div class="card-body">
@@ -212,35 +215,35 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Form Pembayaran</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal">
-                                <span>&times;</span>
-                            </button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form wire:submit.prevent="simpanPembayaran">
                             <div class="modal-body">
                                 <div class="form-group">
                                     <label>Tanggal Bayar</label>
-                                    <input type="date" class="form-control" wire:model.defer="tanggal_bayar">
-                                    @error('tanggal_bayar') <small class="text-danger">{{ $message }}</small>
+                                    <input type="date" class="form-control" wire:model.defer="form.tanggal_bayar">
+                                    @error('form.tanggal_bayar') <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Jumlah Bayar</label>
-                                    <input type="number" class="form-control" wire:model.defer="jumlah_bayar">
-                                    @error('jumlah_bayar') <small class="text-danger">{{ $message }}</small>
+                                    <label>Jumlah Bayar (Sisa: Rp{{ number_format($sisaPembayaran, 0, ',', '.')
+                                        }})</label>
+                                    <input type="number" class="form-control" wire:model.defer="form.jumlah_bayar">
+                                    @error('form.jumlah_bayar') <small class="text-danger">{{ $message }}</small>
                                     @enderror
                                 </div>
 
                                 <div class="form-group">
                                     <label>Keterangan</label>
-                                    <textarea class="form-control" wire:model.defer="ket"></textarea>
+                                    <textarea class="form-control" wire:model.defer="form.ket"></textarea>
+                                    @error('form.ket') <small class="text-danger">{{ $message }}</small> @enderror
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    wire:click="closePaymentModal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary"
+                                    wire:loading.attr="disabled">Simpan</button>
                             </div>
                         </form>
                     </div>
@@ -314,7 +317,7 @@
                         $spareparts = $transaksi->serviceDetail
                         ? $transaksi->serviceDetail->service->spareparts
                         : collect();
-                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->subtotal ?? 0);
+                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->sub_total ?? 0);
                         @endphp
 
                         @if ($spareparts->isNotEmpty())
@@ -341,7 +344,7 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
-                                        <td class="text-end">Rp {{ number_format($sp->subtotal ?? 0, 0, ',', '.') }}
+                                        <td class="text-end">Rp {{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -352,6 +355,46 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="row">
+                                <div class="col-12 col-md-3 mb-3">
+                                    <label for="pajak" class="form-label">Subtotal</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->sub_total, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 mb-3">
+                                    <label for="pajak" class="form-label">Pajak 11%</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->pajak, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3 ">
+                                    <label for="diskon">Diskon (%)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->diskon, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3">
+                                    <label for="diskon">Diskon (Rp)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format(($transaksi->diskon/100)*($transaksi->grand_total) , 0, ',',
+                                        '.')}}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                        <i class="fas fa-calculator me-2"></i>
+                                        <div>
+                                            <strong>Grand Total: </strong>
+                                            <span class="text-success fs-5 ms-2">Rp {{
+                                                number_format($transaksi->grand_total,
+                                                0,
+                                                ',', '.')
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         @else
                         <p class="text-muted fst-italic">Belum ada sparepart yang digunakan.</p>
@@ -359,11 +402,11 @@
                     </div>
                     @elseif ($transaksi->jenis_transaksi === 'penjualan')
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-uppercase">2. Sparepart</label>
+                        <label class="form-label fw-bold text-uppercase">1. Sparepart</label>
                         @php
                         // Ambil semua sparepart dari relasi transaksi->serviceDetail->service->spareparts
                         $spareparts = $transaksi->penjualanDetail ?? collect();
-                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->subtotal ?? 0);
+                        $totalSparepart = $spareparts->sum(fn($sp) => $sp->sub_total ?? 0);
                         @endphp
 
                         @if ($spareparts->isNotEmpty())
@@ -390,7 +433,7 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga ?? 0, 0, ',', '.') }}</td>
-                                        <td class="text-end">Rp {{ number_format($sp->subtotal ?? 0, 0, ',', '.') }}
+                                        <td class="text-end">Rp {{ number_format($sp->sub_total ?? 0, 0, ',', '.') }}
                                         </td>
                                     </tr>
                                     @endforeach
@@ -401,6 +444,46 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="row">
+                                <div class="col-12 col-md-3 mb-3">
+                                    <label for="pajak" class="form-label">Subtotal</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->sub_total, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-3 mb-3">
+                                    <label for="pajak" class="form-label">Pajak 11%</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->pajak, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3 ">
+                                    <label for="diskon">Diskon (%)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format($transaksi->diskon, 0, ',', '.')}}
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3 mb-3">
+                                    <label for="diskon">Diskon (Rp)</label>
+                                    <div class="form-control mb-1">
+                                        Rp {{ number_format(($transaksi->diskon/100)*($transaksi->grand_total) , 0, ',',
+                                        '.')}}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
+                                        <i class="fas fa-calculator me-2"></i>
+                                        <div>
+                                            <strong>Grand Total: </strong>
+                                            <span class="text-success fs-5 ms-2">Rp {{
+                                                number_format($transaksi->grand_total,
+                                                0,
+                                                ',', '.')
+                                                }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         @else
                         <p class="text-muted fst-italic">Belum ada sparepart yang digunakan.</p>
@@ -412,18 +495,34 @@
 
             <!-- Total Keseluruhan -->
             <div class="card mt-4 shadow-sm border-0">
-                <div class="card-body d-flex justify-content-end fw-bold fs-5">
-                    <span class="me-2">Total Keseluruhan: </span>
-                    <span class="text-success">
-                        Rp {{ number_format($transaksi->total,
-                        0,
-                        ',',
-                        '.'
-                        ) }}
-                    </span>
+                <div class="card-body d-flex justify-content-end fw-bold fs-5 gap-2">
+                    <button data-bs-toggle="modal" data-bs-target="#previewModal" class="btn btn-info">
+                        <i class="fa fa-eye"></i>
+                        <span class="d-none d-md-inline ms-1">Preview Invoice</span>
+                    </button>
+
+                    <a href="{{ route('invoice.download', $transaksi->id) }}" class="btn btn-primary"
+                        rel="noopener noreferrer" download>
+                        <i class="fa fa-download"></i>
+                        <span class="d-none d-md-inline ms-1">Download Invoice</span>
+                    </a>
+                </div>
+
+            </div>
+            <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Preview Transaksi</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <iframe src="{{ route('invoice.show', $transaksi->id) }}" width="100%" height="600px"
+                                frameborder="0"></iframe>
+                        </div>
+                    </div>
                 </div>
             </div>
-
         </div>
 
     </div>

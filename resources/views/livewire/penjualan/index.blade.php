@@ -133,10 +133,12 @@
                 <span class="d-none d-md-inline ms-1">Daftar service</span>
             </div>
             <div>
+                @can('admin')
                 <a class="btn btn-primary float-end" href="{{ route('penjualan.create') }}" wire:navigate><i
                         class="fas fa-plus"></i>
                     <span class="d-none d-md-inline ms-1">Tambah Penjualan</span>
                 </a>
+                @endcan
             </div>
         </div>
         <div class="card-body">
@@ -180,7 +182,7 @@
                         <tbody>
                             @forelse ($penjualans as $penjualan)
                             <tr style="cursor: pointer;" x-data
-                                @click="Livewire.navigate(`/penjualan/{{ $penjualan->id }}`)">
+                                @click="Livewire.navigate(/penjualan/{{ $penjualan->id }})">
                                 <td class="text-center">{{ ($penjualans->firstItem() + $loop->iteration) - 1 }}</td>
                                 <td>{{ $penjualan->kode_transaksi }}</td>
                                 <td>{{ $penjualan->kasir->nama ?? '-' }}</td>
@@ -188,7 +190,7 @@
                                 <td>Rp {{ number_format($penjualan->sub_total, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($penjualan->pajak, 0, ',', '.') }}</td>
                                 <td>{{ number_format($penjualan->diskon, 0, ',', '.') }} %</td>
-                                <td>Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
+                                <td>Rp {{ number_format($penjualan->grand_total, 0, ',', '.') }}</td>
                                 <td>
                                     @if ($penjualan->status_pembayaran == 'lunas')
                                     <span class="badge bg-success">Lunas</span>
@@ -209,12 +211,13 @@
             </div>
         </div>
     </div>
+</div>
 
-    @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <script>
-        const ctx = document.getElementById('myChart');
+<script>
+    const ctx = document.getElementById('myChart');
         if (ctx && window.chartDetail) {
             const chartDetail = window.chartDetail;
             const labels = chartDetail.labels;
@@ -243,8 +246,8 @@
             });
         }
 
-    </script>
+</script>
 
-    @endpush
+@endpush
 
 </div>

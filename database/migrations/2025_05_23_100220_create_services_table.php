@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('kendaraan_id')->constrained('kendaraans');
             $table->foreignId('montir_id')->constrained('karyawans');
             $table->string('no_polisi');
-            $table->string('model_kendaraan');
+            $table->string('tipe_kendaraan');
             $table->integer('odometer')->nullable();
             $table->text('deskripsi_keluhan')->nullable();
             $table->enum('status', [

@@ -36,7 +36,7 @@
                         <option value="masuk">Masuk</option>
                         <option value="keluar">Keluar</option>
                     </select>
-                    
+
                     @error('form.aktivitas') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

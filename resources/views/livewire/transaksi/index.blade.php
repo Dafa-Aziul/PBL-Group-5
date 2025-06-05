@@ -85,7 +85,7 @@
             <!-- Container form untuk dari dan sampai -->
             <div class="d-flex flex-column flex-md-row gap-3 w-100">
                 <!-- From -->
-                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                <div class="d-flex align-items-center gap-2 me-md-0 mb-2 mb-md-0">
                     <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
                     <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if($showAll)
                         disabled @endif>
@@ -185,7 +185,7 @@
                             <td>Rp {{ number_format($transaksi->sub_total, 0, ',', '.') }}</td>
                             <td>Rp {{ number_format($transaksi->pajak, 0, ',', '.') }}</td>
                             <td>{{ number_format($transaksi->diskon, 0, ',', '.') }} %</td>
-                            <td>Rp {{ number_format($transaksi->total, 0, ',', '.') }}</td>
+                            <td>Rp {{ number_format($transaksi->grand_total, 0, ',', '.') }}</td>
                             <td>
                                 @if ($transaksi->status_pembayaran == 'lunas')
                                 <span class="badge bg-success">Lunas</span>
