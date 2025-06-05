@@ -115,7 +115,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         </div>
         @endcan
 
-        @can('akses-owner')
+        @can('owner')
         <div class="col-12 col-md-9">
             <div class="card h-100 card-hover">
                 <div class="card-body">
