@@ -64,6 +64,22 @@ class Index extends Component
         }
     }
 
+    public function getDataChartData()
+    {
+
+    }
+
+    public function getDataChartJenis()
+    {
+
+    }
+
+    public function emitChartData()
+    {
+        $this->dispatch('chart-updated', chartData: $this->getAbsensiStatusChartData());
+        $this->dispatch('chart-bar-updated', chartStatus: $this->getAllStatusChartData());
+    }
+
     public function render()
     {
         $transaksis = Transaksi::with(['kasir', 'pelanggan'])

@@ -84,12 +84,13 @@
                             <td>Rp {{ number_format($jasa->harga, 0, ',', '.') }}</td>
                             <td>{{ $jasa->keterangan}}</td>
                             <td class="text-center">
+
                                 <a href="{{ route('jasa.edit', ['id' => $jasa->id]) }}"
-                                    class="btn btn-warning mb-3 mb-md-0">
+                                    class="btn btn-warning mb-3 mb-md-2">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="d-none d-md-inline ms-1">Edit</span>
                                 </a>
-                                <button class="btn btn-danger mb-3 mb-md-0" data-bs-toggle="modal"
+                                <button class="btn btn-danger mb-3 mb-md-2" data-bs-toggle="modal"
                                     data-bs-target="#confirm"> <i class="fas fa-trash-can"></i><span
                                         class="d-none d-md-inline ms-1">Delete</span></button>
                                 <x-modal.confirm id="confirm" action="modal" target="delete({{ $jasa->id }})"

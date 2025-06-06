@@ -233,13 +233,13 @@
                                     <td class="text-center" @click.stop>
                                         @if (!in_array($service->status, ['selesai', 'batal']))
                                             <a href="{{ route('service.edit', ['id' => $service->id]) }}"
-                                                class="btn btn-warning mb-3 mb-md-0" wire:navigate>
+                                                class="btn btn-warning mb-3 mb-md-2" wire:navigate>
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                                 <span class="d-none d-md-inline ms-1">Edit</span>
                                             </a>
                                         @endif
                                         @if ($service->status == 'analisis selesai' || $service->status == 'dalam proses' )
-                                            <a href="{{ route('service.detail', ['id' => $service->id]) }}" class="btn btn-info mb-3 mb-md-0"
+                                            <a href="{{ route('service.detail', ['id' => $service->id]) }}" class="btn btn-info mb-3 mb-md-2"
                                                 wire:navigate>
                                                 <i class="fa-solid fa-plus"></i>
                                                 <span class="d-none d-md-inline ms-1">detail</span>
@@ -247,7 +247,7 @@
                                         @endif
 
                                         @if (is_null($service->serviceDetail)&& $service->status == 'selesai')
-                                            <a href="{{ route('transaksi.service', ['id' => $service->id]) }}" class="btn btn-info mb-3 mb-md-0"
+                                            <a href="{{ route('transaksi.service', ['id' => $service->id]) }}" class="btn btn-info mb-3 mb-md-2"
                                                 wire:navigate>
                                                 <i class="fa-solid fa-receipt"></i>
                                                 <span class="d-none d-md-inline ms-1">Catat Transaksi</span>

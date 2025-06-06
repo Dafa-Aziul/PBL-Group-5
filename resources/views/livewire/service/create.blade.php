@@ -1,3 +1,35 @@
+@push('scripts')
+    <script>
+        function initPelangganSelect2() {
+            $('#pelanggan_id').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '-- Pilih --',
+                allowClear: true
+            }).on('change', function () {
+                // Cari instance Livewire dari elemen parent dengan atribut wire:id
+                const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
+                const component = Livewire.find(componentId);
+                if (component) {
+                    component.set("pelanggan_id", $(this).val());
+                }
+            });
+        }
+        // Ketika Livewire selesai load halaman
+        document.addEventListener('livewire:load', () => {
+            initPelangganSelect2();
+        });
+
+        // Setelah setiap update DOM Livewire, panggil lagi supaya select2 diinisialisasi ulang
+        Livewire.hook('message.processed', (message, component) => {
+            initPelangganSelect2();
+        });
+
+        document.addEventListener('livewire:navigated', () => {
+            initPelangganSelect2();
+        });
+    </script>
+@endpush
 <div>
     <h2 class="mt-4">Kelola Service</h2>
     <ol class="breadcrumb mb-4">
@@ -22,12 +54,14 @@
                 {{-- Pilih Pelanggan --}}
                 <div class="mb-3">
                     <label>Pelanggan</label>
-                    <select wire:model.live="pelanggan_id" class="form-select">
-                        <option value="">-- Pilih Pelanggan --</option>
-                        @foreach ($pelanggans as $pelanggan)
-                        <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
-                        @endforeach
-                    </select>
+                    <div wire:ignore>
+                        <select wire:model="pelanggan_id" class="form-select select2" id="pelanggan_id">
+                            <option value="">-- Pilih Pelanggan --</option>
+                            @foreach ($pelanggans as $pelanggan)
+                            <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     @error('pelanggan_id') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

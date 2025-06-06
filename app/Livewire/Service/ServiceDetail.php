@@ -136,6 +136,7 @@ class ServiceDetail extends Component
 
         $this->selectedJasaId = '';
         $this->hitungTotal();
+        $this->dispatch('reset-jasa-select2');
     }
 
     public function removeJasa($index)
@@ -190,6 +191,7 @@ class ServiceDetail extends Component
         $this->selectedSparepartId = '';
         $this->jumlahSparepart = '';
         $this->hitungTotal();
+        $this->dispatch('reset-sparepart-select2');
     }
 
 

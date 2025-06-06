@@ -66,6 +66,7 @@ class TambahService extends Component
         ]);
         // Jika status pembayaran lunas, otomatis catat pembayaran penuh
         if ($validated['status_pembayaran'] === 'lunas') {
+
             Pembayaran::create([
                 'transaksi_id' => $transaksi->id,
                 'tanggal_bayar' => now(),

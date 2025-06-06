@@ -1,5 +1,59 @@
 @push('scripts')
 <script>
+    function initJasaSelect2() {
+        $('#jasa_id').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: '-- Pilih --',
+            allowClear: true
+        }).on('change', function () {
+            // Cari instance Livewire dari elemen parent dengan atribut wire:id
+            const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
+            const component = Livewire.find(componentId);
+            if (component) {
+                component.set("selectedJasaId", $(this).val());
+            }
+        });
+    }
+    function initSparepartSelect2() {
+        $('#sparepart_id').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: '-- Pilih --',
+            allowClear: true
+        }).on('change', function () {
+            // Cari instance Livewire dari elemen parent dengan atribut wire:id
+            const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
+            const component = Livewire.find(componentId);
+            if (component) {
+                component.set("selectedSparepartId", $(this).val());
+            }
+        });
+    }
+
+    // Ketika Livewire selesai load halaman
+    document.addEventListener('livewire:load', () => {
+        initJasaSelect2();
+        initSparepartSelect2();
+    });
+
+    // Setelah setiap update DOM Livewire, panggil lagi supaya select2 diinisialisasi ulang
+    Livewire.hook('message.processed', (message, component) => {
+        initJasaSelect2();
+        initSparepartSelect2();
+    });
+
+    document.addEventListener('livewire:navigated', () => {
+        initJasaSelect2();
+        initSparepartSelect2();
+    });
+
+    window.addEventListener('reset-jasa-select2', () => {
+        $('#jasa_id').val(null).trigger('change');
+    });
+    window.addEventListener('reset-sparepart-select2', () => {
+        $('#sparepart_id').val(null).trigger('change');
+    });
     window.addEventListener('open-edit-modal', event => {
         var myModal = new bootstrap.Modal(document.getElementById('editJumlahModal'));
         myModal.show();
@@ -106,12 +160,14 @@
                         <div class="mb-3">
                             <div class="row g-2">
                                 <div class="col-10 col-md-11">
-                                    <select wire:model.live="selectedJasaId" class="form-select">
-                                        <option value="">-- Pilih Jasa --</option>
-                                        @foreach($jasas as $jasa)
-                                        <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}</option>
-                                        @endforeach
-                                    </select>
+                                    <div wire:ignore>
+                                        <select wire:model.live="selectedJasaId" class="form-select select2" id="jasa_id">
+                                            <option value="">-- Pilih Jasa --</option>
+                                            @foreach($jasas as $jasa)
+                                            <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     @error('selectedJasaId')
                                     <div class="text-danger" style="font-size: 0.875em;">{{ $message }}</div>
                                     @enderror
@@ -175,14 +231,16 @@
                     <div class="card-body">
                         <div class="row g-2 mb-3">
                             <div class="col-12 col-md-9">
-                                <select wire:model="selectedSparepartId" class="form-select">
-                                    <option value="">-- Pilih Sparepart --</option>
-                                    @foreach($spareparts as $sparepart)
-                                    <option value="{{ $sparepart->id }}">
-                                        {{ $sparepart->nama }} - Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <div wire:ignore>
+                                    <select wire:model="selectedSparepartId" class="form-select select2" id="sparepart_id">
+                                        <option value="">-- Pilih Sparepart --</option>
+                                        @foreach($spareparts as $sparepart)
+                                        <option value="{{ $sparepart->id }}">
+                                            {{ $sparepart->nama }} - Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 @error('selectedSparepartId')
                                 <div class="text-danger" style="font-size: 0.875em;">{{ $message }}
                                 </div>

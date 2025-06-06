@@ -1,5 +1,57 @@
 @push('scripts')
 <script>
+    function initPelangganSelect2() {
+        $('#pelanggan_id').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: '-- Pilih --',
+            allowClear: true
+        }).on('change', function () {
+            // Cari instance Livewire dari elemen parent dengan atribut wire:id
+            const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
+            const component = Livewire.find(componentId);
+            if (component) {
+                component.set("form.pelanggan_id", $(this).val());
+            }
+        });
+    }
+    function initSparepartSelect2() {
+        $('#sparepart_id').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: '-- Pilih --',
+            allowClear: true
+        }).on('change', function () {
+            // Cari instance Livewire dari elemen parent dengan atribut wire:id
+            const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
+            const component = Livewire.find(componentId);
+            if (component) {
+                component.set("selectedSparepartId", $(this).val());
+            }
+        });
+    }
+
+    // Ketika Livewire selesai load halaman
+    document.addEventListener('livewire:load', () => {
+        initPelangganSelect2();
+        initSparepartSelect2();
+    });
+
+    // Setelah setiap update DOM Livewire, panggil lagi supaya select2 diinisialisasi ulang
+    Livewire.hook('message.processed', (message, component) => {
+        initPelangganSelect2();
+        initSparepartSelect2();
+    });
+
+    document.addEventListener('livewire:navigated', () => {
+        initPelangganSelect2();
+        initSparepartSelect2();
+    });
+
+    window.addEventListener('reset-select2', () => {
+        $('#sparepart_id').val(null).trigger('change');
+    });
+
     window.addEventListener('open-edit-modal', event => {
         var myModal = new bootstrap.Modal(document.getElementById('editJumlahModal'));
         myModal.show();
@@ -38,16 +90,18 @@
 
         <div class="card-body">
             <form wire:submit.prevent="store">
-
                 {{-- Pilih Pelanggan --}}
                 <div class="mb-3">
                     <label>Pelanggan</label>
-                    <select wire:model="form.pelanggan_id" class="form-select">
-                        <option value="">-- Pilih Pelanggan --</option>
-                        @foreach ($pelanggans as $pelanggan)
-                        <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
-                        @endforeach
-                    </select>
+                    <div wire:ignore>
+                        <select wire:model="form.pelanggan_id" class="form-select select2" id="pelanggan_id">
+                            <option></option>
+                            @foreach ($pelanggans as $pelanggan)
+                            <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     @error('form.pelanggan_id') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
@@ -63,14 +117,16 @@
                     <div class="card-body p-3">
                         <div class="row g-2 mb-3">
                             <div class="col-12 col-md-9">
-                                <select wire:model="selectedSparepartId" class="form-select">
-                                    <option value="">-- Pilih Sparepart --</option>
-                                    @foreach($spareparts as $sparepart)
-                                    <option value="{{ $sparepart->id }}">
-                                        {{ $sparepart->nama }} - Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
-                                    </option>
-                                    @endforeach
-                                </select>
+                                <div wire:ignore>
+                                    <select wire:model="selectedSparepartId" class="form-select select2" id="sparepart_id">
+                                        <option ></option>
+                                        @foreach($spareparts as $sparepart)
+                                        <option value="{{ $sparepart->id }}">
+                                            {{ $sparepart->nama }} - Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                                 @error('selectedSparepartId')
                                 <div class="text-danger" style="font-size: 0.875em;">{{ $message }}
                                 </div>
@@ -153,7 +209,8 @@
                             <div class="col-6 col-md-4 mb-3 ">
                                 <label for="diskon">Diskon (%)</label>
                                 <input type="text" min="0" max="100" class="form-control"
-                                    wire:model.number.lazy="form.diskon" id="diskon" maxlength="3" max="100" oninput="this.value = this.value.replace(/[^0-9]/g, '')" >
+                                    wire:model.number.lazy="form.diskon" id="diskon" maxlength="3" max="100"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 @error('form.diskon') <span class="text-danger">{{ $message }}</span> @enderror
                             </div>
                             <div class="col-6 col-md-4 mb-3">
@@ -168,7 +225,8 @@
                                     <i class="fas fa-calculator me-2"></i>
                                     <div>
                                         <strong>Total Estimasi Biaya:</strong>
-                                        <span class="text-success fs-5 ms-2">Rp {{ number_format($this->form->grand_total,
+                                        <span class="text-success fs-5 ms-2">Rp {{
+                                            number_format($this->form->grand_total,
                                             0,
                                             ',', '.')
                                             }}</span>

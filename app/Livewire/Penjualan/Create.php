@@ -110,6 +110,7 @@ class Create extends Component
 
         $this->reset(['selectedSparepartId', 'jumlahSparepart']);
         $this->hitungTotal();
+        $this->dispatch('reset-select2');
     }
 
     public function removeSparepart($index)
