@@ -36,41 +36,6 @@
     </div>
     @livewireScripts
     @stack('scripts')
-    <script>
-        document.addEventListener('livewire:load', () => {
-            window.initChoices();
-
-            Livewire.hook('message.processed', (message, component) => {
-                window.initChoices();
-            });
-        });
-    </script>
     @vite('resources/js/app.js')
-    @vite('resources/js/scripts.js')
-    @vite('resources/js/chart.js')
-    @vite('resources/js/select2.js')
 </body>
-<script>
-    document.addEventListener('livewire:load', () => {
-        const initChoices = () => {
-            document.querySelectorAll('.select-pelanggan').forEach((el) => {
-                if (!el.classList.contains('choices-initialized')) {
-                    new Choices(el, {
-                        searchEnabled: true,
-                        itemSelectText: '',
-                    });
-                    el.classList.add('choices-initialized');
-                }
-            });
-        };
-
-        initChoices();
-
-        Livewire.hook('message.processed', (message, component) => {
-            initChoices();
-        });
-    });
-</script>
-
-
 </html>

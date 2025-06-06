@@ -37,15 +37,26 @@ class Create extends Component
 
     public function hitungTotal()
     {
+        // Total harga semua sparepart
         $this->totalSparepart = collect($this->sparepartList)->sum('sub_total');
-        $this->form->pajak = round(0.11 * $this->totalSparepart, 2);
 
-        $diskonPersen = floatval($this->form->diskon ?? 0);
-        $this->total_diskon = $this->totalSparepart * ($diskonPersen / 100);
-
+        // Simpan subtotal awal
         $this->form->sub_total = $this->totalSparepart;
-        $this->form->grand_total = $this->totalSparepart + $this->form->pajak - $this->total_diskon;
+
+        // Hitung diskon (dalam persen)
+        $diskonPersen = floatval($this->form->diskon ?? 0);
+        $this->total_diskon = $this->form->sub_total * ($diskonPersen / 100);
+
+        // Hitung subtotal setelah diskon
+        $subtotalSetelahDiskon = $this->form->sub_total - $this->total_diskon;
+
+        // Pajak 11% dari subtotal setelah diskon
+        $this->form->pajak = round(0.11 * $subtotalSetelahDiskon, 2);
+
+        // Grand total = subtotal setelah diskon + pajak
+        $this->form->grand_total = round($subtotalSetelahDiskon + $this->form->pajak);
     }
+
 
 
     public function openEditModal($index)
@@ -131,11 +142,10 @@ class Create extends Component
             $this->form->diskon = $cleaned === '' ? 0 : intval($cleaned);
         }
 
-        // Hitung grand_total diskon dan grand_total keseluruhan
-        $diskonPersen = floatval($this->form->diskon);
-        $this->total_diskon = $this->form->sub_total * ($diskonPersen / 100);
-        $this->form->grand_total = $this->form->sub_total + $this->form->pajak - $this->total_diskon;
+        // Panggil ulang perhitungan total
+        $this->hitungTotal();
     }
+
     public function store()
     {
         $validated = $this->form->validate();

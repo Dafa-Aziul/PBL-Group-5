@@ -10,9 +10,6 @@ export default defineConfig({
                     'resources/sass/app.scss',
                     'resources/css/styles.css',
                     'resources/js/app.js',
-                    'resources/js/scripts.js',
-                    'resources/js/select2.js',
-                    'resources/js/chart.js',
                 ],
             refresh: true,
             resolve: {
@@ -22,7 +19,6 @@ export default defineConfig({
                 },
             },
         }),
-
         tailwindcss(),
     ],
 });

@@ -24,13 +24,13 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'role' => 'superadmin',
         ]);
-        User::factory(1)->create([
+        User::factory(2)->create([
             'role' => 'owner',
         ]);
         User::factory(2)->create([
             'role' => 'admin',
         ]);
-        User::factory(15)->create([
+        User::factory(4)->create([
             'role' => 'mekanik',
         ]);
 

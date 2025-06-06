@@ -1,3 +1,140 @@
+@push('scripts')
+<script>
+    (function () {
+        let pendapatanBulananChartInstance = null;
+        let chartInitialized = false;
+
+        function safeDestroyChart(instance) {
+            if (instance) {
+                try {
+                    instance.destroy();
+                } catch (e) {
+                    console.warn('Gagal menghancurkan chart:', e);
+                }
+            }
+            return null;
+        }
+
+        function renderPendapatanBulananChart(chartData) {
+            const ctx = document.getElementById('chartPendapatanBulanan');
+            if (!ctx) {
+                console.warn('Canvas chartPendapatanBulanan tidak ditemukan');
+                return;
+            }
+
+            if (!chartData || !Array.isArray(chartData.labels) || !Array.isArray(chartData.datasets) || chartData.datasets.length === 0) {
+                console.warn('Data chart pendapatan bulanan tidak valid');
+                return;
+            }
+
+            const datasetsWithColors = chartData.datasets.map(ds => ({
+                ...ds,
+                backgroundColor: ds.backgroundColor || 'rgba(54, 162, 235, 0.6)',
+                borderColor: ds.borderColor || 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                fill: false,
+            }));
+
+            // Cek dan update chart jika sudah ada
+            if (pendapatanBulananChartInstance) {
+                pendapatanBulananChartInstance.data.labels = chartData.labels;
+                pendapatanBulananChartInstance.data.datasets = datasetsWithColors;
+                pendapatanBulananChartInstance.update();
+                console.log("Chart diupdate");
+            } else {
+                pendapatanBulananChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: datasetsWithColors
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const value = context.parsed.y ?? 0;
+                                        return `${context.dataset.label}: Rp ${value.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Bulan'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Pendapatan (Rp)'
+                                },
+                                ticks: {
+                                    callback: function (value) {
+                                        return 'Rp ' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                console.log("Chart berhasil dibuat");
+            }
+
+            chartInitialized = true;
+        }
+
+        function attachLivewireListeners() {
+            if (!window.Livewire) return;
+            Livewire.on('chart-pendapatan-updated', (data) => {
+                renderPendapatanBulananChart(data);
+            });
+        }
+
+        function initializeChart() {
+            if (chartInitialized) return;
+
+            if (window.Livewire) {
+                attachLivewireListeners();
+            } else {
+                document.addEventListener('livewire:load', attachLivewireListeners);
+            }
+
+            renderPendapatanBulananChart(@json($chartPendapatanBulanan));
+        }
+
+        // Inisialisasi saat DOM pertama kali siap
+        document.addEventListener('DOMContentLoaded', initializeChart);
+
+        // Bersihkan chart sebelum navigasi Livewire
+        document.addEventListener('livewire:before-unload', () => {
+            pendapatanBulananChartInstance = safeDestroyChart(pendapatanBulananChartInstance);
+            chartInitialized = false;
+        });
+
+        // Inisialisasi ulang setelah navigasi Livewire
+        document.addEventListener('livewire:navigated', () => {
+            pendapatanBulananChartInstance = safeDestroyChart(pendapatanBulananChartInstance);
+            chartInitialized = false;
+
+            setTimeout(() => {
+                if (document.getElementById('chartPendapatanBulanan')) {
+                    initializeChart();
+                }
+            });
+        });
+    })();
+</script>
+@endpush
+
 <div>
     <h2 class="mt-4">Manajemen Transaksi</h2>
     <ol class="breadcrumb mb-4">
@@ -6,6 +143,106 @@
         <li class="breadcrumb-item active">Daftar Transaksi</li>
     </ol>
 
+    <div class="row g-3 mb-4" wire:poll.visible.3000ms>
+        {{-- 🔸 Kolom Kiri: Ringkasan Pendapatan dan Transaksi --}}
+        <div class="col-12 col-lg-4">
+            <div class="d-flex flex-column h-100 gap-3">
+
+                {{-- 🔹 Total Pendapatan + Per Jenis --}}
+                <div class="card h-100 shadow-sm card-hover">
+                    <div class="card-body d-flex flex-column justify-content-center text-center">
+                        <div class="mb-3">
+                            <div class="text-success mb-2">
+                                <i class="fa-solid fa-money-bill-1-wave fa-2x"></i>
+                            </div>
+                            <h6 class="mb-1 text-muted">Total Pendapatan</h6>
+                            <hr class="my-1 border-success opacity-50 mx-auto" style="width: 60%;">
+                        </div>
+
+                        <h3 class="fw-bold text-dark mb-4">
+                            Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
+                        </h3>
+
+                        <div class="d-flex justify-content-center gap-4 mb-3">
+                            <div>
+                                <small class="text-muted">Total Bayar</small><br>
+                                <span class="fw-bold text-success">
+                                    Rp {{ number_format($statPembayaran['total_bayar'], 0, ',', '.') }}
+                                </span>
+                            </div>
+                            <div>
+                                <small class="text-muted">Pending</small><br>
+                                <span class="fw-bold text-warning">
+                                    Rp {{ number_format($statPembayaran['pending'], 0, ',', '.') }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-4">
+                            <div>
+                                <small class="text-muted">Service</small><br>
+                                <span class="fw-bold text-success">
+                                    Rp {{ number_format($pendapatanPerJenis['service'], 0, ',', '.') }}
+                                </span>
+                            </div>
+                            <div>
+                                <small class="text-muted">Penjualan</small><br>
+                                <span class="fw-bold text-success">
+                                    Rp {{ number_format($pendapatanPerJenis['penjualan'], 0, ',', '.') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- 🔹 Jumlah Transaksi --}}
+                <div class="card h-100 shadow-sm card-hover">
+                    <div class="card-body d-flex flex-column justify-content-center text-center">
+                        <div class="mb-3">
+                            <div class="text-primary mb-2">
+                                <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
+                            </div>
+                            <h6 class="mb-1 text-muted">Jumlah Transaksi</h6>
+                            <hr class="my-1 border-primary opacity-50 mx-auto" style="width: 60%;">
+                        </div>
+
+                        <h3 class="fw-bold text-dark mb-4">
+                            {{ $jumlahTransaksi['total'] }} transaksi
+                        </h3>
+
+                        <div class="d-flex justify-content-center gap-4">
+                            <div>
+                                <small class="text-muted">Service</small><br>
+                                <span class="fw-bold">{{ $jumlahTransaksi['service'] }}</span>
+                            </div>
+                            <div>
+                                <small class="text-muted">Penjualan</small><br>
+                                <span class="fw-bold">{{ $jumlahTransaksi['penjualan'] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        {{-- 🔸 Kolom Kanan: Chart Pendapatan Bulanan --}}
+        <div class="col-12 col-lg-8">
+            <div class="card card-jumlah h-100 card-hover">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fa-solid fa-comments-dollar"></i> Pendapatan Bulanan
+                    </h5>
+                    <hr class="border border-2 opacity-50">
+                    <div class="d-flex justify-content-center p-5" wire:ignore>
+                        <canvas id="chartPendapatanBulanan" style="width: 100%; height: 50%; display: block;"
+                            width="800px" height="400px"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
@@ -55,7 +292,6 @@
     @error('tanggalAkhir')
     <div class="text-danger" style="font-size: 0.875em;">{{ $message }}</div>
     @enderror
-
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
@@ -137,7 +373,3 @@
         </div>
     </div>
 </div>
-
-@push('scripts')
-
-@endpush

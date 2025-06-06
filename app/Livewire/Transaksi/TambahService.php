@@ -25,27 +25,33 @@ class TambahService extends Component
         $this->service_id = $this->service->id;
         $this->form->fillFormModel($this->service);
 
-        // Hitung sub grand_total
-        // Hitung pajak dan grand_total
-        $this->form->pajak = round(0.11 * $this->form->sub_total, 2);
-        $this->form->grand_total = $this->form->sub_total + $this->form->pajak;
+        $this->hitungTotal();
     }
 
     public function updatedFormDiskon($value)
     {
-        // Jika kosong, kembalikan ke 0
+        // Jika kosong, set ke 0
         if ($value === null || $value === '') {
             $this->form->diskon = 0;
         } else {
-            // Buang angka nol di depan, tapi biarkan jika hanya 0
+            // Hilangkan nol di depan (tapi izinkan angka 0)
             $cleaned = ltrim($value, '0');
             $this->form->diskon = $cleaned === '' ? 0 : intval($cleaned);
         }
 
-        // Hitung grand_total diskon dan grand_total keseluruhan
-        $diskonPersen = floatval($this->form->diskon);
+        $this->hitungTotal();
+    }
+
+    private function hitungTotal()
+    {
+        $diskonPersen = floatval($this->form->diskon ?? 0);
         $this->total_diskon = $this->form->sub_total * ($diskonPersen / 100);
-        $this->form->grand_total = $this->form->sub_total + $this->form->pajak - $this->total_diskon;
+
+        $subtotalSetelahDiskon = $this->form->sub_total - $this->total_diskon;
+
+        $this->form->pajak = round(0.11 * $subtotalSetelahDiskon, 2);
+
+        $this->form->grand_total = round($subtotalSetelahDiskon + $this->form->pajak, 2);
     }
 
     public function store()

@@ -17,7 +17,7 @@
     </div>
     @endif
 
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4" wire:poll.visible.3000ms>
         <div class="col-12 col-lg-4">
             <div class="d-flex flex-column h-100 gap-3">
                 <div class="card card-jumlah flex-fill card-hover">
@@ -28,7 +28,7 @@
                         <hr class="border border-2 opacity-50">
                         <div class="d-flex justify-content-center p-5">
                             <canvas style="width: 100%; height: 100%; display: block;" height="400px"
-                                id="myChart"></canvas>
+                                id="myChart" wire:ignore></canvas>
                         </div>
                     </div>
                 </div>
@@ -43,11 +43,9 @@
                             <i class="fa-solid fa-user-tie"></i> Rekap Absen Karyawan
                         </h5>
                         <hr class="border border-2 opacity-50">
-                        <div class="container">
-                            <div class="d-flex justify-content-center p-5">
-                                <canvas style="width: 50%; height: 100%; display: block;" height="400px"
-                                    id="statusChart"></canvas>
-                            </div>
+                        <div class="d-flex justify-content-center p-5">
+                            <canvas style="width: 100%; height: 100%; display: block;" height="400px"
+                                id="statusChart" wire:ignore></canvas>
                         </div>
                     </div>
                 </div>
@@ -326,8 +324,7 @@
                         datasets: datasetsWithColor,
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        responsive: false,
                         plugins: {
                             legend: { position: 'bottom' },
                             tooltip: {
@@ -365,8 +362,7 @@
 
         function getChartOptions() {
             return {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: false,
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -448,7 +444,7 @@
                 if (document.getElementById('myChart')) {
                     initializeChart();
                 }
-            }, 100);
+            },100);
         });
 
         if (document.readyState === 'complete') {
