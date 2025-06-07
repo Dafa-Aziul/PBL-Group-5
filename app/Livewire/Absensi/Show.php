@@ -17,7 +17,6 @@ class Show extends Component
     public $search = '';
     public $filterStatus = '';
     public $filterBulan = '';
-    public $filterMinggu = '';
     public $sortDirection = 'desc';
     public $tanggalAwal;
     public $tanggalAkhir;
@@ -53,12 +52,6 @@ class Show extends Component
     }
 
     public function updatedFilterBulan()
-    {
-        $this->filterMinggu = ''; // Reset week filter when month changes
-        $this->emitChartData();
-    }
-
-    public function updatedFilterMinggu()
     {
         $this->emitChartData();
     }
@@ -155,7 +148,7 @@ class Show extends Component
 
     public function resetFilters()
     {
-        $this->reset(['filterStatus', 'filterBulan', 'filterMinggu']);
+        $this->reset(['filterStatus', 'filterBulan']);
         $this->resetPage();
         $this->emitChartData();
     }
@@ -181,14 +174,6 @@ class Show extends Component
             })
             ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
             ->when($this->filterBulan, fn($q) => $q->whereMonth('tanggal', $this->filterBulan))
-            ->when($this->filterMinggu && $this->filterBulan, function ($q) {
-                $tahun = Carbon::now()->year;
-                $startDate = Carbon::createFromDate($tahun, $this->filterBulan, 1)
-                    ->addWeeks($this->filterMinggu - 1)
-                    ->startOfWeek(Carbon::MONDAY);
-                $endDate = $startDate->copy()->endOfWeek(Carbon::SUNDAY);
-                $q->whereBetween('tanggal', [$startDate, $endDate]);
-            })
             ->orderBy('tanggal', $this->sortDirection);
 
         $absensis = $query->paginate($this->perPage);

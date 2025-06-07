@@ -2,7 +2,9 @@
 <script>
     (function () {
         let pendapatanBulananChartInstance = null;
+        let jumlahTransaksiChartInstance = null;
         let chartInitialized = false;
+        let livewireListenersAttached = false;
 
         function safeDestroyChart(instance) {
             if (instance) {
@@ -22,56 +24,113 @@
                 return;
             }
 
-            if (!chartData || !Array.isArray(chartData.labels) || !Array.isArray(chartData.datasets) || chartData.datasets.length === 0) {
-                console.warn('Data chart pendapatan bulanan tidak valid');
-                return;
+            // Normalisasi data jika nested
+            if (chartData && chartData.chartData) {
+                chartData = chartData.chartData;
             }
 
-            const datasetsWithColors = chartData.datasets.map(ds => ({
+            // Persiapkan datasets dengan default values
+            const preparedDatasets = chartData.datasets.map(ds => ({
                 ...ds,
                 backgroundColor: ds.backgroundColor || 'rgba(54, 162, 235, 0.6)',
-                borderColor: ds.borderColor || 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                fill: false,
+                borderColor: ds.borderColor || 'rgba(128, 128, 128, 0.5)',
+                borderWidth: ds.borderWidth ?? 1,
+                fill: ds.fill ?? false,
+                type: ds.type || 'bar',
+                stack: ds.type === 'line' ? undefined : (ds.stack || 'pendapatan'),
+                tension: ds.tension ?? (ds.type === 'line' ? 0.3 : 0),
+                pointRadius: ds.pointRadius ?? (ds.type === 'line' ? 4 : 3),
+                pointHoverRadius: ds.pointHoverRadius ?? (ds.type === 'line' ? 6 : 5)
             }));
 
-            // Cek dan update chart jika sudah ada
-            if (pendapatanBulananChartInstance) {
-                pendapatanBulananChartInstance.data.labels = chartData.labels;
-                pendapatanBulananChartInstance.data.datasets = datasetsWithColors;
-                pendapatanBulananChartInstance.update();
-                console.log("Chart diupdate");
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                // Update yang lebih aman dengan mempertahankan referensi asli
+                existingChart.data.labels = chartData.labels;
+
+                // Update datasets dengan mempertahankan objek asli jika mungkin
+                chartData.datasets.forEach((newDataset, i) => {
+                    if (existingChart.data.datasets[i]) {
+                        // Update properti yang ada
+                        Object.assign(existingChart.data.datasets[i], {
+                            label: newDataset.label,
+                            data: newDataset.data,
+                            type: newDataset.type || 'bar',
+                            stack: newDataset.type === 'line' ? undefined : (newDataset.stack || 'pendapatan'),
+                            backgroundColor: newDataset.backgroundColor || existingChart.data.datasets[i].backgroundColor,
+                            borderColor: newDataset.borderColor || existingChart.data.datasets[i].borderColor
+                        });
+                    } else {
+                        // Tambahkan dataset baru jika diperlukan
+                        existingChart.data.datasets.push(preparedDatasets[i]);
+                    }
+                });
+
+                // Hapus dataset yang tidak diperlukan
+                if (existingChart.data.datasets.length > chartData.datasets.length) {
+                    existingChart.data.datasets.splice(chartData.datasets.length);
+                }
+
+                // Update options stacking
+                existingChart.options.scales.x.stacked = preparedDatasets.some(ds => ds.stack);
+                existingChart.options.scales.y.stacked = preparedDatasets.some(ds => ds.stack);
+
+                existingChart.update();
             } else {
+                // Buat chart baru jika belum ada
+                if (typeof pendapatanBulananChartInstance !== 'undefined' && pendapatanBulananChartInstance) {
+                    pendapatanBulananChartInstance.destroy();
+                }
+
                 pendapatanBulananChartInstance = new Chart(ctx, {
-                    type: 'line',
+                    type: 'bar', // tipe dasar chart
                     data: {
                         labels: chartData.labels,
-                        datasets: datasetsWithColors
+                        datasets: preparedDatasets
                     },
                     options: {
-                        responsive: true,
+                        responsive: true, // Ubah ke true untuk better UX
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                position: 'bottom'
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
                             },
                             tooltip: {
                                 callbacks: {
                                     label: function (context) {
                                         const value = context.parsed.y ?? 0;
-                                        return `${context.dataset.label}: Rp ${value.toLocaleString()}`;
+                                        const label = context.dataset.label;
+
+                                        if (context.dataset.type === 'line') {
+                                            return `${label}: Rp ${value.toLocaleString()}`;
+                                        }
+
+                                        const total = context.chart.data.datasets
+                                            .filter(ds => ds.type !== 'line')
+                                            .reduce((sum, ds) => sum + (ds.data[context.dataIndex] || 0), 0);
+
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${label}: Rp ${value.toLocaleString()} (${percentage}%)`;
                                     }
                                 }
                             }
                         },
                         scales: {
                             x: {
+                                stacked: preparedDatasets.some(ds => ds.stack),
                                 title: {
                                     display: true,
                                     text: 'Bulan'
                                 }
                             },
                             y: {
+                                stacked: preparedDatasets.some(ds => ds.stack),
                                 beginAtZero: true,
                                 title: {
                                     display: true,
@@ -86,17 +145,103 @@
                         }
                     }
                 });
-                console.log("Chart berhasil dibuat");
             }
-
-            chartInitialized = true;
         }
 
+
+        function renderJumlahTransaksiChart(chartData) {
+            const ctx = document.getElementById('chartJumlahTransaksi');
+            if (!ctx) {
+                console.warn('Canvas chartJumlahTransaksi tidak ditemukan');
+                return;
+            }
+
+            if (
+                !chartData ||
+                !Array.isArray(chartData.labels) ||
+                !Array.isArray(chartData.datasets) ||
+                chartData.datasets.length === 0 ||
+                !Array.isArray(chartData.datasets[0].data)
+            ) {
+                console.warn('Data chart jumlah transaksi tidak valid');
+                return;
+            }
+
+            const backgroundColors = ['#4e73df', '#1cc88a'];
+            const borderColors = ['#2e59d9', '#17a673'];
+
+            // Sisipkan warna ke dataset jika belum ada
+            const dataset = {
+                ...chartData.datasets[0],
+                backgroundColor: chartData.datasets[0].backgroundColor ?? backgroundColors,
+                borderColor: chartData.datasets[0].borderColor ?? borderColors,
+                borderWidth: chartData.datasets[0].borderWidth ?? 0
+            };
+            const existingChart = Chart.getChart(ctx);
+            if (existingChart) {
+                existingChart.data.labels = chartData.labels;
+                existingChart.data.datasets[0].data = dataset.data;
+                existingChart.data.datasets[0].backgroundColor = dataset.backgroundColor;
+                existingChart.data.datasets[0].borderColor = dataset.borderColor;
+                existingChart.update();
+                jumlahTransaksiChartInstance = existingChart;
+            } else {
+                if (typeof jumlahTransaksiChartInstance !== 'undefined' && jumlahTransaksiChartInstance) {
+                    jumlahTransaksiChartInstance.destroy();
+                }
+
+                jumlahTransaksiChartInstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [dataset]
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20,
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        return `${label}: ${value} transaksi`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            animateRotate: true,    // Aktifkan rotasi
+                            animateScale: false,     // Aktifkan scaling
+                            duration: 1000,         // Durasi animasi (ms)
+                            easing: 'easeOutQuart'
+                        },
+                    }
+                });
+            }
+        }
+
+
         function attachLivewireListeners() {
-            if (!window.Livewire) return;
-            Livewire.on('chart-pendapatan-updated', (data) => {
+            if (livewireListenersAttached || !window.Livewire) return;
+
+            Livewire.on('chart-pendapatan-updated', (event) => {
+                const data = event?.chartData ?? event;
                 renderPendapatanBulananChart(data);
             });
+
+            Livewire.on('chart-jumlah-transaksi-updated', (event) => {
+                const data = event?.chartData ?? event;
+                renderJumlahTransaksiChart(data);
+            });
+
+            livewireListenersAttached = true;
         }
 
         function initializeChart() {
@@ -109,27 +254,32 @@
             }
 
             renderPendapatanBulananChart(@json($chartPendapatanBulanan));
+            renderJumlahTransaksiChart(@json($chartJumlahTransaksi));
+
+            chartInitialized = true;
         }
 
-        // Inisialisasi saat DOM pertama kali siap
-        document.addEventListener('DOMContentLoaded', initializeChart);
-
-        // Bersihkan chart sebelum navigasi Livewire
-        document.addEventListener('livewire:before-unload', () => {
-            pendapatanBulananChartInstance = safeDestroyChart(pendapatanBulananChartInstance);
-            chartInitialized = false;
-        });
-
-        // Inisialisasi ulang setelah navigasi Livewire
         document.addEventListener('livewire:navigated', () => {
-            pendapatanBulananChartInstance = safeDestroyChart(pendapatanBulananChartInstance);
             chartInitialized = false;
+            livewireListenersAttached = false;
 
             setTimeout(() => {
                 if (document.getElementById('chartPendapatanBulanan')) {
                     initializeChart();
                 }
-            });
+            }, 100);
+        });
+
+        if (document.readyState === 'complete') {
+            initializeChart();
+        } else {
+            document.addEventListener('DOMContentLoaded', initializeChart);
+        }
+
+        document.addEventListener('livewire:before-unload', () => {
+            pendapatanBulananChartInstance = safeDestroyChart(pendapatanBulananChartInstance);
+            jumlahTransaksiChartInstance = safeDestroyChart(jumlahTransaksiChartInstance);
+            livewireListenersAttached = false;
         });
     })();
 </script>
@@ -143,19 +293,34 @@
         <li class="breadcrumb-item active">Daftar Transaksi</li>
     </ol>
 
-    <div class="row g-3 mb-4" wire:poll.visible.3000ms>
+    <div class="row g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
         {{-- 🔸 Kolom Kiri: Ringkasan Pendapatan dan Transaksi --}}
         <div class="col-12 col-lg-4">
             <div class="d-flex flex-column h-100 gap-3">
 
-                {{-- 🔹 Total Pendapatan + Per Jenis --}}
+                {{-- 🔹 Jumlah Transaksi --}}
                 <div class="card h-100 shadow-sm card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Jumlah Transaksi
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="d-flex justify-content-center p-3">
+                                <canvas style="width: 100%; height: 100%; display: block;" height="300px"
+                                    id="chartJumlahTransaksi" wire:ignore></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{-- 🔹 Total Pendapatan + Per Jenis --}}
+                <div class="card shadow-sm card-hover">
                     <div class="card-body d-flex flex-column justify-content-center text-center">
                         <div class="mb-3">
                             <div class="text-success mb-2">
                                 <i class="fa-solid fa-money-bill-1-wave fa-2x"></i>
                             </div>
-                            <h6 class="mb-1 text-muted">Total Pendapatan</h6>
+                            <h6 class="mb-1 text-muted fs-4">Total Pendapatan</h6>
                             <hr class="my-1 border-success opacity-50 mx-auto" style="width: 60%;">
                         </div>
 
@@ -195,33 +360,7 @@
                     </div>
                 </div>
 
-                {{-- 🔹 Jumlah Transaksi --}}
-                <div class="card h-100 shadow-sm card-hover">
-                    <div class="card-body d-flex flex-column justify-content-center text-center">
-                        <div class="mb-3">
-                            <div class="text-primary mb-2">
-                                <i class="fa-solid fa-file-invoice-dollar fa-2x"></i>
-                            </div>
-                            <h6 class="mb-1 text-muted">Jumlah Transaksi</h6>
-                            <hr class="my-1 border-primary opacity-50 mx-auto" style="width: 60%;">
-                        </div>
 
-                        <h3 class="fw-bold text-dark mb-4">
-                            {{ $jumlahTransaksi['total'] }} transaksi
-                        </h3>
-
-                        <div class="d-flex justify-content-center gap-4">
-                            <div>
-                                <small class="text-muted">Service</small><br>
-                                <span class="fw-bold">{{ $jumlahTransaksi['service'] }}</span>
-                            </div>
-                            <div>
-                                <small class="text-muted">Penjualan</small><br>
-                                <span class="fw-bold">{{ $jumlahTransaksi['penjualan'] }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
             </div>
         </div>
@@ -235,9 +374,9 @@
                         <i class="fa-solid fa-comments-dollar"></i> Pendapatan Bulanan
                     </h5>
                     <hr class="border border-2 opacity-50">
-                    <div class="d-flex justify-content-center p-5" wire:ignore>
-                        <canvas id="chartPendapatanBulanan" style="width: 100%; height: 50%; display: block;"
-                            width="800px" height="400px"></canvas>
+                    <div class="d-flex justify-content-center p-md-5">
+                        <canvas id="chartPendapatanBulanan" style="width: 100%; height: 100%; display: block;"
+                            height="500px" wire:ignore></canvas>
                     </div>
                 </div>
             </div>
@@ -268,24 +407,73 @@
         </div>
 
 
-        <!-- Reset Button -->
-        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
+        <div class="col-12 col-md-4 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
             <!-- Checkbox "Semua" -->
-            <div>
-                <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">
-                <label class="btn btn-outline-primary mb-0" for="showAllCheck">
-                    Semua
-                </label>
+            <div class="d-none d-md-flex gap-1">
+                <div class="">
+                    <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">
+                    <label class="btn btn-outline-primary mb-0" for="showAllCheck">
+                        Semua
+                    </label>
+                </div>
+                <div class="">
+                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
+                        @foreach(range(1, 12) as $bulan)
+                        <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="">
+                    <select class="form-select" wire:model.live="jenis_transaksi" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih jenis</option>
+                        <option value="service">Service</option>
+                        <option value="penjualan">Penjualan</option>
+                    </select>
+                </div>
+                <!-- Tombol Reset -->
+                <div class="">
+                    <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
+                        <i class="fas fa-rotate me-1"></i>
+                        <span class="d-none d-md-inline">Reset</span>
+                    </button>
+                </div>
             </div>
-
-            <!-- Tombol Reset -->
-            <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
-                <i class="fas fa-rotate me-1"></i>
-                <span class="d-none d-md-inline">Reset Filter</span>
-            </button>
+            <div class="row d-md-none g-2 mb-2 d-flex justify-items-end">
+                <div class="col-6 col-md-3 order-3 order-lg-1">
+                    <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll"
+                        autocomplete="off">
+                    <label class="btn btn-outline-primary mb-0" for="showAllCheck">
+                        Semua
+                    </label>
+                </div>
+                <div class="col-6 col-md-3 order-1 order-lg-2">
+                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
+                        @foreach(range(1, 12) as $bulan)
+                        <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
+                            }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-6 col-md-3 order-2 order-lg-3">
+                    <select class="form-select" wire:model.live="jenis_transaksi" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih jenis</option>
+                        <option value="service">Service</option>
+                        <option value="penjualan">Penjualan</option>
+                    </select>
+                </div>
+                <!-- Tombol Reset -->
+                <div class="col-6 col-md-3 order-4 order-lg-4 d-flex justify-items-end">
+                    <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
+                        <i class="fas fa-rotate me-1"></i>
+                        <span class="d-none d-md-inline">Reset</span>
+                    </button>
+                </div>
+            </div>
         </div>
-
-
     </div>
 
     <!-- Error Message (if needed, let it appear below input as usual) -->

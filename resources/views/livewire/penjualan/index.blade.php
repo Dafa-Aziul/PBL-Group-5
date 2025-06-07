@@ -1,3 +1,199 @@
+@push('scripts')
+<script>
+    (function () {
+        let statusPembayaranChartInstance = null;
+        let sparepartChartInstance = null;
+        let livewireListenersAttached = false;
+
+        function safeDestroyChart(instance) {
+            if (instance) {
+                try {
+                    instance.destroy();
+                } catch (e) {
+                    console.warn('Gagal menghancurkan chart:', e);
+                }
+            }
+            return null;
+        }
+
+        function renderStatusPembayaranChart(chartData) {
+            const ctx = document.getElementById('statusChart');
+            if (!ctx) {
+                console.warn('Canvas statusChart tidak ditemukan');
+                return;
+            }
+
+            if (!chartData || !Array.isArray(chartData.labels) || !chartData.datasets || !Array.isArray(chartData.datasets.data)) {
+                console.warn('Data status pembayaran tidak valid');
+                return;
+            }
+
+            const dataset = chartData.datasets;
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                existingChart.data.labels = chartData.labels;
+                existingChart.data.datasets[0].data = dataset.data;
+                existingChart.data.datasets[0].backgroundColor = dataset.backgroundColor;
+                existingChart.data.datasets[0].borderColor = dataset.borderColor;
+                existingChart.update();
+                statusPembayaranChartInstance = existingChart;
+            } else {
+                statusPembayaranChartInstance = safeDestroyChart(statusPembayaranChartInstance);
+
+                statusPembayaranChartInstance = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [dataset]
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const value = context.raw ?? 0;
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${context.label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderSparepartChart(chartData) {
+            const ctx = document.getElementById('sparepartChart');
+            if (!ctx) {
+                console.warn('Canvas sparepartChart tidak ditemukan');
+                return;
+            }
+
+            if (!chartData || !Array.isArray(chartData.labels) || !chartData.datasets || !Array.isArray(chartData.datasets)) {
+                console.warn('Data sparepart tidak valid');
+                return;
+            }
+
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                existingChart.data.labels = chartData.labels;
+
+                // Update dataset tanpa mengganti seluruh array
+                chartData.datasets.forEach((newDataset, index) => {
+                    if (existingChart.data.datasets[index]) {
+                    existingChart.data.datasets[index].data = newDataset.data;
+                    // Update properti lain (jika ada)
+                    existingChart.data.datasets[index].label = newDataset.label;
+                    existingChart.data.datasets[index].backgroundColor = newDataset.backgroundColor;
+                    } else {
+                    existingChart.data.datasets.push(newDataset); // Tambah dataset baru
+                    }
+                });
+
+                existingChart.update(); // Render halus tanpa reset animasi
+            } else {
+                sparepartChartInstance = safeDestroyChart(sparepartChartInstance);
+
+                sparepartChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: chartData.datasets
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return `${context.label}: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function attachLivewireListeners() {
+            if (livewireListenersAttached || !window.Livewire) return;
+
+            Livewire.on('chart-status-updated', (event) => {
+                const data = event?.chartData ?? event;
+                renderStatusPembayaranChart(data);
+            });
+
+            Livewire.on('chart-sparepart-updated', (event) => {
+                const data = event?.chartData ?? event;
+                renderSparepartChart(data);
+            });
+
+            livewireListenersAttached = true;
+        }
+
+        function initializeChart() {
+            attachLivewireListeners();
+
+            renderStatusPembayaranChart(@json($chartStatusPembayaran));
+            renderSparepartChart(@json($chartJumlahSparepart));
+        }
+
+        document.addEventListener('livewire:before-dom-update', () => {
+            statusPembayaranChartInstance = safeDestroyChart(statusPembayaranChartInstance);
+            sparepartChartInstance = safeDestroyChart(sparepartChartInstance);
+        });
+
+        document.addEventListener('livewire:navigated', () => {
+            chartInitialized = false;
+            livewireListenersAttached = false;
+
+            setTimeout(() => {
+                if (document.getElementById('statusChart') || document.getElementById('sparepartChart')) {
+                    initializeChart();
+                }
+            }, 100);
+        });
+
+        if (document.readyState === 'complete') {
+            initializeChart();
+        } else {
+            document.addEventListener('DOMContentLoaded', initializeChart);
+        }
+
+        document.addEventListener('livewire:before-unload', () => {
+            statusPembayaranChartInstance = safeDestroyChart(statusPembayaranChartInstance);
+            sparepartChartInstance = safeDestroyChart(sparepartChartInstance);
+        });
+    })();
+</script>
+@endpush
 <div>
     <h2 class="mt-4">Manajemen Penjualan</h2>
     <ol class="breadcrumb mb-4">
@@ -17,6 +213,42 @@
         </div>
     </div>
     @endif
+
+    <div class="row g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
+        <div class="col-12 col-lg-4">
+            <div class="d-flex flex-column gap-3">
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-money-bill-1-wave"></i> Penjualan Status Pembayaran
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <div class="d-flex justify-content-center p-5">
+                            <canvas style="width: 100%; height: 100%; display: block;" height="400px" id="statusChart"
+                                wire:ignore></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8">
+            <div class="d-flex flex-column  gap-3">
+                <div class="card card-jumlah flex-fill card-hover">
+                    <div class="card-body">
+                        <h5 class="card-title text-success">
+                            <i class="fa-solid fa-user-tie"></i> Jumlah barang yang terjual
+                        </h5>
+                        <hr class="border border-2 opacity-50">
+                        <div class="d-flex justify-content-center p-5">
+                            <canvas style="width: 100%; height: 100%; display: block;" height="400px"
+                                id="sparepartChart" wire:ignore></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
 
@@ -42,20 +274,60 @@
 
 
         <!-- Reset Button -->
-        <div class="col-12 col-md-3 d-flex justify-content-between justify-content-md-end gap-2 mb-2    ">
+        <div class="col-12 col-md-4 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
             <!-- Checkbox "Semua" -->
-            <div>
-                <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">
-                <label class="btn btn-outline-primary mb-0" for="showAllCheck">
-                    Semua
-                </label>
+            <div class="d-none d-md-flex gap-1">
+                <div class="">
+                    <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll"
+                        autocomplete="off">
+                    <label class="btn btn-outline-primary mb-0" for="showAllCheck">
+                        Semua
+                    </label>
+                </div>
+                <div class="">
+                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
+                        @foreach(range(1, 12) as $bulan)
+                        <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
+                            }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+                <!-- Tombol Reset -->
+                <div class="">
+                    <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
+                        <i class="fas fa-rotate me-1"></i>
+                        <span class="d-none d-md-inline">Reset</span>
+                    </button>
+                </div>
             </div>
-
-            <!-- Tombol Reset -->
-            <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
-                <i class="fas fa-rotate me-1"></i>
-                <span class="d-none d-md-inline">Reset Filter</span>
-            </button>
+            <div class="row d-md-none g-2 mb-2 d-flex justify-items-end">
+                <div class="col-6 col-md-3 order-3 order-lg-1">
+                    <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll"
+                        autocomplete="off">
+                    <label class="btn btn-outline-primary mb-0" for="showAllCheck">
+                        Semua
+                    </label>
+                </div>
+                <div class="col-6 col-md-3 order-1 order-lg-2">
+                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
+                        @foreach(range(1, 12) as $bulan)
+                        <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
+                            }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
+                <!-- Tombol Reset -->
+                <div class="col-6 col-md-3 order-4 order-lg-4 d-flex justify-items-end">
+                    <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
+                        <i class="fas fa-rotate me-1"></i>
+                        <span class="d-none d-md-inline">Reset</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
 
@@ -143,6 +415,7 @@
                         </tbody>
                     </table>
                 </div>
+                {{ $penjualans->links() }}
             </div>
         </div>
     </div>

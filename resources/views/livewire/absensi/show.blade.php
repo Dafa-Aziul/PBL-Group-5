@@ -1,3 +1,263 @@
+@push('scripts')
+<script>
+    (function() {
+        let myChartInstance = null;
+        let statusChartInstance = null;
+        let chartInitialized = false;
+        let livewireListenersAttached = false;
+
+        function safeDestroyChart(instance) {
+            if (instance) {
+                try {
+                    instance.destroy();
+                } catch (e) {
+                    console.warn('Gagal menghancurkan chart:', e);
+                }
+                instance = null;
+            }
+            return instance;
+        }
+
+        function renderChart(chartData) {
+            const ctx = document.getElementById('myChart');
+            if (!ctx) {
+                console.warn('Canvas myChart tidak ditemukan');
+                return;
+            }
+
+            if (chartData && chartData.chartData) {
+                chartData = chartData.chartData;
+            }
+
+            const defaultEmptyData = {
+                labels: ['Tidak ada data'],
+                data: [1],
+                backgroundColor: ['#CCCCCC']
+            };
+
+            if (!chartData || !Array.isArray(chartData.labels) || !Array.isArray(chartData.data) || chartData.data.length === 0) {
+                console.warn('Data kosong, menampilkan chart default');
+                chartData = defaultEmptyData;
+            } else {
+                const statusColors = {
+                    'Hadir': '#4BC0C0',
+                    'Terlambat': '#FFCE56',
+                    'Izin': '#36A2EB',
+                    'Alpha': '#FF6384',
+                    'Sakit': '#9966FF',
+                    'Lembur': '#FF9F40'
+                };
+                chartData.backgroundColor = chartData.labels.map(label => statusColors[label] || '#CCCCCC');
+            }
+
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                existingChart.data.labels = chartData.labels;
+                existingChart.data.datasets[0].data = chartData.data;
+                existingChart.data.datasets[0].backgroundColor = chartData.backgroundColor;
+                existingChart.update();
+                myChartInstance = existingChart;
+            } else {
+                myChartInstance = safeDestroyChart(myChartInstance);
+
+                myChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [{
+                            label: 'Status Absensi',
+                            data: chartData.data,
+                            backgroundColor: chartData.backgroundColor,
+                            borderWidth: 1,
+                            hoverOffset: 10
+                        }]
+                    },
+                    options:{
+                        responsive: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    boxWidth: 12,
+                                    padding: 20,
+                                    font: {
+                                        family: 'system-ui, -apple-system, sans-serif'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        try {
+                                            const data = context?.dataset?.data;
+                                            const total = Array.isArray(data) ? data.reduce((a, b) => a + b, 0) : 0;
+                                            const value = context.raw ?? 0;
+                                            const label = context.label ?? 'Tidak diketahui';
+                                            const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+
+                                            if (label === 'Tidak ada data') {
+                                                return 'Tidak ada data absensi';
+                                            }
+                                            return `${label}: ${value} (${percentage}%)`;
+                                        } catch (e) {
+                                            console.warn('Tooltip error:', e);
+                                            return 'Data tidak tersedia';
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '65%',
+                        animation: {
+                            animationRotate: true,
+                            animationScale: false,
+                        },
+                    }
+                });
+            }
+        }
+
+        function renderStatusChart(chartStatus) {
+            const ctx = document.getElementById('statusChart');
+            if (!ctx) {
+                console.warn('Canvas statusChart tidak ditemukan');
+                return;
+            }
+
+            if (!chartStatus || !Array.isArray(chartStatus.labels) || !Array.isArray(chartStatus.datasets) || chartStatus.datasets.length === 0) {
+                console.warn('Data kosong untuk statusChart, tidak dapat menampilkan');
+                return;
+            }
+
+            // Warna status sesuai label dataset
+            const statusColors = {
+                'Hadir': '#4BC0C0',
+                'Terlambat': '#FFCE56',
+                'Izin': '#36A2EB',
+                'Alpha': '#FF6384',
+                'Sakit': '#9966FF',
+                'Lembur': '#FF9F40'
+            };
+
+            // Tambahkan warna ke setiap dataset
+            const datasetsWithColor = chartStatus.datasets.map(ds => ({
+                ...ds,
+                backgroundColor: statusColors[ds.label] || '#CCCCCC',
+                borderWidth: 1,
+            }));
+
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                existingChart.data.labels = chartStatus.labels;
+                existingChart.data.datasets = datasetsWithColor;
+                existingChart.update();
+            } else {
+                // Pastikan jika sebelumnya ada chart, dihancurkan dulu
+                if (typeof statusChartInstance !== 'undefined' && statusChartInstance) {
+                    statusChartInstance.destroy();
+                }
+
+                statusChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: chartStatus.labels,
+                        datasets: datasetsWithColor,
+                    },
+                    options: {
+                        responsive: false,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.parsed.y || 0;
+                                        return `${label}: ${value}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                stacked: true,
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function attachLivewireListeners() {
+            if (livewireListenersAttached || !window.Livewire) return;
+
+            Livewire.on('chart-updated', (event) => {
+                const data = event?.chartData ?? event;
+                renderChart(data);
+            });
+
+            // Listener untuk chart status (bar chart kehadiran, dsb)
+            Livewire.on('chart-bar-updated', (event) => {
+                const statusData = event?.chartStatus ?? event;
+                renderStatusChart(statusData); // Panggil fungsi khusus chart status
+            });
+
+            livewireListenersAttached = true;
+        }
+
+        function initializeChart() {
+            if (chartInitialized) return;
+
+            if (window.Livewire) {
+                attachLivewireListeners();
+            } else {
+                document.addEventListener('livewire:load', attachLivewireListeners);
+            }
+
+            renderChart(@json($chartData));
+            renderStatusChart(@json($chartStatus)); // pastikan ini kamu passing dari backend
+
+            chartInitialized = true;
+        }
+
+        document.addEventListener('livewire:navigated', () => {
+            chartInitialized = false;
+            livewireListenersAttached = false;
+
+            setTimeout(() => {
+                if (document.getElementById('myChart')) {
+                    initializeChart();
+                }
+            },100);
+        });
+
+        if (document.readyState === 'complete') {
+            initializeChart();
+        } else {
+            document.addEventListener('DOMContentLoaded', initializeChart);
+        }
+
+        document.addEventListener('livewire:before-unload', () => {
+            myChartInstance = safeDestroyChart(myChartInstance);
+            statusChartInstance = safeDestroyChart(statusChartInstance);
+            livewireListenersAttached = false;
+        });
+    })();
+</script>
+@endpush
 <div>
     <h2 class="mt-4">Kelola Absensi</h2>
     <ol class="breadcrumb mb-4">
@@ -27,8 +287,8 @@
                         </h5>
                         <hr class="border border-2 opacity-50">
                         <div class="d-flex justify-content-center p-5">
-                            <canvas style="width: 100%; height: 100%; display: block;" height="400px"
-                                id="myChart" wire:ignore></canvas>
+                            <canvas style="width: 100%; height: 100%; display: block;" height="400px" id="myChart"
+                                wire:ignore></canvas>
                         </div>
                     </div>
                 </div>
@@ -44,8 +304,8 @@
                         </h5>
                         <hr class="border border-2 opacity-50">
                         <div class="d-flex justify-content-center p-5">
-                            <canvas style="width: 100%; height: 100%; display: block;" height="400px"
-                                id="statusChart" wire:ignore></canvas>
+                            <canvas style="width: 100%; height: 100%; display: block;" height="400px" id="statusChart"
+                                wire:ignore></canvas>
                         </div>
                     </div>
                 </div>
@@ -78,6 +338,13 @@
         <!-- Reset Button -->
         <div class="col-12 col-md-4 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
             <!-- Checkbox "Semua" -->
+            <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                <option value="">Semua Bulan</option>
+                @foreach(range(1, 12) as $bulan)
+                <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
+                </option>
+                @endforeach
+            </select>
             <select class="form-select" wire:model.change="filterStatus" style="cursor:pointer;">
                 <option value="">Semua Status</option>
                 <option value="hadir">Hadir</option>
@@ -195,270 +462,4 @@
         </div>
     </div>
 </div>
-@push('scripts')
-<script>
-    (function() {
-        let myChartInstance = null;
-        let statusChartInstance = null;
-        let chartInitialized = false;
-        let livewireListenersAttached = false;
 
-        function safeDestroyChart(instance) {
-            if (instance) {
-                try {
-                    instance.destroy();
-                } catch (e) {
-                    console.warn('Gagal menghancurkan chart:', e);
-                }
-                instance = null;
-            }
-            return instance;
-        }
-
-        function renderChart(chartData) {
-            const ctx = document.getElementById('myChart');
-            if (!ctx) {
-                console.warn('Canvas myChart tidak ditemukan');
-                return;
-            }
-
-            if (chartData && chartData.chartData) {
-                chartData = chartData.chartData;
-            }
-
-            const defaultEmptyData = {
-                labels: ['Tidak ada data'],
-                data: [1],
-                backgroundColor: ['#CCCCCC']
-            };
-
-            if (!chartData || !Array.isArray(chartData.labels) || !Array.isArray(chartData.data) || chartData.data.length === 0) {
-                console.warn('Data kosong, menampilkan chart default');
-                chartData = defaultEmptyData;
-            } else {
-                const statusColors = {
-                    'Hadir': '#4BC0C0',
-                    'Terlambat': '#FFCE56',
-                    'Izin': '#36A2EB',
-                    'Alpha': '#FF6384',
-                    'Sakit': '#9966FF',
-                    'Lembur': '#FF9F40'
-                };
-                chartData.backgroundColor = chartData.labels.map(label => statusColors[label] || '#CCCCCC');
-            }
-
-            const existingChart = Chart.getChart(ctx);
-
-            if (existingChart) {
-                existingChart.data.labels = chartData.labels;
-                existingChart.data.datasets[0].data = chartData.data;
-                existingChart.data.datasets[0].backgroundColor = chartData.backgroundColor;
-                existingChart.update();
-                myChartInstance = existingChart;
-            } else {
-                myChartInstance = safeDestroyChart(myChartInstance);
-
-                myChartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: chartData.labels,
-                        datasets: [{
-                            label: 'Status Absensi',
-                            data: chartData.data,
-                            backgroundColor: chartData.backgroundColor,
-                            borderWidth: 1,
-                            hoverOffset: 10
-                        }]
-                    },
-                    options: getChartOptions()
-
-                });
-            }
-        }
-
-        function renderStatusChart(chartStatus) {
-            const ctx = document.getElementById('statusChart');
-            if (!ctx) {
-                console.warn('Canvas statusChart tidak ditemukan');
-                return;
-            }
-
-            if (!chartStatus || !Array.isArray(chartStatus.labels) || !Array.isArray(chartStatus.datasets) || chartStatus.datasets.length === 0) {
-                console.warn('Data kosong untuk statusChart, tidak dapat menampilkan');
-                return;
-            }
-
-            // Warna status sesuai label dataset
-            const statusColors = {
-                'Hadir': '#4BC0C0',
-                'Terlambat': '#FFCE56',
-                'Izin': '#36A2EB',
-                'Alpha': '#FF6384',
-                'Sakit': '#9966FF',
-                'Lembur': '#FF9F40'
-            };
-
-            // Tambahkan warna ke setiap dataset
-            const datasetsWithColor = chartStatus.datasets.map(ds => ({
-                ...ds,
-                backgroundColor: statusColors[ds.label] || '#CCCCCC',
-                borderWidth: 1,
-            }));
-
-            const existingChart = Chart.getChart(ctx);
-
-            if (existingChart) {
-                existingChart.data.labels = chartStatus.labels;
-                existingChart.data.datasets = datasetsWithColor;
-                existingChart.update();
-            } else {
-                // Pastikan jika sebelumnya ada chart, dihancurkan dulu
-                if (typeof statusChartInstance !== 'undefined' && statusChartInstance) {
-                    statusChartInstance.destroy();
-                }
-
-                statusChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: chartStatus.labels,
-                        datasets: datasetsWithColor,
-                    },
-                    options: {
-                        responsive: false,
-                        plugins: {
-                            legend: { position: 'bottom' },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        const label = context.dataset.label || '';
-                                        const value = context.parsed.y || 0;
-                                        return `${label}: ${value}`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                stacked: true,
-                                ticks: {
-                                    autoSkip: false,
-                                    maxRotation: 45,
-                                    minRotation: 45,
-                                }
-                            },
-                            y: {
-                                stacked: true,
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-
-        function getChartOptions() {
-            return {
-                responsive: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            boxWidth: 12,
-                            padding: 20,
-                            font: {
-                                family: 'system-ui, -apple-system, sans-serif'
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                try {
-                                    const data = context?.dataset?.data;
-                                    const total = Array.isArray(data) ? data.reduce((a, b) => a + b, 0) : 0;
-                                    const value = context.raw ?? 0;
-                                    const label = context.label ?? 'Tidak diketahui';
-                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-
-                                    if (label === 'Tidak ada data') {
-                                        return 'Tidak ada data absensi';
-                                    }
-                                    return `${label}: ${value} (${percentage}%)`;
-                                } catch (e) {
-                                    console.warn('Tooltip error:', e);
-                                    return 'Data tidak tersedia';
-                                }
-                            }
-                        }
-                    }
-                },
-                cutout: '65%',
-                animation: {
-                    animationRotate: true,
-                    animationScale: false,
-                },
-            };
-        }
-
-        function attachLivewireListeners() {
-            if (livewireListenersAttached || !window.Livewire) return;
-
-            Livewire.on('chart-updated', (event) => {
-                const data = event?.chartData ?? event;
-                renderChart(data);
-            });
-
-            // Listener untuk chart status (bar chart kehadiran, dsb)
-            Livewire.on('chart-bar-updated', (event) => {
-                const statusData = event?.chartStatus ?? event;
-                renderStatusChart(statusData); // Panggil fungsi khusus chart status
-            });
-
-            livewireListenersAttached = true;
-        }
-
-        function initializeChart() {
-            if (chartInitialized) return;
-
-            if (window.Livewire) {
-                attachLivewireListeners();
-            } else {
-                document.addEventListener('livewire:load', attachLivewireListeners);
-            }
-
-            renderChart(@json($chartData));
-            renderStatusChart(@json($chartStatus)); // pastikan ini kamu passing dari backend
-
-            chartInitialized = true;
-        }
-
-        document.addEventListener('livewire:navigated', () => {
-            chartInitialized = false;
-            livewireListenersAttached = false;
-
-            setTimeout(() => {
-                if (document.getElementById('myChart')) {
-                    initializeChart();
-                }
-            },100);
-        });
-
-        if (document.readyState === 'complete') {
-            initializeChart();
-        } else {
-            document.addEventListener('DOMContentLoaded', initializeChart);
-        }
-
-        document.addEventListener('livewire:before-unload', () => {
-            myChartInstance = safeDestroyChart(myChartInstance);
-            statusChartInstance = safeDestroyChart(statusChartInstance);
-            livewireListenersAttached = false;
-        });
-    })();
-
-</script>
-@endpush

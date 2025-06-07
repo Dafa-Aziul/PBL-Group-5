@@ -19,6 +19,10 @@ class Index extends Component
 
     public $tanggalAwal;
     public $tanggalAkhir;
+
+    public $filterBulan = '';
+    public $jenis_transaksi = '';
+
     public $showAll = false;
 
     public function mount()
@@ -27,13 +31,25 @@ class Index extends Component
         $this->tanggalAwal = null;
         $this->tanggalAkhir = null;
         $this->showAll = false;
+        $this->filterBulan = '';
+        $this->jenis_transaksi = '';
         $this->emitChartData();
         // default: tampilkan hari ini saja
+    }
+
+    public function updatedJenisTransaksi()
+    {
+        $this->emitChartData();
     }
 
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function updatedFilterBulan()
+    {
+        $this->emitChartData();
     }
 
     public function resetFilter()
@@ -44,6 +60,8 @@ class Index extends Component
         $this->showAll = false;
         $this->resetPage();
         $this->perPage = 5;
+        $this->filterBulan = '';
+        $this->jenis_transaksi = '';
         $this->emitChartData();
     }
 
@@ -52,6 +70,7 @@ class Index extends Component
         if ($this->showAll) {
             $this->tanggalAwal = null;
             $this->tanggalAkhir = null;
+            $this->filterBulan = '';
         }
         $this->resetPage();
         $this->emitChartData();
@@ -69,27 +88,120 @@ class Index extends Component
         $this->emitChartData();
     }
 
-    public function getDataChartData() {}
+
+
+
+    public function emitChartData()
+    {
+        $this->dispatch('chart-jumlah-transaksi-updated', chartData: $this->getJumlahTransaksiChartData());
+        $this->dispatch('chart-pendapatan-updated', chartData: $this->getPendapatanPerBulanChartData());
+    }
+
+
+    protected function getFilteredTransaksis()
+    {
+        // Jika search aktif, abaikan semua filter lainnya
+        if ($this->search) {
+            return Transaksi::with(['kasir', 'pelanggan', 'pembayarans'])
+                ->where(function ($query) {
+                    $query->where('kode_transaksi', 'like', '%' . $this->search . '%')
+                        ->orWhere('jenis_transaksi', 'like', '%' . $this->search . '%')
+                        ->orWhereHas('kasir', fn($q) => $q->where('nama', 'like', '%' . $this->search . '%'))
+                        ->orWhereHas('pelanggan', fn($q) => $q->where('nama', 'like', '%' . $this->search . '%'))
+                        ->orWhere('status_pembayaran', 'like', '%' . $this->search . '%')
+                        ->orWhere('keterangan', 'like', '%' . $this->search . '%');
+                });
+        }
+
+        // Jika tidak sedang mencari, baru pakai filter bulan/tanggal/jenis
+        return Transaksi::with(['kasir', 'pelanggan', 'pembayarans'])
+            ->when(!$this->showAll, function ($query) {
+                if ($this->filterBulan) {
+                    return $query->whereMonth('created_at', $this->filterBulan);
+                }
+
+                if ($this->tanggalAwal && $this->tanggalAkhir) {
+                    $start = Carbon::parse($this->tanggalAwal)->startOfDay();
+                    $end = Carbon::parse($this->tanggalAkhir)->endOfDay();
+                    return $query->whereBetween('created_at', [$start, $end]);
+                }
+
+                $todayStart = Carbon::today()->startOfDay();
+                $todayEnd = Carbon::today()->endOfDay();
+                return $query->whereBetween('created_at', [$todayStart, $todayEnd]);
+            })
+            ->when($this->jenis_transaksi, function ($q) {
+                $q->where('jenis_transaksi', $this->jenis_transaksi);
+            });
+    }
+
+
+    protected function getFilteredTransaksisTanpaSearch()
+    {
+        return Transaksi::with(['kasir', 'pelanggan', 'pembayarans'])
+            ->when(!$this->showAll, function ($query) {
+                // Jika filter bulan diisi, pakai filter bulan
+                if ($this->filterBulan) {
+                    return $query->whereMonth('created_at', $this->filterBulan);
+                }
+
+                // Jika kedua tanggal diisi, pakai rentang tersebut
+                if ($this->tanggalAwal && $this->tanggalAkhir) {
+                    $start = Carbon::parse($this->tanggalAwal)->startOfDay();
+                    $end = Carbon::parse($this->tanggalAkhir)->endOfDay();
+                    return $query->whereBetween('created_at', [$start, $end]);
+                }
+
+                $todayStart = Carbon::today()->startOfDay();
+                $todayEnd = Carbon::today()->endOfDay();
+                return $query->whereBetween('created_at', [$todayStart, $todayEnd]);
+            })->when($this->jenis_transaksi, function ($q) {
+                $q->where('jenis_transaksi', $this->jenis_transaksi);
+            });
+    }
+
+
+    public function getJumlahTransaksiChartData()
+    {
+        $query = $this->getFilteredTransaksisTanpaSearch()->get();
+
+        $jumlahService = (clone $query)->where('jenis_transaksi', 'service')->count();
+        $jumlahPenjualan = (clone $query)->where('jenis_transaksi', 'penjualan')->count();
+
+        return [
+            'labels' => ['Service', 'Penjualan'],
+            'datasets' => [
+                [
+                    'data' => [$jumlahService, $jumlahPenjualan],
+                    'backgroundColor' => ['rgba(75, 192, 192, 0.6)', 'rgba(255, 205, 86, 0.6)'],
+                    'borderColor' => ['rgba(75, 192, 192)', 'rgba(255, 205, 86)'],
+                    'borderWidth' => 1,
+                ]
+            ],
+        ];
+    }
 
     public function getPendapatanPerBulanChartData()
     {
         $query = Transaksi::query();
 
-        // Filter tanggal (opsional)
-        if ($this->tanggalAwal && $this->tanggalAwal !== '') {
-            $start = Carbon::parse($this->tanggalAwal)->startOfDay();
-            $end = $this->tanggalAkhir
-                ? Carbon::parse($this->tanggalAkhir)->endOfDay()
-                : Carbon::parse($this->tanggalAwal)->endOfDay();
-
-            $query->whereBetween('created_at', [$start, $end]);
-        }
-
         $bulanLabels = [];
-        $data = [];
+        $dataService = [];
+        $dataPenjualan = [];
+        $dataTotal = [];
 
-        // Karena $query sudah ada filter tanggal, kita harus override filter bulan
-        // Supaya tidak tumpang tindih, kita lakukan query baru per bulan dengan filter tanggal sesuai bulan
+        if (!empty($this->tanggalAwal) && !empty($this->tanggalAkhir)) {
+            $start = Carbon::parse($this->tanggalAwal)->startOfDay();
+            $end = Carbon::parse($this->tanggalAkhir)->endOfDay();
+        } elseif (!empty($this->filterBulan)) {
+            // Jika filterBulan dipilih (1–12), set rentang bulan itu
+            $now = now();
+            $start = Carbon::create($now->year, $this->filterBulan, 1)->startOfMonth();
+            $end = $start->copy()->endOfMonth();
+        } else {
+            $start = null;
+            $end = null;
+        }
 
         for ($i = 5; $i >= 0; $i--) {
             $bulan = now()->copy()->subMonths($i);
@@ -99,82 +211,67 @@ class Index extends Component
             $startOfMonth = $bulan->copy()->startOfMonth();
             $endOfMonth = $bulan->copy()->endOfMonth();
 
-            // Supaya filter tanggal tetap dipakai, kita ambil intersection dengan filter tanggal awal dan akhir
-            if ($this->tanggalAwal && $this->tanggalAwal !== '') {
+            // Tentukan rentang per bulan sesuai filter aktif
+            if ($start && $end) {
+                // Jika filter tanggal atau filter bulan aktif, ambil potongan dari masing-masing bulan
                 $filterStart = $start->gt($startOfMonth) ? $start : $startOfMonth;
                 $filterEnd = $end->lt($endOfMonth) ? $end : $endOfMonth;
+
+                // Lewati bulan yang tidak berada dalam rentang filter
+                if ($filterEnd < $startOfMonth || $filterStart > $endOfMonth) {
+                    $dataService[] = 0;
+                    $dataPenjualan[] = 0;
+                    $dataTotal[] = 0;
+                    continue;
+                }
             } else {
+                // Tidak ada filter, tampilkan full bulan
                 $filterStart = $startOfMonth;
                 $filterEnd = $endOfMonth;
             }
 
-            // Hitung total untuk bulan ini
-            $total = Transaksi::whereBetween('created_at', [$filterStart, $filterEnd])
-                ->sum('grand_total');
+            $service = Transaksi::whereBetween('created_at', [$filterStart, $filterEnd])
+                ->where('jenis_transaksi', 'service')->sum('grand_total') ?? 0;
+            $penjualan = Transaksi::whereBetween('created_at', [$filterStart, $filterEnd])
+                ->where('jenis_transaksi', 'penjualan')->sum('grand_total') ?? 0;
 
-            $data[] = $total;
+            $dataService[] = $service;
+            $dataPenjualan[] = $penjualan;
+            $dataTotal[] = $service + $penjualan;
         }
 
         return [
             'labels' => $bulanLabels,
             'datasets' => [
                 [
-                    'label' => 'Pendapatan Bulanan',
-                    'data' => $data,
-                    'backgroundColor' => 'rgba(54, 162, 235, 0.6)',
-                    'borderColor' => 'rgba(54, 162, 235, 1)',
-                    'borderWidth' => 1,
+                    'label' => 'Service',
+                    'data' => $dataService,
+                    'backgroundColor' => 'rgba(75, 192, 192, 0.6)',
+                    'stack' => 'pendapatan'
+                ],
+                [
+                    'label' => 'Penjualan',
+                    'data' => $dataPenjualan,
+                    'backgroundColor' => 'rgba(255, 205, 86, 0.6)',
+                    'stack' => 'pendapatan'
+                ],
+                [
+                    'label' => 'Total Pendapatan',
+                    'data' => $dataTotal,
+                    'type' => 'line',
+                    'borderColor' => 'rgba(255, 99, 132, 1)',
+                    'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
+                    'borderWidth' => 2,
+                    'tension' => 0.3,
                     'fill' => false,
+                    'pointRadius' => 4,
+                    'pointHoverRadius' => 6
                 ]
             ],
         ];
     }
 
 
-    public function emitChartData()
-    {
-        $this->dispatch('chart-pendapatan-updated', chartPendapatanBulanan: $this->getPendapatanPerBulanChartData());
-    }
-
-    protected function getFilteredTransaksis()
-    {
-        return Transaksi::with(['kasir', 'pelanggan', 'pembayarans'])
-            ->when(!$this->showAll && !$this->search, function ($query) {
-                $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
-                $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
-                $query->whereBetween('created_at', [$start, $end]);
-            })
-            ->where(function ($query) {
-                $query->where('kode_transaksi', 'like', '%' . $this->search . '%')
-                    ->orWhere('jenis_transaksi', 'like', '%' . $this->search . '%')
-                    ->orWhereHas('kasir', fn($q) => $q->where('nama', 'like', '%' . $this->search . '%'))
-                    ->orWhereHas('pelanggan', fn($q) => $q->where('nama', 'like', '%' . $this->search . '%'))
-                    ->orWhere('status_pembayaran', 'like', '%' . $this->search . '%')
-                    ->orWhere('keterangan', 'like', '%' . $this->search . '%');
-            });
-    }
-
-    protected function getFilteredTransaksisTanpaSearch()
-    {
-        return Transaksi::with(['kasir', 'pelanggan', 'pembayarans'])
-            ->when(!$this->showAll, function ($query) {
-                $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
-                $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
-                $query->whereBetween('created_at', [$start, $end]);
-            });
-    }
-
-
-    protected function hitungJumlahTransaksi()
-    {
-        $query = $this->getFilteredTransaksisTanpaSearch();
-
-        return [
-            'total' => $query->count(),
-            'service' => (clone $query)->where('jenis_transaksi', 'service')->count(),
-            'penjualan' => (clone $query)->where('jenis_transaksi', 'penjualan')->count(),
-        ];
-    }
 
     protected function hitungTotalPendapatan()
     {
@@ -189,7 +286,7 @@ class Index extends Component
                 ->where('jenis_transaksi', 'service')
                 ->sum('grand_total'),
 
-            'penjualan' => $this->getFilteredTransaksis()
+            'penjualan' => $this->getFilteredTransaksisTanpaSearch()
                 ->where('jenis_transaksi', 'penjualan')
                 ->sum('grand_total'),
         ];
@@ -233,19 +330,19 @@ class Index extends Component
 
         $totalPendapatan = $this->hitungTotalPendapatan();
         $pendapatanPerJenis = $this->hitungPendapatanPerJenis();
-        $jumlahTransaksi = $this->hitungJumlahTransaksi();
         $statPembayaran = $this->hitungPembayaranStatus();
-
 
         return view('livewire.transaksi.index', array_merge(
             compact(
                 'transaksis',
                 'totalPendapatan',
                 'pendapatanPerJenis',
-                'jumlahTransaksi',
                 'statPembayaran',
             ),
-            ['chartPendapatanBulanan' => $this->getPendapatanPerBulanChartData()]
+            [
+                'chartPendapatanBulanan' => $this->getPendapatanPerBulanChartData(),
+                'chartJumlahTransaksi' => $this->getJumlahTransaksiChartData(),
+            ]
         ));
     }
 }

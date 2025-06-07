@@ -189,6 +189,7 @@ class Create extends Component
         }
 
         session()->flash('success', 'Penjualan berhasil dibuat.');
+        $this->dispatch('chartUpdated');
         return redirect()->route('penjualan.view');
     }
 

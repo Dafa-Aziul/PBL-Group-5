@@ -2,8 +2,8 @@
 
 @php
     $classes = ($active ?? false)
-        ? 'nav-link active d-flex align-items-center'
-        : 'nav-link d-flex align-items-center';
+        ? 'nav-link active d-flex align-items-center mt-1'
+        : 'nav-link d-flex align-items-center mt-1';
 
     $icon = $attributes->get('icon', '');
 @endphp

@@ -12,20 +12,20 @@
                 <span class="ml-2">Absensi</span>
                 <div class="sb-sidenav-collapse-arrow me-2"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse mt-2" id="collapseAbsensi" aria-labelledby="headingOne"
+            <div class="collapse mt-1" id="collapseAbsensi" aria-labelledby="headingOne"
                 data-bs-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
                     @can('akses-karyawan')
-                        <x-nav-link wire:current.exact href="{{ route('absensi.view') }}"
-                            icon="fa-solid fa-clipboard-user p-2">absen</x-nav-link>
+                    <x-nav-link wire:current.exact href="{{ route('absensi.view') }}"
+                        icon="fa-solid fa-clipboard-user p-2">absen</x-nav-link>
                     @endcan
                     @can('akses-admin-owner')
-                        <x-nav-link wire:current.exact href="{{ route('absensi.rekap') }}"
-                            icon="fa-solid fa-book-open-reader p-2">Rekap Absen</x-nav-link>
+                    <x-nav-link wire:current.exact href="{{ route('absensi.rekap') }}"
+                        icon="fa-solid fa-book-open-reader p-2">Rekap Absen</x-nav-link>
                     @endcan
                     @can('owner')
-                        <x-nav-link wire:current.exact href="{{ route('absensi.read') }}" icon="fa-solid fa-table-list p-2">
-                            Absensi Hari Ini</x-nav-link>
+                    <x-nav-link wire:current.exact href="{{ route('absensi.read') }}" icon="fa-solid fa-table-list p-2">
+                        Absensi Hari Ini</x-nav-link>
                     @endcan
                 </nav>
             </div>
@@ -53,7 +53,7 @@
                 <span class="ml-2">Transaksi</span>
                 <div class="sb-sidenav-collapse-arrow me-2"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="collapseTransaksi" aria-labelledby="headingOne"
+            <div class="collapse mt-1" id="collapseTransaksi" aria-labelledby="headingOne"
                 data-bs-parent="#sidenavAccordion">
                 <nav class="sb-sidenav-menu-nested nav">
                     @can('akses-admin-owner')
