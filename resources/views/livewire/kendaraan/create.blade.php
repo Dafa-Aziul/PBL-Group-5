@@ -26,7 +26,7 @@
                 <div class="mb-3">
                     <label for="jenis_kendaraan_id" class="form-label">Jenis Kendaraan</label>
                     <select wire:model="form.jenis_kendaraan_id" class="form-select">
-                        <option value="">-- Pilih Jenis --</option>
+                        <option value="" disabled selected hidden>-- Pilih Jenis --</option>
                         @foreach ($jenis_kendaraans as $jenis)
                         <option value="{{ $jenis->id }}">{{ $jenis->nama_jenis}}</option>
                         @endforeach

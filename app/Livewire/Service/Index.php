@@ -20,6 +20,7 @@ class Index extends Component
 
     public $tanggalAwal;
     public $tanggalAkhir;
+    public $filterBulan;
     public $showAll = false;
 
     // Array untuk menyimpan status masing-masing service by id
@@ -109,11 +110,16 @@ class Index extends Component
             if ($newStatus === 'selesai') {
                 $this->dispatch('tampilkanModalTransaksi', $service->id);
             }
-
+            $this->emitChartData();
             session()->flash('success', 'Status berhasil diperbarui.');
         } else {
             session()->flash('error', 'Gagal memperbarui status service.');
         }
+    }
+
+    public function updatedFilterBulan()
+    {
+        $this->emitChartData();
     }
 
     public function mount()
@@ -121,13 +127,15 @@ class Index extends Component
         $this->search = '';
         $this->tanggalAwal = null;
         $this->tanggalAkhir = null;
+        $this->filterBulan = "";
         $this->showAll = false;
+        $this->emitChartData();
         // default: tampilkan hari ini saja
     }
 
     public function updatingSearch()
     {
-        $this->resetPage();
+        $this->emitChartData();
     }
 
     public function resetFilter()
@@ -136,8 +144,9 @@ class Index extends Component
         $this->tanggalAkhir = null;
         $this->search = '';
         $this->showAll = false;
-        $this->resetPage();
+        $this->filterBulan = "";
         $this->perPage = 5;
+        $this->emitChartData();
     }
 
     public function updatedShowAll()
@@ -146,12 +155,18 @@ class Index extends Component
             $this->tanggalAwal = null;
             $this->tanggalAkhir = null;
         }
-        $this->resetPage();
+        $this->emitChartData();
     }
 
-    public function render()
+    public function emitChartData()
     {
-        $services = Service::with(['kendaraan.pelanggan'])
+        $this->dispatch('chart-status-updated', chartData: $this->getStatusChart());
+        $this->dispatch('chart-jumlah-service-updated', chartData: $this->getJumlahServicePerHariLineChart());
+    }
+
+    protected function getFilteredServices()
+    {
+        return  Service::with(['kendaraan.pelanggan'])
             ->where(function ($query) {
                 $query->where('kode_service', 'like', '%' . $this->search . '%')
                     ->orWhereHas('kendaraan', function ($q) {
@@ -162,14 +177,122 @@ class Index extends Component
                             });
                     })
                     ->orWhere('keterangan', 'like', '%' . $this->search . '%');
-            })
+            })->when(!$this->showAll && !$this->search, function ($query) {
+                $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
+                $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
+                if ($this->filterBulan) {
+                    return $query->whereMonth('created_at', $this->filterBulan);
+                }
+                $query->whereBetween('created_at', [$start, $end]);
+            });
+    }
+
+    protected function getFilteredServicesTanpaSearch()
+    {
+        return  Service::with(['kendaraan.pelanggan'])
             ->when(!$this->showAll && !$this->search, function ($query) {
                 $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
                 $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : Carbon::today()->endOfDay();
-
+                if ($this->filterBulan) {
+                    return $query->whereMonth('created_at', $this->filterBulan);
+                }
                 $query->whereBetween('created_at', [$start, $end]);
-            })
-            ->orderByDesc('created_at')
+            });
+    }
+
+    public function getStatusChart()
+    {
+        $query = $this->getFilteredServicesTanpaSearch()->get();
+
+        $statuses = [
+            'dalam antrian',
+            'dianalisis',
+            'analisis selesai',
+            'dalam proses',
+            'selesai',
+            'batal',
+        ];
+
+        $counts = [];
+        foreach ($statuses as $status) {
+            $counts[] = (clone $query)->where('status', $status)->count();
+        }
+
+        $colors = [
+            'rgba(75, 192, 192, 0.6)',   // dalam antrian
+            'rgba(255, 205, 86, 0.6)',   // dianalisis
+            'rgba(54, 162, 235, 0.6)',   // analisis selesai
+            'rgba(255, 159, 64, 0.6)',   // dalam proses (orange)
+            'rgba(75, 192, 75, 0.6)',    // selesai (hijau)
+            'rgba(255, 99, 71, 0.6)',    // batal (merah)
+        ];
+
+        $borderColors = array_map(function ($color) {
+            return str_replace('0.6', '1', $color);
+        }, $colors);
+
+        return [
+            'labels' => $statuses,
+            'datasets' => [
+                [
+                    'data' => $counts,
+                    'backgroundColor' => $colors,
+                    'borderColor' => $borderColors,
+                    'borderWidth' => 1,
+                ]
+            ]
+        ];
+    }
+
+
+
+    public function getJumlahServicePerHariLineChart()
+    {
+        $startDate = now()->subDays(6)->startOfDay();
+        $endDate = now()->endOfDay();
+
+        $result = $this->getFilteredServicesTanpaSearch()
+            ->whereBetween('tanggal_mulai_service', [$startDate, $endDate])
+            ->selectRaw('DATE(tanggal_mulai_service) as tanggal, COUNT(*) as jumlah')
+            ->groupBy('tanggal')
+            ->pluck('jumlah', 'tanggal')
+            ->all(); // Konversi ke array
+
+        $labels = [];
+        $data = [];
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $tanggal = $date->toDateString();
+            $hari = $date->locale('id')->isoFormat('dddd');
+            $labels[] = "$hari, " . $date->format('d M'); // Format lebih singkat, misal: Senin, 08 Jun
+            $data[] = $result[$tanggal] ?? 0;
+        }
+
+        return [
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => 'Jumlah Service',
+                    'data' => $data,
+                    'borderColor' => 'rgba(54, 162, 235, 1)',
+                    'backgroundColor' => 'rgba(54, 162, 235, 0.1)', // Sedikit transparan
+                    'borderWidth' => 2,
+                    'pointBackgroundColor' => 'rgba(54, 162, 235, 1)',
+                    'pointRadius' => 4,
+                    'pointHoverRadius' => 6,
+                    'fill' => true,
+                    'tension' => 0.3,
+                ]
+            ],
+        ];
+    }
+
+
+
+    public function render()
+    {
+        $services = $this->getFilteredServices()
+            ->orderBy('tanggal_mulai_service', 'desc')
             ->paginate($this->perPage);
 
         foreach ($services as $service) {
@@ -178,6 +301,9 @@ class Index extends Component
             }
         }
 
-        return view('livewire.service.index', compact('services'));
+        return view('livewire.service.index', compact('services'), [
+            'chartStatusService' => $this->getStatusChart(),
+            'chartJumlahService' => $this->getJumlahServicePerHariLineChart(),
+        ]);
     }
 }

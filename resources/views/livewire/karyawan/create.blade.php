@@ -22,7 +22,7 @@
                 <div class="mb-3">
                     <label>User</label>
                     <select class="form-select" wire:model.live="user_id">
-                        <option value="">-- Pilih User --</option>
+                        <option value="" disabled selected hidden>-- Pilih User --</option>
                         @foreach($users as $user)
                         <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach

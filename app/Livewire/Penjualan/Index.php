@@ -24,9 +24,8 @@ class Index extends Component
 
     public $showAll = false;
 
-    protected $listeners = ['chartUpdated' => 'emitChartData'];
-
-
+    public $chartStatusPembayaran= []; //=> $this->getStatusPembayaran(),
+    public $chartJumlahSparepart= []; //=> $this->getJumlahSparepartTerjual(),
     public function mount()
     {
         $this->search = '';
@@ -34,7 +33,8 @@ class Index extends Component
         $this->tanggalAkhir = null;
         $this->filterBulan = '';
         $this->showAll = false;
-        $this->emitChartData();
+        $this->chartJumlahSparepart = $this->getJumlahSparepartTerjual();
+        $this->chartStatusPembayaran = $this->getStatusPembayaran();
         // default: tampilkan hari ini saja
     }
 
@@ -42,6 +42,8 @@ class Index extends Component
     {
         $this->resetPage();
     }
+
+
 
     public function resetFilter()
     {
@@ -71,7 +73,7 @@ class Index extends Component
 
     public function emitChartData()
     {
-        $this->dispatch('chart-status-updated', chartData: $this->getStatusPembayaran());
+        $this->dispatch('chart-statuspembayaran-updated', chartData: $this->getStatusPembayaran());
         $this->dispatch('chart-sparepart-updated', chartData: $this->getJumlahSparepartTerjual());
     }
 
@@ -192,13 +194,13 @@ class Index extends Component
 
     public function render()
     {
-        // $this->emitChartData();
+        $this->emitChartData();
         $penjualans = $this->getFilteredPenjualans()->latest()->paginate($this->perPage);
         return view('livewire.penjualan.index', array_merge(
             compact('penjualans'),
             [
-                'chartStatusPembayaran' => $this->getStatusPembayaran(),
-                'chartJumlahSparepart' => $this->getJumlahSparepartTerjual(),
+                'chartStatusPembayaran' => $this->chartStatusPembayaran,
+                'chartJumlahSparepart' => $this->chartJumlahSparepart,
             ]
         ));
     }

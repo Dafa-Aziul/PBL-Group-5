@@ -133,7 +133,7 @@
                 <div class="mb-3">
                     <label>Status</label>
                     <select class="form-select" wire:model='form.status'>
-                        <option value="">-- Pilih Status --</option>
+                        <option value="" disabled selected hidden>-- Pilih Status --</option>
                         <option value="draft">Draft</option>
                         <option value="terbit">Terbit</option>
                         <option value="arsip">Arsip</option>

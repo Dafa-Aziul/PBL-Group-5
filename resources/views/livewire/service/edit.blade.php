@@ -22,33 +22,27 @@
                 {{-- Pilih Pelanggan --}}
                 <div class="mb-3">
                     <label>Pelanggan</label>
-                    <select wire:model="pelanggan_id" class="form-select" disabled>
-                        <option value="">-- Pilih Pelanggan --</option>
-                        @foreach ($pelanggans as $pelanggan)
-                        <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
-                        @endforeach
-                    </select>
+                    <div  class="form-control">
+                        {{ $service->kendaraan->pelanggan->nama }}
+                    </div>
                     @error('pelanggan_id') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 {{-- Pilih Kendaraan berdasarkan Pelanggan --}}
                 <div class="mb-3">
                     <label>Kendaraan</label>
-                    <select wire:model="form.kendaraan_id" class="form-select" @disabled(!$pelanggan_id) disabled>
-                        <option value="">-- Pilih Kendaraan --</option>
-                        @forelse ($kendaraans as $k)
-                        <option value="{{ $k->id }}">{{ $k->no_polisi }} - {{ $k->tipe_kendaraan }}</option>
-                        @empty
-                        <option disabled>Tidak ada kendaraan ditemukan</option>
-                        @endforelse
-                    </select>
+                    <div class="form-control">
+                        {{ $service->no_polisi }} - {{ $service->tipe_kendaraan }}
+                    </div>
                     @error('form.kendaraan_id') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 {{-- Input lainnya --}}
                 <div class="mb-3">
                     <label>Kode Service</label>
-                    <input type="text" class="form-control" value="{{ old ('form.kode', $service->kode_service) }}" readonly>
+                    <div class="form-control">
+                        {{ $service->kode_service }}
+                    </div>
                     @error('kode_service') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

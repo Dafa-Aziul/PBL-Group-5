@@ -74,7 +74,8 @@
                         }]
                     },
                     options:{
-                        responsive: false,
+                        responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'bottom',
@@ -150,8 +151,32 @@
             const existingChart = Chart.getChart(ctx);
 
             if (existingChart) {
+                // Update labels
                 existingChart.data.labels = chartStatus.labels;
-                existingChart.data.datasets = datasetsWithColor;
+
+                // Update datasets dengan mempertahankan referensi asli
+                chartStatus.datasets.forEach((newDataset, index) => {
+                    if (existingChart.data.datasets[index]) {
+                        // Update properti dataset yang ada
+                        const existingDataset = existingChart.data.datasets[index];
+                        existingDataset.label = newDataset.label;
+                        existingDataset.data = newDataset.data;
+                        existingDataset.backgroundColor = statusColors[newDataset.label] || '#CCCCCC';
+                    } else {
+                        // Tambahkan dataset baru jika diperlukan
+                        existingChart.data.datasets.push({
+                            ...newDataset,
+                            backgroundColor: statusColors[newDataset.label] || '#CCCCCC',
+                            borderWidth: 1
+                        });
+                    }
+                });
+
+                // Hapus dataset yang tidak ada lagi
+                while (existingChart.data.datasets.length > chartStatus.datasets.length) {
+                    existingChart.data.datasets.pop();
+                }
+
                 existingChart.update();
             } else {
                 // Pastikan jika sebelumnya ada chart, dihancurkan dulu
@@ -166,7 +191,7 @@
                         datasets: datasetsWithColor,
                     },
                     options: {
-                        responsive: false,
+                        responsive: true,
                         plugins: {
                             legend: { position: 'bottom' },
                             tooltip: {
@@ -277,7 +302,7 @@
     </div>
     @endif
 
-    <div class="row g-3 mb-4" wire:poll.visible.3000ms>
+    <div class="row g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
         <div class="col-12 col-lg-4">
             <div class="d-flex flex-column h-100 gap-3">
                 <div class="card card-jumlah flex-fill card-hover">
@@ -287,8 +312,7 @@
                         </h5>
                         <hr class="border border-2 opacity-50">
                         <div class="d-flex justify-content-center p-5">
-                            <canvas style="width: 100%; height: 100%; display: block;" height="400px" id="myChart"
-                                wire:ignore></canvas>
+                            <canvas id="myChart" wire:ignore></canvas>
                         </div>
                     </div>
                 </div>
@@ -304,8 +328,7 @@
                         </h5>
                         <hr class="border border-2 opacity-50">
                         <div class="d-flex justify-content-center p-5">
-                            <canvas style="width: 100%; height: 100%; display: block;" height="400px" id="statusChart"
-                                wire:ignore></canvas>
+                            <canvas id="statusChart" wire:ignore></canvas>
                         </div>
                     </div>
                 </div>
@@ -339,14 +362,14 @@
         <div class="col-12 col-md-4 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
             <!-- Checkbox "Semua" -->
             <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
-                <option value="">Semua Bulan</option>
+                <option value="" disabled selected hidden>Pilih Bulan</option>
                 @foreach(range(1, 12) as $bulan)
                 <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
                 </option>
                 @endforeach
             </select>
             <select class="form-select" wire:model.change="filterStatus" style="cursor:pointer;">
-                <option value="">Semua Status</option>
+                <option value="" disabled selected hidden>Pilih Status</option>
                 <option value="hadir">Hadir</option>
                 <option value="terlambat">Terlambat</option>
                 <option value="lembur">Lembur</option>
@@ -462,4 +485,3 @@
         </div>
     </div>
 </div>
-

@@ -190,7 +190,7 @@ class Create extends Component
 
         session()->flash('success', 'Penjualan berhasil dibuat.');
         $this->dispatch('chartUpdated');
-        return redirect()->route('penjualan.view');
+        return $this->redirect(route('penjualan.view'), navigate: true);
     }
 
     public function render()

@@ -120,22 +120,12 @@ class Show extends Component
 
         $labels = $karyawans->pluck('nama')->toArray();
 
-        $defaultColors = [
-            'hadir' => '#4caf50',
-            'terlambat' => '#ff9800',
-            'izin' => '#2196f3',
-            'sakit' => '#f44336',
-            'alpha' => '#9e9e9e',
-            'lembur' => '#673ab7',
-        ];
-
         $datasets = [];
 
         foreach ($statuses as $status) {
             $datasets[] = [
                 'label' => ucfirst($status),
                 'data' => $karyawans->map(fn($k) => $k->absensis->where('status', $status)->count())->toArray(),
-                'backgroundColor' => $defaultColors[$status],
             ];
         }
 

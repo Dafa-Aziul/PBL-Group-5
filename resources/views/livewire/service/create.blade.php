@@ -56,7 +56,7 @@
                     <label>Pelanggan</label>
                     <div wire:ignore>
                         <select wire:model="pelanggan_id" class="form-select select2" id="pelanggan_id">
-                            <option value="">-- Pilih Pelanggan --</option>
+                            <option value="" >-- Pilih Pelanggan --</option>
                             @foreach ($pelanggans as $pelanggan)
                             <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
                             @endforeach

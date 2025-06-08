@@ -91,7 +91,6 @@
                     },
                     options: {
                         responsive: true, // Ubah ke true untuk better UX
-                        maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'bottom',
@@ -197,7 +196,7 @@
                         datasets: [dataset]
                     },
                     options: {
-                        responsive: false,
+                        responsive: true,
                         plugins: {
                             legend: {
                                 position: 'bottom',
@@ -209,9 +208,10 @@
                             tooltip: {
                                 callbacks: {
                                     label: function (context) {
-                                        const label = context.label || '';
-                                        const value = context.raw || 0;
-                                        return `${label}: ${value} transaksi`;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const value = context.raw ?? 0;
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return `${context.label}: ${value} (${percentage}%)`;
                                     }
                                 }
                             }
@@ -247,17 +247,33 @@
         function initializeChart() {
             if (chartInitialized) return;
 
-            if (window.Livewire) {
-                attachLivewireListeners();
+            attachLivewireListeners();
+
+            const pendapatanCanvas = document.getElementById('chartPendapatanBulanan');
+            const transaksiCanvas = document.getElementById('chartJumlahTransaksi');
+
+            const pendapatanChartData = @json($chartPendapatanBulanan ?? null);
+            const transaksiChartData = @json($chartJumlahTransaksi ?? null);
+
+            if (pendapatanCanvas && pendapatanChartData) {
+                renderPendapatanBulananChart(pendapatanChartData);
+            } else if (!pendapatanCanvas) {
+                console.log('Canvas chartPendapatanBulanan tidak ditemukan.');
             } else {
-                document.addEventListener('livewire:load', attachLivewireListeners);
+                console.warn('Data chart pendapatan bulanan kosong atau null.');
             }
 
-            renderPendapatanBulananChart(@json($chartPendapatanBulanan));
-            renderJumlahTransaksiChart(@json($chartJumlahTransaksi));
+            if (transaksiCanvas && transaksiChartData) {
+                renderJumlahTransaksiChart(transaksiChartData);
+            } else if (!transaksiCanvas) {
+                console.log('Canvas chartJumlahTransaksi tidak ditemukan.');
+            } else {
+                console.warn('Data chart jumlah transaksi kosong atau null.');
+            }
 
             chartInitialized = true;
         }
+
 
         document.addEventListener('livewire:navigated', () => {
             chartInitialized = false;
@@ -268,7 +284,7 @@
                     initializeChart();
                 }
             }, 100);
-        });
+        },{ once: true });
 
         if (document.readyState === 'complete') {
             initializeChart();
@@ -296,7 +312,7 @@
     <div class="row g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
         {{-- 🔸 Kolom Kiri: Ringkasan Pendapatan dan Transaksi --}}
         <div class="col-12 col-lg-4">
-            <div class="d-flex flex-column h-100 gap-3">
+            <div class="d-flex flex-column gap-3">
 
                 {{-- 🔹 Jumlah Transaksi --}}
                 <div class="card h-100 shadow-sm card-hover">
@@ -307,14 +323,13 @@
                         <hr class="border border-2 opacity-50">
                         <div class="d-flex justify-content-center align-items-center">
                             <div class="d-flex justify-content-center p-3">
-                                <canvas style="width: 100%; height: 100%; display: block;" height="300px"
-                                    id="chartJumlahTransaksi" wire:ignore></canvas>
+                                <canvas id="chartJumlahTransaksi" wire:ignore></canvas>
                             </div>
                         </div>
                     </div>
                 </div>
                 {{-- 🔹 Total Pendapatan + Per Jenis --}}
-                <div class="card shadow-sm card-hover">
+                <div class="card shadow-sm card-hover" wire:poll.visible.3000ms>
                     <div class="card-body d-flex flex-column justify-content-center text-center">
                         <div class="mb-3">
                             <div class="text-success mb-2">
@@ -324,11 +339,11 @@
                             <hr class="my-1 border-success opacity-50 mx-auto" style="width: 60%;">
                         </div>
 
-                        <h3 class="fw-bold text-dark mb-4">
+                        <h3 class="fw-bold text-dark mb-3">
                             Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
                         </h3>
 
-                        <div class="d-flex justify-content-center gap-4 mb-3">
+                        <div class="d-flex justify-content-center gap-4 mb-2">
                             <div>
                                 <small class="text-muted">Total Bayar</small><br>
                                 <span class="fw-bold text-success">
@@ -367,16 +382,15 @@
 
 
         {{-- 🔸 Kolom Kanan: Chart Pendapatan Bulanan --}}
-        <div class="col-12 col-lg-8">
-            <div class="card card-jumlah h-100 card-hover">
+        <div class="col-12 col-lg-8 ">
+            <div class="card card-jumlah h-100 card-hover d-none d-lg-block">
                 <div class="card-body">
                     <h5 class="card-title text-success">
                         <i class="fa-solid fa-comments-dollar"></i> Pendapatan Bulanan
                     </h5>
                     <hr class="border border-2 opacity-50">
-                    <div class="d-flex justify-content-center p-md-5">
-                        <canvas id="chartPendapatanBulanan" style="width: 100%; height: 100%; display: block;"
-                            height="500px" wire:ignore></canvas>
+                    <div class="d-flex justify-content-center p-md-5 align-items-center">
+                        <canvas id="chartPendapatanBulanan" wire:ignore></canvas>
                     </div>
                 </div>
             </div>
@@ -440,7 +454,7 @@
                     </button>
                 </div>
             </div>
-            <div class="row d-md-none g-2 mb-2 d-flex justify-items-end">
+            <div class="row d-md-none g-2 mb-2 w-100">
                 <div class="col-6 col-md-3 order-3 order-lg-1">
                     <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll"
                         autocomplete="off">
@@ -466,7 +480,7 @@
                     </select>
                 </div>
                 <!-- Tombol Reset -->
-                <div class="col-6 col-md-3 order-4 order-lg-4 d-flex justify-items-end">
+                <div class="col-6 col-md-3 order-4 order-lg-4 d-flex justify-content-end">
                     <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
                         <i class="fas fa-rotate me-1"></i>
                         <span class="d-none d-md-inline">Reset</span>

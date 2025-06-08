@@ -32,7 +32,7 @@
                  <div class="mb-3">
                     <label for="aktivitas" class="form-label">Aktivitas</label>
                     <select id="aktivitas" class="form-select" wire:model="form.aktivitas" required>
-                        <option value="">-- Pilih Aktivitas --</option>
+                        <option value="" disabled selected hidden>-- Pilih Aktivitas --</option>
                         <option value="masuk">Masuk</option>
                         <option value="keluar">Keluar</option>
                     </select>
