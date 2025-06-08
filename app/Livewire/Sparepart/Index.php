@@ -4,13 +4,12 @@ namespace App\Livewire\Sparepart;
 
 use App\Models\Sparepart;
 use Livewire\Component;
-use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
 
-    use WithPagination, WithoutUrlPagination;
+    use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
     public $perPage = 5;

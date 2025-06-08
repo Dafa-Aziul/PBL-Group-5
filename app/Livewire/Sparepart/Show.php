@@ -6,9 +6,15 @@ use App\Livewire\Forms\GudangForm;
 use App\Models\Gudang;
 use App\Models\Sparepart;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Show extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
+
+    public $perPage = 5;
+    public $search = '';
     public $id;
     public $sparepart;
     public GudangForm $form;
@@ -65,9 +71,8 @@ class Show extends Component
 
     public function render()
     {
-
         return view('livewire.sparepart.show', [
-            'sparepart' => $this->sparepart,
+            'sparepart' => $this->sparepart, 'gudangs' => $this->sparepart->gudangs()->paginate($this->perPage),
         ]);
     }
 }

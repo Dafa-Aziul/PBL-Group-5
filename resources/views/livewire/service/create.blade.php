@@ -146,7 +146,13 @@
                     @error('form.keterangan') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                <button class="btn btn-primary">Simpan</button>
+                <div class="row g-3">
+                    <div class="col-8 col-md-3">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fa-solid fa-paper-plane me-1"></i> Simpan
+                        </button>
+                    </div>
+                </div>
             </form>
 
         </div>

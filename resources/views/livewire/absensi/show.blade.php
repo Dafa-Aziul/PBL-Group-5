@@ -460,7 +460,7 @@
 
                             {{-- Foto keluar, dengan fallback default --}}
                             <td class="text-center">
-                                <img src="{{ $absensi->foto_keluar ? asset('storage/absensi/foto_keluar/' . $absensi->foto_keluar) : asset('foto/default.png') }}"
+                                <img src="{{ $absensi->foto_keluar ? asset('storage/absensi/foto_keluar/' . $absensi->foto_keluar) : asset('storage/absensi/foto_keluar/default.jpg') }}"
                                     alt="Foto Keluar" class="img-thumbnail"
                                     style="max-width: 100px; max-height: 100px; object-fit: contain;">
                             </td>

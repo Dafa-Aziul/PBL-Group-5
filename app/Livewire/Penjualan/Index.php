@@ -73,7 +73,7 @@ class Index extends Component
 
     public function emitChartData()
     {
-        $this->dispatch('chart-statuspembayaran-updated', chartData: $this->getStatusPembayaran());
+        $this->dispatch('chart-status-pembayaran-updated', chartData: $this->getStatusPembayaran());
         $this->dispatch('chart-sparepart-updated', chartData: $this->getJumlahSparepartTerjual());
     }
 

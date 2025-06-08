@@ -116,17 +116,19 @@
                                     <th>Aktivitas</th>
                                     <th>Jumlah</th>
                                     <th>Keterangan</th>
+                                    <th>Tanggal</th>
                                     {{-- <th class="text-center">Aksi</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($sparepart->gudangs as $index => $gudang)
+                                @forelse ($gudangs as $gudang)
                                 <tr>
-                                    <td class="text-center">{{ $index + 1 }}</td>
+                                    <td class="text-center">{{ ($gudangs->firstItem() + $loop->iteration) - 1 }}</td>
                                     <td>{{ $gudang->sparepart->nama ?? '-' }}</td>
                                     <td>{{ $gudang->aktivitas }}</td>
                                     <td>{{ $gudang->jumlah }}</td>
                                     <td>{{ $gudang->keterangan }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($gudang->created_at)->format('d M Y, H:i') }}</td>
                                     {{-- <td class="text-center">
                                         <a href="" class="btn btn-warning btn-sm" wire:navigate>
                                             <i class="fa-solid fa-pen-to-square"></i>
@@ -144,6 +146,7 @@
                             </tbody>
                         </table>
                     </div>
+                    {{ $gudangs -> links() }}
                 </div>
             </div>
             {{-- <div class="col-md-12">
