@@ -45,21 +45,6 @@ class Dashboard extends Component
         return array_values($result);
     }
 
-    public function getAbsensiStatusChartData()
-    {
-        $today = Carbon::today()->toDateString();
-
-        $data = Absensi::select('status')
-            ->whereDate('tanggal', $today)
-            ->groupBy('status')
-            ->selectRaw('status, COUNT(*) as total')
-            ->pluck('total', 'status');
-
-        return [
-            'labels' => $data->keys()->toArray(),
-            'data' => $data->values()->toArray(),
-        ];
-    }
 
     public function getAllStatusChartData()
     {
@@ -117,26 +102,7 @@ class Dashboard extends Component
 
     protected function getFilteredTransaksisTanpaSearch()
     {
-        return Transaksi::with(['kasir', 'pelanggan', 'pembayarans'])
-            ->when(!$this->showAll, function ($query) {
-                // Jika filter bulan diisi, pakai filter bulan
-                if ($this->filterBulan) {
-                    return $query->whereMonth('created_at', $this->filterBulan);
-                }
-
-                // Jika kedua tanggal diisi, pakai rentang tersebut
-                if ($this->tanggalAwal && $this->tanggalAkhir) {
-                    $start = Carbon::parse($this->tanggalAwal)->startOfDay();
-                    $end = Carbon::parse($this->tanggalAkhir)->endOfDay();
-                    return $query->whereBetween('created_at', [$start, $end]);
-                }
-
-                $todayStart = Carbon::today()->startOfDay();
-                $todayEnd = Carbon::today()->endOfDay();
-                return $query->whereBetween('created_at', [$todayStart, $todayEnd]);
-            })->when($this->jenis_transaksi, function ($q) {
-                $q->where('jenis_transaksi', $this->jenis_transaksi);
-            });
+        return Transaksi::with(['kasir', 'pelanggan', 'pembayarans']);
     }
 
     public function getPendapatanPerBulanChartData()
@@ -232,6 +198,7 @@ class Dashboard extends Component
     public function emitChartData()
     {
         $this->dispatch('chart-pendapatan-updated', chartData : $this->getPendapatanPerBulanChartData());
+        $this->dispatch('chart-absensi-updated', chartData : $this->getAllStatusChartData());
     }
     public function render()
     {
@@ -251,27 +218,15 @@ class Dashboard extends Component
         $stokmenipis = $spareparts->count();
 
         // untuk card absensi (owner)
-        $chartStatus = $this->getAbsensiStatusChartData();
         $chartStatusAbsensi = $this->getAllStatusChartData();
         $belumAbsen = $this->getBelumAbsen(10, 0); // jam 10:00
 
-
-        //untuk card transaksi
-        $chartTransaksi = $this->getAllTransaksi();
-        $startOfMonth = Carbon::now()->startOfMonth();
-        $endOfMonth = Carbon::now()->endOfMonth();
-
-        $transaksiBulanIni = Transaksi::whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->get();
-
-        $jumlahTransaksi = $transaksiBulanIni->count();
-        $totalTransaksi = $transaksiBulanIni->sum('grand_total'); // sesuaikan nama kolom
-
-        $avgPendapatan = $jumlahTransaksi > 0 ? $totalTransaksi / $jumlahTransaksi : 0;
-
+        $jumlahTransaksi = $this->getFilteredTransaksisTanpaSearch()->count();
+        $service = $this->getFilteredTransaksisTanpaSearch()->where('jenis_transaksi', 'service')->count();
+        $penjualan = $this->getFilteredTransaksisTanpaSearch()->where('jenis_transaksi', 'penjualan')->count();
         // dd($chartStatusAbsensi);
 
-        return view('livewire.dashboard', compact('transaksis', 'spareparts', 'stokmenipis', 'chartTransaksi', 'jumlahTransaksi', 'totalTransaksi', 'avgPendapatan', 'chartStatus', 'chartStatusAbsensi','belumAbsen'),
+        return view('livewire.dashboard', compact('transaksis', 'spareparts', 'stokmenipis', 'jumlahTransaksi','service','penjualan', 'chartStatusAbsensi','belumAbsen'),
             [
             'chartPendapatanBulanan' => $this->getPendapatanPerBulanChartData(),
         ]);
