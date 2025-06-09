@@ -148,7 +148,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                                 <div class="card flex-fill h-100">
                                     <div class="card-body">
                                         <h5 class="card-title">
-                                            <i class="fa-solid fa-hand-point-up"></i>   Karyawan Belum Absen
+                                            <i class="fa-solid fa-hand-point-up"></i> Karyawan Belum Absen
 
                                         </h5>
                                         <hr class="border border-2 opacity-50">
@@ -306,207 +306,335 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
     @can('akses-admin-owner')
     {{-- Bagian Chart Transaksi --}}
     <div class="row d-flex align-items-stretch my-3">
-        <div class="col-12">
-            <div class="card h-100 card-hover">
+        <div class="col-md-9">
+            <div class="card card-hover">
                 <div class="card-body">
                     <h3 class="card-title text-center text-success">
-                        <i class="fa-solid fa-cash-register"></i> Transaksi Bulan Ini
+                        <i class="fa-solid fa-chart-simple"></i> Chart Transaksi
                     </h3>
                     <hr class="border border-2 opacity-50">
-                    <div class="row px-3">
-                        <div class="col-md-9">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <h3 class="card-title text-center text-success">
-                                        <i class="fa-solid fa-chart-simple"></i> Chart Transaksi
-                                    </h3>
-                                    <hr class="border border-2 opacity-50">
-                                    <canvas id="transaksiChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Statistik Pendapatan --}}
-                        <div class="col-12 col-md-3">
-                            <div class="d-flex flex-column h-100 justify-content-between gap-3">
-                                {{-- Status Pembayaran --}}
-                                <div class="card  flex-fill">
-                                    <div class="card-body d-flex flex-column" style="height: 100%;">
-                                        <h5 class="card-title text-success">
-                                            <i class="fa-solid fa-money-bill-1-wave"></i> Total Pendapatan
-                                        </h5>
-                                        <hr class="border border-2 opacity-50">
-                                        <div class="flex-grow-1 d-flex justify-content-center align-items-center">
-                                            <h2 class="fw-bold text-dark text-center mb-0">
-                                                Rp {{ number_format($totalTransaksi, 0, ',', '.') }}
-                                            </h2>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card  flex-fill">
-                                    <div class="card-body d-flex flex-column">
-                                        <h5 class="card-title text-success">
-                                            <i class="fa-solid fa-circle-dollar-to-slot"></i> Rata-Rata Pendapatan
-                                            {{-- <small class="text-muted" style="font-size: 0.65em;">/transaksi</small>
-                                            --}}
-                                        </h5>
-                                        <hr class="border border-2 opacity-50">
-                                        <div class="flex-grow-1 d-flex justify-content-center align-items-center">
-                                            <h2 class="fw-bold text-dark text-center mb-0">
-                                                Rp {{ number_format($avgPendapatan, 0, ',', '.') }}
-                                            </h2>
-
-
-
-                                        </div>
-
-                                    </div>
-                                </div>
-                                {{-- Jenis Transaksi --}}
-
-                                <div class="card  flex-fill">
-                                    <div class="card-body d-flex flex-column" style="height: 100%;">
-                                        <h5 class="card-title text-success">
-                                            <i class="fa-solid fa-file-invoice-dollar"></i> Jumlah Transaksi
-                                        </h5>
-                                        <hr class="border border-2 opacity-50">
-                                        <div class="flex-grow-1 d-flex justify-content-center align-items-center">
-                                            <h2 class="fw-bold text-dark text-center mb-0">{{ $jumlahTransaksi }}
-                                                transaksi</h2>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
+                    <canvas id="chartPendapatanBulanan" wire:ignore></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 card-hover">
+                <div class="card-body d-flex flex-column" style="height: 100%;">
+                    <h5 class="card-title text-success">
+                        <i class="fa-solid fa-file-invoice-dollar"></i> Jumlah Transaksi
+                    </h5>
+                    <hr class="border border-2 opacity-50">
+                    <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+                        <h2 class="fw-bold text-dark text-center mb-0">{{ $jumlahTransaksi }}
+                            transaksi</h2>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
     @endcan
-    {{-- Script Chart --}}
-    @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</div>
+{{-- Script Chart --}}
+@push('scripts')
     <script>
-        // chart transaksi
-        const transaksiData = @json($chartTransaksi);
+        (function () {
+            let pendapatanBulananChartInstance = null;
+            let AbsensiChartInstance = null;
+            let chartInitialized = false;
+            let livewireListenersAttached = false;
 
-        let mingguSet = new Set(transaksiData.map(item => item.minggu));
-        for (let i = 1; i <= 4; i++) mingguSet.add(i);
-        const mingguNumbers = [...mingguSet].sort((a, b) => a - b);
-        const mingguLabels = mingguNumbers.map(m => 'Minggu ' + m);
-        const jenisList = [...new Set(transaksiData.map(item => item.jenis_transaksi))];
-
-        const jumlahDatasets = jenisList.map(jenis => ({
-            label: `Jumlah - ${jenis}`,
-            data: mingguNumbers.map(mingguKe => transaksiData.find(item => item.jenis_transaksi === jenis && item.minggu === mingguKe)?.jumlah || 0),
-            borderColor: getColor(jenis, false),
-            backgroundColor: getColor(jenis, true),
-            fill: false,
-            tension: 0.3,
-            yAxisID: 'y'
-        }));
-
-        const totalDatasets = jenisList.map(jenis => ({
-            label: `Total - ${jenis}`,
-            data: mingguNumbers.map(mingguKe => transaksiData.find(item => item.jenis_transaksi === jenis && item.minggu === mingguKe)?.total || 0),
-            borderColor: getColor(`${jenis}-total`, false),
-            backgroundColor: getColor(`${jenis}-total`, true),
-            fill: false,
-            tension: 0.3,
-            yAxisID: 'y1',
-            pointStyle: 'triangle',
-            pointRadius: 6
-        }));
-
-        new Chart(document.getElementById('transaksiChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: mingguLabels,
-                datasets: [...jumlahDatasets, ...totalDatasets]
-            },
-            options: {
-                responsive: true,
-                interaction: { mode: 'index', intersect: false },
-                stacked: false,
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        beginAtZero: true,
-                        title: { display: true, text: 'Jumlah Transaksi' },
-                        ticks: {
-                            callback: value => value.toLocaleString()
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        beginAtZero: true,
-                        suggestedMax: 10000000,
-                        grid: { drawOnChartArea: false },
-                        title: { display: true, text: 'Total Pendapatan (Rp)' },
-                        ticks: {
-                            callback: value => 'Rp ' + value.toLocaleString(),
-                            color: '#FF8000'
-                        }
+            function safeDestroyChart(instance) {
+                if (instance) {
+                    try {
+                        instance.destroy();
+                    } catch (e) {
+                        console.warn('Gagal menghancurkan chart:', e);
                     }
                 }
+                return null;
             }
-        });
 
-        function getColor(key, isBackground) {
-            const colors = {
-                'penjualan': '255, 99, 132',
-                'service': '54, 162, 235',
-                'penjualan-total': '255, 159, 64',
-                'service-total': '75, 192, 192'
-            };
-            const color = colors[key] || '100, 100, 100';
-            return isBackground ? `rgba(${color}, 0.2)` : `rgba(${color}, 1)`;
-        }
+            function renderAbsensiChart(chartData){
+                const ctx = document.getElementById('statusChart');
+                if (!ctx) {
+                    console.warn('Canvas statusChart tidak ditemukan');
+                    return;
+                }
 
-        //chart status absen
-        const chartStatus = @json($chartStatus);
-        const doughnutLabels = chartStatus.labels;
-        const doughnutData = chartStatus.data;
+                // Normalisasi data jika nested
+                if (chartData && chartData.chartData) {
+                    chartData = chartData.chartData;
+                }
+                const statusLabels = ['hadir', 'terlambat', 'izin', 'sakit', 'alpha', 'lembur'];
 
-        const doughnutColors = [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)',
-            'rgb(75, 192, 192)',
-            'rgb(153, 102, 255)',
-            'rgb(255, 159, 64)',
-            'rgb(201, 203, 207)',
-            'rgb(100, 149, 237)',
-            'rgb(220, 20, 60)',
-            'rgb(34, 139, 34)'
-        ];
+                const lineColors = [
+                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                '#FF9F40', '#00A676', '#C71585', '#4682B4', '#228B22',
+                '#FF4500', '#8A2BE2', '#20B2AA', '#DC143C', '#00CED1',
+                '#DAA520', '#7B68EE', '#3CB371', '#FF1493', '#708090',
+                '#CD5C5C', '#6B8E23', '#FF7F50', '#2E8B57', '#800080',
+                '#1E90FF', '#B22222', '#9ACD32', '#8B4513', '#5F9EA0'
+                ];
 
-        new Chart(document.getElementById('myChart'), {
-            type: 'doughnut',
-            data: {
-                labels: doughnutLabels,
-                datasets: [{
-                    label: 'Status Absensi Bulan Ini',
-                    data: doughnutData,
-                    backgroundColor: doughnutColors.slice(0, doughnutLabels.length),
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
+
+                const datasets = chartStatusData.map((item, index) => ({
+                    label: item.nama,
+                    data: statusLabels.map(status => item.status[status]),
+                    fill: false,
+                    borderColor: lineColors[index % lineColors.length],
+                    backgroundColor: lineColors[index % lineColors.length],
+                    tension: 0.3
+                }));
+
+                const existingChart = Chart.getChart(ctx);
+
+                if (existingChart) {
+
+                }
+                else {
+                    if (typeof AbsensiChartInstance !== 'undefined' && AbsensiChartInstance) {
+                        AbsensiChartInstance.destroy();
+                    }
+
+                    new Chart(document.getElementById('statusChart'), {
+                        type: 'line',
+                        data: {
+                            labels: statusLabels,
+                            datasets: datasets
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Rekapitulasi Absensi Karyawan (Per Status)'
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'bottom'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Jumlah Hari'
+                                    },
+                                    ticks: {
+                                        precision: 0,
+                                        stepSize: 1
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Status Absensi'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
             }
-        });
 
+            function renderPendapatanBulananChart(chartData)
+            {
+                const ctx = document.getElementById('chartPendapatanBulanan');
+                if (!ctx) {
+                    console.warn('Canvas chartPendapatanBulanan tidak ditemukan');
+                    return;
+                }
+
+                // Normalisasi data jika nested
+                if (chartData && chartData.chartData) {
+                    chartData = chartData.chartData;
+                }
+
+                // Persiapkan datasets dengan default values
+                const preparedDatasets = chartData.datasets.map(ds => ({
+                    ...ds,
+                    backgroundColor: ds.backgroundColor || 'rgba(54, 162, 235, 0.6)',
+                    borderColor: ds.borderColor || 'rgba(128, 128, 128, 0.5)',
+                    borderWidth: ds.borderWidth ?? 1,
+                    fill: ds.fill ?? false,
+                    type: ds.type || 'bar',
+                    stack: ds.type === 'line' ? undefined : (ds.stack || 'pendapatan'),
+                    tension: ds.tension ?? (ds.type === 'line' ? 0.3 : 0),
+                    pointRadius: ds.pointRadius ?? (ds.type === 'line' ? 4 : 3),
+                    pointHoverRadius: ds.pointHoverRadius ?? (ds.type === 'line' ? 6 : 5)
+                }));
+
+                const existingChart = Chart.getChart(ctx);
+
+                if (existingChart) {
+                    // Update yang lebih aman dengan mempertahankan referensi asli
+                    existingChart.data.labels = chartData.labels;
+
+                    // Update datasets dengan mempertahankan objek asli jika mungkin
+                    chartData.datasets.forEach((newDataset, i) => {
+                        if (existingChart.data.datasets[i]) {
+                            // Update properti yang ada
+                            Object.assign(existingChart.data.datasets[i], {
+                                label: newDataset.label,
+                                data: newDataset.data,
+                                type: newDataset.type || 'bar',
+                                stack: newDataset.type === 'line' ? undefined : (newDataset.stack || 'pendapatan'),
+                                backgroundColor: newDataset.backgroundColor || existingChart.data.datasets[i].backgroundColor,
+                                borderColor: newDataset.borderColor || existingChart.data.datasets[i].borderColor
+                            });
+                        } else {
+                            // Tambahkan dataset baru jika diperlukan
+                            existingChart.data.datasets.push(preparedDatasets[i]);
+                        }
+                    });
+
+                    // Hapus dataset yang tidak diperlukan
+                    if (existingChart.data.datasets.length > chartData.datasets.length) {
+                        existingChart.data.datasets.splice(chartData.datasets.length);
+                    }
+
+                    // Update options stacking
+                    existingChart.options.scales.x.stacked = preparedDatasets.some(ds => ds.stack);
+                    existingChart.options.scales.y.stacked = preparedDatasets.some(ds => ds.stack);
+
+                    existingChart.update();
+                } else {
+                    // Buat chart baru jika belum ada
+                    if (typeof pendapatanBulananChartInstance !== 'undefined' && pendapatanBulananChartInstance) {
+                        pendapatanBulananChartInstance.destroy();
+                    }
+
+                    pendapatanBulananChartInstance = new Chart(ctx, {
+                        type: 'bar', // tipe dasar chart
+                        data: {
+                            labels: chartData.labels,
+                            datasets: preparedDatasets
+                        },
+                        options: {
+                            responsive: true, // Ubah ke true untuk better UX
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        boxWidth: 12,
+                                        padding: 20,
+                                        usePointStyle: true
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            const value = context.parsed.y ?? 0;
+                                            const label = context.dataset.label;
+
+                                            if (context.dataset.type === 'line') {
+                                                return `${label}: Rp ${value.toLocaleString()}`;
+                                            }
+
+                                            const total = context.chart.data.datasets
+                                                .filter(ds => ds.type !== 'line')
+                                                .reduce((sum, ds) => sum + (ds.data[context.dataIndex] || 0), 0);
+
+                                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                            return `${label}: Rp ${value.toLocaleString()} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    stacked: preparedDatasets.some(ds => ds.stack),
+                                    title: {
+                                        display: true,
+                                        text: 'Bulan'
+                                    }
+                                },
+                                y: {
+                                    stacked: preparedDatasets.some(ds => ds.stack),
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Pendapatan (Rp)'
+                                    },
+                                    ticks: {
+                                        callback: function (value) {
+                                            return 'Rp ' + value.toLocaleString();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            function attachLivewireListeners() {
+                if (livewireListenersAttached || !window.Livewire) return;
+
+                Livewire.on('chart-pendapatan-updated', (event) => {
+                    const data = event?.chartData ?? event;
+                    renderPendapatanBulananChart(data);
+                });
+                livewireListenersAttached = true;
+            }
+
+            function initializeChart() {
+                if (chartInitialized) return;
+
+                attachLivewireListeners();
+
+                const pendapatanCanvas = document.getElementById('chartPendapatanBulanan');
+                const AbsensiCanvas = document.getElementById('chartAbsensi');
+                const pendapatanChartData = @json($chartPendapatanBulanan ?? null);
+                const AbsensiChartData = @json($chartAbsensi ?? null);
+
+                if (pendapatanCanvas && pendapatanChartData) {
+                    renderPendapatanBulananChart(pendapatanChartData);
+                } else if (!pendapatanCanvas) {
+                    console.log('Canvas chartPendapatanBulanan tidak ditemukan.');
+                } else {
+                    console.warn('Data chart pendapatan bulanan kosong atau null.');
+                }
+
+                if (pendapatanCanvas && pendapatanChartData) {
+                    renderPendapatanBulananChart(pendapatanChartData);
+                } else if (!pendapatanCanvas) {
+                    console.log('Canvas chartPendapatanBulanan tidak ditemukan.');
+                } else {
+                    console.warn('Data chart pendapatan bulanan kosong atau null.');
+                }
+
+                chartInitialized = true;
+            }
+
+
+            document.addEventListener('livewire:navigated', () => {
+                chartInitialized = false;
+                livewireListenersAttached = false;
+
+                setTimeout(() => {
+                    if (document.getElementById('chartPendapatanBulanan')) {
+                        initializeChart();
+                    }
+                }, 100);
+            },{ once: true });
+
+            if (document.readyState === 'complete') {
+                initializeChart();
+            } else {
+                document.addEventListener('DOMContentLoaded', initializeChart);
+            }
+
+            document.addEventListener('livewire:before-unload', () => {
+                pendapatanBulananChartInstance = safeDestroyChart(pendapatanBulananChartInstance);
+                livewireListenersAttached = false;
+            });
+        })();
+    </script>
+
+    <script>
+        let AbsensiChartInstance = null;
         const chartStatusData = @json($chartStatusAbsensi);
         const statusLabels = ['hadir', 'terlambat', 'izin', 'sakit', 'alpha', 'lembur'];
 
@@ -528,8 +656,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
             backgroundColor: lineColors[index % lineColors.length],
             tension: 0.3
         }));
-
-        new Chart(document.getElementById('statusChart'), {
+        AbsensiChartInstance = new Chart(document.getElementById('statusChart'), {
             type: 'line',
             data: {
                 labels: statusLabels,
@@ -568,7 +695,5 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                 }
             }
         });
-
     </script>
-    @endpush
-</div>
+@endpush
