@@ -197,8 +197,8 @@ class Dashboard extends Component
 
     public function emitChartData()
     {
-        $this->dispatch('chart-pendapatan-updated', chartData : $this->getPendapatanPerBulanChartData());
-        $this->dispatch('chart-absensi-updated', chartData : $this->getAllStatusChartData());
+        $this->dispatch('chart-pendapatan-updated', chartData: $this->getPendapatanPerBulanChartData());
+        $this->dispatch('chart-absensi-updated', chartData: $this->getAllStatusChartData());
     }
     public function render()
     {
@@ -221,14 +221,28 @@ class Dashboard extends Component
         $chartStatusAbsensi = $this->getAllStatusChartData();
         $belumAbsen = $this->getBelumAbsen(10, 0); // jam 10:00
 
-        $jumlahTransaksi = $this->getFilteredTransaksisTanpaSearch()->count();
-        $service = $this->getFilteredTransaksisTanpaSearch()->where('jenis_transaksi', 'service')->count();
-        $penjualan = $this->getFilteredTransaksisTanpaSearch()->where('jenis_transaksi', 'penjualan')->count();
+        $jumlahTransaksi = $this->getFilteredTransaksisTanpaSearch()
+            ->whereDate('created_at', today())
+            ->count();
+
+        $service = $this->getFilteredTransaksisTanpaSearch()
+            ->where('jenis_transaksi', 'service')
+            ->whereDate('created_at', today())
+            ->count();
+
+        $penjualan = $this->getFilteredTransaksisTanpaSearch()
+            ->where('jenis_transaksi', 'penjualan')
+            ->whereDate('created_at', today())
+            ->count();
+
         // dd($chartStatusAbsensi);
 
-        return view('livewire.dashboard', compact('transaksis', 'spareparts', 'stokmenipis', 'jumlahTransaksi','service','penjualan', 'chartStatusAbsensi','belumAbsen'),
+        return view(
+            'livewire.dashboard',
+            compact('transaksis', 'spareparts', 'stokmenipis', 'jumlahTransaksi', 'service', 'penjualan', 'chartStatusAbsensi', 'belumAbsen'),
             [
-            'chartPendapatanBulanan' => $this->getPendapatanPerBulanChartData(),
-        ]);
+                'chartPendapatanBulanan' => $this->getPendapatanPerBulanChartData(),
+            ]
+        );
     }
 }
