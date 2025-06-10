@@ -81,23 +81,6 @@
             <x-nav-link wire:current.exact href="{{ route('konten.view') }}" icon="fa-solid fa-newspaper p-2 ">Konten
             </x-nav-link>
             @endcan
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
-    </div>
-    <div class="sb-sidenav-footer">
-        <div class="small">Logged in as:</div>
-        {{ auth()->user()->name }}
-        <div class="small">Role: {{ auth()->user()->role }}</div>
     </div>
 </nav>
