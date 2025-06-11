@@ -6,7 +6,9 @@ use App\Livewire\Forms\JasaForm;
 use App\Models\Jasa;
 use App\Models\JenisKendaraan;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Tambah Jasa Baru')]
 class Create extends Component
 {
     public JasaForm $form;

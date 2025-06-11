@@ -7,7 +7,9 @@ use App\Livewire\Forms\SparepartForm;
 use App\Models\Sparepart;
 use Livewire\WithFileUploads;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Tambah Sparepart Baru')]
 class Create extends Component
 {
     use WithFileUploads;

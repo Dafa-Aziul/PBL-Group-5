@@ -7,7 +7,10 @@ use App\Models\Karyawan;
 use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+
+#[Title('Rekap Absensi')]
 class Show extends Component
 {
     use WithPagination;

@@ -6,7 +6,9 @@ use App\Models\Konten;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithoutUrlPagination;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Data Konten')]
 class Index extends Component
 {
     use WithPagination;

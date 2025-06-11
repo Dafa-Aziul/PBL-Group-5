@@ -6,7 +6,9 @@ use App\Livewire\Forms\JasaForm;
 use App\Models\Jasa;
 use App\Models\JenisKendaraan;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Memperbarui Data Jasa')]
 class Edit extends Component
 {
     public $jasa;

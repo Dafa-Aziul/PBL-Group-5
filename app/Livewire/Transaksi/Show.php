@@ -6,7 +6,9 @@ use App\Livewire\Forms\PembayaranForm;
 use App\Models\Pembayaran;
 use App\Models\Transaksi;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Detail Data Transaksi')]
 class Show extends Component
 {
     public Transaksi $transaksi;

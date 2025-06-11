@@ -5,7 +5,9 @@ namespace App\Livewire\JenisKendaraan;
 use App\Livewire\Forms\JenisKendaraanForm;
 use App\Models\JenisKendaraan;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Memperbarui Data Jenis Kendaraan')]
 class Edit extends Component
 {
     public JenisKendaraan $jenis_kendaraan;

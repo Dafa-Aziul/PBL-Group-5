@@ -9,7 +9,9 @@ use App\Models\Pelanggan;
 use App\Models\Service;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Memperbarui Data Service')]
 class Edit extends Component
 {
     #[Validate('required|exists:pelanggans,id')]

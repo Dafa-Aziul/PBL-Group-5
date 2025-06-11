@@ -10,6 +10,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('layouts.auth')]
+#[Title('Verifikasi Email')]
 class VerifyEmail extends Component
 {
     /**

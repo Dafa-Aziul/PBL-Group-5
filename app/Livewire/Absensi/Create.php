@@ -9,7 +9,9 @@ use App\Models\Karyawan;
 use Illuminate\Support\Carbon;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
+use Livewire\Attributes\Title;
 
+#[Title('Mencatat Absensi')]
 class Create extends Component
 {
 
@@ -19,6 +21,15 @@ class Create extends Component
     public $absensi;
     public AbsensiForm $form;
     public $type;
+
+    public function getTitle()
+    {
+        return match($this->type) {
+            'check-in' => 'Check In',
+            'check-out' => 'Check Out',
+            default => 'Bukti Izin & Sakit',
+        };
+    }
 
     public function mount($id, $type)
     {
@@ -67,7 +78,7 @@ class Create extends Component
             ->whereNull('jam_keluar')
             ->first();
 
-        if ($absenMasuk && now()->hour >=18) {
+        if ($absenMasuk && now()->hour >= 18) {
             $absenMasuk->update([
                 'jam_keluar' => now()->format('H:i'),
                 'status' => 'hadir',
@@ -117,7 +128,7 @@ class Create extends Component
             ->whereNotNull('jam_masuk') // pastikan hanya cek yang sudah check-in
             ->first();
 
-        if ($this->type === 'check-in'){
+        if ($this->type === 'check-in') {
             if ($absensiHariIni) {
                 session()->flash('error', 'Anda sudah melakukan check-in hari ini.');
                 return redirect()->route('absensi.view');
@@ -196,7 +207,6 @@ class Create extends Component
                 $data['foto_masuk'] = basename($path);
             }
             Absensi::create($data);
-
         } elseif ($this->type === 'check-out') {
             // Validasi sudah dilakukan sebelumnya: absensiHariIni tersedia dan belum jam_keluar
 
@@ -209,12 +219,9 @@ class Create extends Component
             // Jika check-in tidak terlambat tapi pulang lembur, maka ubah jadi 'lembur'
             if ($statusCheckIn === 'hadir' && $statusCheckOut === 'lembur') {
                 $finalStatus = 'lembur';
-            }
-
-            elseif ($statusCheckIn === 'terlambat' && $statusCheckOut === 'lembur') {
+            } elseif ($statusCheckIn === 'terlambat' && $statusCheckOut === 'lembur') {
                 $finalStatus = 'terlambat';
                 $keterangan = 'Karyawan lembur saat pulang pukul ' . now()->format('H:i');
-
             }
 
             // Siapkan data yang akan di-update

@@ -10,8 +10,9 @@ use App\Models\ServiceSparepart;
 use App\Models\Sparepart;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
-
+#[Title('Tambah Penggunaan Jasa & Sparepart')]
 class ServiceDetail extends Component
 {
     public $service;

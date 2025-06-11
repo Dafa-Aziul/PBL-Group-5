@@ -9,7 +9,9 @@ use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 use Illuminate\Support\Carbon;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Services')]
 class Index extends Component
 {
     use WithPagination;

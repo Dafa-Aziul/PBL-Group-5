@@ -8,7 +8,9 @@ use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 use Carbon\Carbon;
 use PHPUnit\Event\Emitter;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Transaksi')]
 class Index extends Component
 {
     use WithPagination, WithoutUrlPagination;

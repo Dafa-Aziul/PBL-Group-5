@@ -5,9 +5,12 @@ namespace App\Livewire\Absensi;
 use App\Models\Absensi;
 use App\Models\Karyawan;
 use Carbon\Carbon;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+use Livewire\Attributes\Title;
 
+
+#[Title('Absensi Hari Ini')]
 class Index extends Component
 {
     public function render()

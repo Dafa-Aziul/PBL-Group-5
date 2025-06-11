@@ -5,7 +5,9 @@ namespace App\Livewire\Kendaraan;
 use App\Models\Kendaraan;
 use App\Models\Pelanggan;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Detail Kendaraan')]
 class Show extends Component
 {
     public Pelanggan $pelanggan;

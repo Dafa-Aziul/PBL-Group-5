@@ -5,7 +5,9 @@ namespace App\Livewire\Sparepart;
 use App\Models\Sparepart;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Data Sparepart')]
 class Index extends Component
 {
 

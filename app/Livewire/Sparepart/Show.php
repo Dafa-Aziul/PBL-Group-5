@@ -7,7 +7,9 @@ use App\Models\Gudang;
 use App\Models\Sparepart;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+#[Title('Detail Data Sparepart')]
 class Show extends Component
 {
     use WithPagination;

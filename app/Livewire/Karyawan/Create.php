@@ -8,7 +8,9 @@ use App\Models\Karyawan;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Title;
 
+#[Title('Tambah Data Karyawan Baru')]
 class Create extends Component
 {
     use WithFileUploads;

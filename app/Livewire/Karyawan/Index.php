@@ -6,7 +6,9 @@ use App\Models\Karyawan;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Data Karyawan')]
 class Index extends Component
 {
     use WithPagination;

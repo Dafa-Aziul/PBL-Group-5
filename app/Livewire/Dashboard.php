@@ -9,7 +9,10 @@ use App\Models\Transaksi;
 use Carbon\Carbon;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 
+
+#[Title('Dashboard - SiBeMo')]
 class Dashboard extends Component
 {
 

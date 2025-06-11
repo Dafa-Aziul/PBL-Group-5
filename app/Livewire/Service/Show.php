@@ -4,7 +4,9 @@ namespace App\Livewire\Service;
 
 use App\Models\Service;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Detail Data Transaksi')]
 class Show extends Component
 {
     public $service;

@@ -7,7 +7,9 @@ use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 use Carbon\Carbon;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Penjualan')]
 class Index extends Component
 {
 

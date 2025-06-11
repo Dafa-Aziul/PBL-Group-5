@@ -7,7 +7,9 @@ use App\Models\Konten;
 use Illuminate\Support\Facades\Auth;
 use Livewire\WithFileUploads; // Tambahkan ini
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Tambah Konten Baru')]
 class Create extends Component
 {
     use WithFileUploads;

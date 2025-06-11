@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Schema;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Data User')]
 class Index extends Component
 {
     use WithPagination;

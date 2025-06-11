@@ -9,7 +9,9 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Tambah User Baru')]
 class Create extends Component
 {
     public UserForm $form;

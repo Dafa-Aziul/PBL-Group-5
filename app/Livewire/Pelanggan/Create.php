@@ -6,7 +6,9 @@ use App\Livewire\Forms\PelangganForm;
 use App\Models\Pelanggan;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Tambah Pelanggan Baru')]
 class Create extends Component
 {
 

@@ -8,7 +8,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\Attributes\Title;
 
+#[Title('Perbarui Data Karyawan')]
 class Edit extends Component
 {
     use WithFileUploads;

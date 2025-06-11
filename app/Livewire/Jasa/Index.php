@@ -6,7 +6,9 @@ use App\Models\Jasa;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Data Jasa')]
 class Index extends Component
 {
     use WithPagination;

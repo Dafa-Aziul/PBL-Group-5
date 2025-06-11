@@ -6,7 +6,9 @@ use App\Models\JenisKendaraan;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Daftar Data Jenis Kendaraan')]
 class Index extends Component
 {
     use WithPagination;

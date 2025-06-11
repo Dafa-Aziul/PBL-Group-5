@@ -5,7 +5,9 @@ namespace App\Livewire\Penjualan;
 use App\Models\Pembayaran;
 use App\Models\Transaksi;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Detail Penjualan')]
 class Show extends Component
 {
     public $penjualan;

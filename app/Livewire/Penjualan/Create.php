@@ -11,7 +11,9 @@ use App\Models\Sparepart;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Tambah Penjualan Baru')]
 class Create extends Component
 {
     public $pelanggans;

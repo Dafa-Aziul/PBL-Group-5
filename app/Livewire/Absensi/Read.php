@@ -8,7 +8,10 @@ use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\Features\SupportPagination\WithoutUrlPagination;
 use Livewire\WithPagination;
+use Livewire\Attributes\Title;
 
+
+#[Title('Daftar Absensi Hari Ini')]
 class Read extends Component
 {
     use WithPagination;

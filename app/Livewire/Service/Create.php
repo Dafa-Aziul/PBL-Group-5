@@ -11,7 +11,9 @@ use App\Models\StatusService;
 use Carbon\Carbon;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Tambah Service Baru')]
 class Create extends Component
 {
     public ServiceForm $form;

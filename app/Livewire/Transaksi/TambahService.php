@@ -9,7 +9,9 @@ use App\Models\ServiceDetail;
 use App\Models\Transaksi;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Catat Service Kedalam Transaksi')]
 class TambahService extends Component
 {
     public $service;

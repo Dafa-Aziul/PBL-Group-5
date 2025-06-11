@@ -7,7 +7,9 @@ use App\Models\Sparepart;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
+use Livewire\Attributes\Title;
 
+#[Title('Memperbarui Data Sparepart')]
 class Edit extends Component
 {
     use WithFileUploads;

@@ -7,7 +7,9 @@ use App\Models\Konten;
 use Illuminate\Support\Facades\Storage;
 use Livewire\WithFileUploads;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Memperbarui Data Konten')]
 class Edit extends Component
 {
     use WithFileUploads;

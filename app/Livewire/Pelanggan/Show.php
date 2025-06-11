@@ -7,7 +7,9 @@ use App\Models\JenisKendaraan;
 use App\Models\Kendaraan;
 use App\Models\Pelanggan;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 
+#[Title('Detail Data Pelanggan')]
 class Show extends Component
 {
     public $id;
