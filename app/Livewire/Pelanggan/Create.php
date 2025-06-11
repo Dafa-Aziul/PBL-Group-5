@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Pelanggan;
 
-use App\Livewire\Forms\PelanggannForm;
+use App\Livewire\Forms\PelangganForm;
 use App\Models\Pelanggan;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -10,7 +10,7 @@ use Livewire\Component;
 class Create extends Component
 {
 
-    public PelanggannForm $form;
+    public PelangganForm $form;
     #[Validate('required|email|unique:pelanggans,email')]
     public string $email = '';
     // Validasi hanya properti kode di komponen ini

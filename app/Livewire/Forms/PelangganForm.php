@@ -5,7 +5,7 @@ namespace App\Livewire\Forms;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
-class PelanggannForm extends Form
+class PelangganForm extends Form
 {
     #[Validate('required|string|max:255')]
     public string $nama = '';

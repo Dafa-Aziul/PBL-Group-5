@@ -1,7 +1,8 @@
 <div class="p-6">
     <h2 class="mt-4">Manajemen Kontent</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('konten.view') }}">Kontent</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('konten.view') }}">Kontent</a></li>
         <li class="breadcrumb-item active">Update Data Konten</li>
     </ol>
     <div class="card mb-4">
@@ -32,7 +33,10 @@
 
                 <div class="mb-3">
                     <label>Isi Konten</label>
-                    <textarea wire:model="form.isi" class="form-control"></textarea>
+                    <textarea id="isi-berita" wire:model="form.isi" wire:ignore.self wire:key="isi-berita"
+                        class="form-control">
+                    </textarea>
+
                     @error('form.isi') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
 
@@ -160,3 +164,51 @@
         </div>
     </div>
 </div>
+@push('scripts')
+<script>
+    function initSummernote() {
+        $('#isi-berita').summernote({
+            height: 300,
+            placeholder: 'Tulis isi berita di sini...',
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+        });
+    }
+
+    document.addEventListener('livewire:load', () => {
+        initSummernote();
+
+        // Set isi dari Livewire ke Summernote (saat pertama kali)
+        const isiDariLivewire = @this.get('form.isi');
+        $('#isi-berita').summernote('code', isiDariLivewire);
+    });
+
+    // Hook sebelum form disubmit → ambil konten Summernote dan set ke Livewire
+    window.addEventListener('submit', function (e) {
+        const isiSummernote = $('#isi-berita').summernote('code');
+        @this.set('form.isi', isiSummernote);
+    });
+
+    Livewire.hook('message.processed', (message, component) => {
+        if (!$('#isi-berita').next('.note-editor').length) {
+            initSummernote();
+            const isi = @this.get('form.isi');
+            $('#isi-berita').summernote('code', isi);
+        }
+    });
+
+    document.addEventListener('livewire:navigated', () => {
+        initSummernote();
+        const isi = @this.get('form.isi');
+        $('#isi-berita').summernote('code', isi);
+    }),{once:true};
+</script>
+@endpush
+

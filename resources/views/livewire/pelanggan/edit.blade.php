@@ -43,10 +43,10 @@
                 <div class="mb-3">
                     <label class="form-label">Keterangan</label>
                     <div class="btn-group">
-                        <input type="radio" id="pribadi" value="pribadi" wire:model="form.tipe" class="btn-check">
+                        <input type="radio" id="pribadi" value="pribadi" wire:model="form.keterangan" class="btn-check">
                         <label for="pribadi" class="btn btn-outline-primary">pribadi</label>
 
-                        <input type="radio" id="perusahaan" value="perusahaan" wire:model="form.tipe" class="btn-check">
+                        <input type="radio" id="perusahaan" value="perusahaan" wire:model="form.keterangan" class="btn-check">
                         <label for="perusahaan" class="btn btn-outline-primary">Perusahaan</label>
                     </div>
                     {{-- --}}

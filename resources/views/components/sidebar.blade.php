@@ -8,7 +8,7 @@
             <a class="nav-link d-flex align-items-center collapsed" href="#" data-bs-toggle="collapse"
                 data-bs-target="#collapseAbsensi" aria-expanded="false" aria-controls="collapseLayouts"
                 wire:current.exact>
-                <i class="fa-solid fa-person-chalkboard px-3 py-2"></i>
+                <i class="fa-solid fa-person-chalkboard p-2"></i>
                 <span class="ml-2">Absensi</span>
                 <div class="sb-sidenav-collapse-arrow me-2"><i class="fas fa-angle-down"></i></div>
             </a>
@@ -49,7 +49,7 @@
             <a class="nav-link d-flex align-items-center collapsed" href="#" data-bs-toggle="collapse"
                 data-bs-target="#collapseTransaksi" aria-expanded="false" aria-controls="collapseLayouts"
                 wire:current.exact>
-                <i class="fas fa-receipt px-3 py-2"></i>
+                <i class="fas fa-receipt p-2"></i>
                 <span class="ml-2">Transaksi</span>
                 <div class="sb-sidenav-collapse-arrow me-2"><i class="fas fa-angle-down"></i></div>
             </a>

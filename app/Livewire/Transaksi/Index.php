@@ -94,7 +94,7 @@ class Index extends Component
     public function emitChartData()
     {
         $this->dispatch('chart-jumlah-transaksi-updated', chartData: $this->getJumlahTransaksiChartData());
-        $this->dispatch('chart-pendapatan-updated', chartData: $this->getPendapatanPerBulanChartData());
+        $this->dispatch('chart-pendapatan-updated', chartData: $this->getPendapatanPerMingguChartData());
     }
 
 
@@ -271,7 +271,91 @@ class Index extends Component
         ];
     }
 
+    public function getPendapatanPerMingguChartData()
+{
+    $mingguLabels = [];
+    $dataService = [];
+    $dataPenjualan = [];
+    $dataTotal = [];
 
+    // Tentukan bulan yang akan ditampilkan
+    if (!empty($this->filterBulan)) {
+        $tahun = now()->year;
+        $startOfMonth = Carbon::create($tahun, $this->filterBulan, 1)->startOfMonth();
+    } else {
+        $startOfMonth = now()->startOfMonth();
+    }
+    $endOfMonth = $startOfMonth->copy()->endOfMonth();
+
+    // Atur minggu pertama agar selalu dimulai dari Senin
+    $currentWeekStart = $startOfMonth->copy();
+    if ($currentWeekStart->dayOfWeek != Carbon::MONDAY) {
+        $currentWeekStart->previous(Carbon::MONDAY); // Kembali ke Senin sebelumnya
+    }
+
+    $weekNumber = 1;
+
+    while ($currentWeekStart <= $endOfMonth) {
+        $currentWeekEnd = $currentWeekStart->copy()->addDays(6); // Minggu = Senin-Minggu
+
+        // Buat label
+        $label = 'Minggu ' . $weekNumber . ' (' . $currentWeekStart->format('d M') . ' - ' .
+                $currentWeekEnd->format('d M') . ')';
+
+        // Hanya tambahkan ke data jika minggu ini beririsan dengan bulan yang dipilih
+        if ($currentWeekEnd >= $startOfMonth && $currentWeekStart <= $endOfMonth) {
+            $mingguLabels[] = $label;
+
+            // Tentukan rentang waktu yang valid dalam bulan
+            $effectiveStart = $currentWeekStart->lt($startOfMonth) ? $startOfMonth : $currentWeekStart;
+            $effectiveEnd = $currentWeekEnd->gt($endOfMonth) ? $endOfMonth : $currentWeekEnd;
+
+            // Query data
+            $service = Transaksi::whereBetween('created_at', [$effectiveStart, $effectiveEnd])
+                      ->where('jenis_transaksi', 'service')->sum('grand_total') ?? 0;
+            $penjualan = Transaksi::whereBetween('created_at', [$effectiveStart, $effectiveEnd])
+                        ->where('jenis_transaksi', 'penjualan')->sum('grand_total') ?? 0;
+
+            $dataService[] = $service;
+            $dataPenjualan[] = $penjualan;
+            $dataTotal[] = $service + $penjualan;
+        }
+
+        // Pindah ke minggu berikutnya (Senin depan)
+        $currentWeekStart = $currentWeekEnd->copy()->addDay();
+        $weekNumber++;
+    }
+
+    return [
+        'labels' => $mingguLabels,
+        'datasets' => [
+            [
+                'label' => 'Service',
+                'data' => $dataService,
+                'backgroundColor' => 'rgba(75, 192, 192, 0.6)',
+                'stack' => 'pendapatan'
+            ],
+            [
+                'label' => 'Penjualan',
+                'data' => $dataPenjualan,
+                'backgroundColor' => 'rgba(255, 205, 86, 0.6)',
+                'stack' => 'pendapatan'
+            ],
+            [
+                'label' => 'Total Pendapatan',
+                'data' => $dataTotal,
+                'type' => 'line',
+                'borderColor' => 'rgba(255, 99, 132, 1)',
+                'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
+                'borderWidth' => 2,
+                'tension' => 0.3,
+                'fill' => false,
+                'pointRadius' => 4,
+                'pointHoverRadius' => 6
+            ]
+        ],
+    ];
+}
 
     protected function hitungTotalPendapatan()
     {
@@ -340,7 +424,7 @@ class Index extends Component
                 'statPembayaran',
             ),
             [
-                'chartPendapatanBulanan' => $this->getPendapatanPerBulanChartData(),
+                'chartPendapatan' => $this->getPendapatanPerMingguChartData(),
                 'chartJumlahTransaksi' => $this->getJumlahTransaksiChartData(),
             ]
         ));

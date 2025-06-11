@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Pelanggan;
 
-use App\Livewire\Forms\PelanggannForm;
+use App\Livewire\Forms\PelangganForm;
 use App\Models\Pelanggan;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -10,8 +10,8 @@ use Livewire\Component;
 class Edit extends Component
 {
     public Pelanggan $pelanggan;
-    public PelanggannForm $form;
-    
+    public PelangganForm $form;
+
     public function mount($id)
     {
         $this->pelanggan = Pelanggan::findOrFail($id);

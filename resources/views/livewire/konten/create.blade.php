@@ -32,7 +32,9 @@
 
                 <div class="mb-3">
                     <label class="form-label">Isi Konten</label>
-                    <textarea class="form-control" wire:model.defer="form.isi"></textarea>
+                    <div wire:ignore>
+                        <textarea id="isi-berita" class="form-control text-editor" wire:model.defer="form.isi"></textarea>
+                    </div>
                     @error('form.isi') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
@@ -92,19 +94,12 @@
                 <div class="mb-3">
                     <label>Status</label>
                     <select class="form-select" wire:model='form.status'>
-                        <option value="" disabled selected hidden>-- Pilih Status --</option>
                         <option value="draft">Draft</option>
                         <option value="terbit">Terbit</option>
                         <option value="arsip">Arsip</option>
                     </select>
                     @error('form.status') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
-
-                {{-- <div class="mb-3">
-                    <label>Dibuat Oleh</label>
-                    <input type="text" class="form-control" wire:model.defer="form.penulis_id">
-                    @error('form.penulis_id') <span class="text-danger">{{ $message }}</span> @enderror
-                </div> --}}
 
                 <div class="row g-3">
                     <div class="col-8 col-md-3">
@@ -120,3 +115,42 @@
         </div>
     </div>
 </div>
+@push('scripts')
+<script>
+    function initSummernote() {
+        $('#isi-berita').summernote({
+            height: 300,
+            placeholder: 'Tulis isi berita di sini...',
+            callbacks: {
+                onChange: function(contents) {
+                    // Mengakses properti objek, bukan array
+                    @this.set('form.isi', contents);
+                }
+            },
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link']],
+                ['view', ['codeview', 'help']]
+            ]   ,
+        });
+    }
+
+    document.addEventListener('livewire:load', () => {
+        initSummernote();
+    });
+
+    Livewire.hook('message.processed', (message, component) => {
+        if (!$('#isi_berita').next('.note-editor').length) {
+            initSummernote();
+        }
+    });
+
+    document.addEventListener('livewire:navigated', () => {
+        initSummernote();
+    });
+</script>
+@endpush

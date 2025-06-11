@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\ServiceProvider;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -59,5 +60,8 @@ class AppServiceProvider extends ServiceProvider
             fn($user) =>
             in_array($user->role, ['superadmin', 'owner', 'admin', 'mekanik'])
         );
+        // if (app()->environment('production')) {
+        //     URL::forceScheme('https');
+        // }
     }
 }

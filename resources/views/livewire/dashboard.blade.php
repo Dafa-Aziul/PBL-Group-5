@@ -125,7 +125,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                         @else
                             {{-- Sudah Check In --}}
                             <div class="text-center">
-                                <a href="{{ route('absensi.read') }}" class="btn btn-lihat btn-sm">Lihat Rekap Absensi</a>
+                                <a href="{{ route('absensi.read') }}" class="btn btn-lihat btn-sm" wire:navigate>Lihat Rekap Absensi</a>
                             </div>
                         @endif
 
@@ -339,25 +339,149 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 <script>
     (function () {
         let pendapatanBulananChartInstance = null;
-        let absensiChartInstance = null; // Changed to lowercase for consistency
+        let absensiChartInstance = null;
+        let chartPendapatanHandler = null;
+        let chartAbsensiHandler = null;
         let chartInitialized = false;
-        let livewireListenersAttached = false;
 
         function safeDestroyChart(instance) {
             if (instance) {
                 try {
                     instance.destroy();
                 } catch (e) {
-                    console.warn('Failed to destroy chart:', e);
+                    console.warn('Gagal menghancurkan chart:', e);
                 }
             }
             return null;
         }
 
+        function renderPendapatanBulananChart(chartData) {
+            const ctx = document.getElementById('chartPendapatanBulanan');
+            if (!ctx) {
+                console.warn('Canvas chartPendapatanBulanan tidak ditemukan');
+                return;
+            }
+
+            // Normalize data if nested
+            chartData = chartData?.chartData || chartData;
+
+            if (!chartData?.labels || !chartData?.datasets?.length) {
+                console.warn('Data chart pendapatan tidak valid');
+                return;
+            }
+
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                existingChart.data.labels = chartData.labels;
+
+                // Update existing datasets
+                chartData.datasets.forEach((newDataset, i) => {
+                    if (existingChart.data.datasets[i]) {
+                        Object.assign(existingChart.data.datasets[i], {
+                            label: newDataset.label,
+                            data: newDataset.data,
+                            type: newDataset.type || 'bar',
+                            stack: newDataset.type === 'line' ? undefined : (newDataset.stack || 'pendapatan'),
+                            backgroundColor: newDataset.backgroundColor || existingChart.data.datasets[i].backgroundColor,
+                            borderColor: newDataset.borderColor || existingChart.data.datasets[i].borderColor
+                        });
+                    } else {
+                        existingChart.data.datasets.push(newDataset);
+                    }
+                });
+
+                // Remove extra datasets
+                while (existingChart.data.datasets.length > chartData.datasets.length) {
+                    existingChart.data.datasets.pop();
+                }
+
+                existingChart.update();
+                pendapatanBulananChartInstance = existingChart;
+                return;
+            }
+
+            // Prepare datasets with default values
+            const preparedDatasets = chartData.datasets.map(ds => ({
+                ...ds,
+                backgroundColor: ds.backgroundColor || 'rgba(54, 162, 235, 0.6)',
+                borderColor: ds.borderColor || 'rgba(128, 128, 128, 0.5)',
+                borderWidth: ds.borderWidth ?? 1,
+                fill: ds.fill ?? false,
+                type: ds.type || 'bar',
+                stack: ds.type === 'line' ? undefined : (ds.stack || 'pendapatan'),
+                tension: ds.tension ?? (ds.type === 'line' ? 0.3 : 0),
+                pointRadius: ds.pointRadius ?? (ds.type === 'line' ? 4 : 3),
+                pointHoverRadius: ds.pointHoverRadius ?? (ds.type === 'line' ? 6 : 5)
+            }));
+
+            pendapatanBulananChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: preparedDatasets
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const value = context.parsed.y ?? 0;
+                                    const label = context.dataset.label;
+
+                                    if (context.dataset.type === 'line') {
+                                        return `${label}: Rp ${value.toLocaleString()}`;
+                                    }
+
+                                    const total = context.chart.data.datasets
+                                        .filter(ds => ds.type !== 'line')
+                                        .reduce((sum, ds) => sum + (ds.data[context.dataIndex] || 0), 0);
+
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return `${label}: Rp ${value.toLocaleString()} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: preparedDatasets.some(ds => ds.stack),
+                            title: {
+                                display: true,
+                                text: 'Bulan'
+                            }
+                        },
+                        y: {
+                            stacked: preparedDatasets.some(ds => ds.stack),
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Pendapatan (Rp)'
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    return 'Rp ' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         function renderAbsensiChart(chartData) {
             const ctx = document.getElementById('absensiChart');
             if (!ctx) {
-                console.log('absensiChart canvas not found');
+                console.log('absensiChart canvas tidak ditemukan');
                 return;
             }
 
@@ -365,7 +489,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
             chartData = chartData?.chartData || chartData;
 
             if (!chartData || !Array.isArray(chartData)) {
-                console.warn('Invalid absensi chart data');
+                console.warn('Data chart absensi tidak valid');
                 return;
             }
 
@@ -389,231 +513,119 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                 tension: 0.1
             }));
 
-            if (absensiChartInstance) {
-                absensiChartInstance.data.labels = statusLabels;
-                absensiChartInstance.data.datasets = datasets;
-                absensiChartInstance.update();
-            } else {
-                absensiChartInstance = new Chart(ctx, {
-                    type: 'line',
-                    data: { labels: statusLabels, datasets: datasets },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Rekapitulasi Absensi Karyawan',
-                                font: { size: 16 }
-                            },
-                            legend: {
-                                position: 'bottom',
-                                labels: { boxWidth: 12, padding: 20 }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `${context.dataset.label}: ${context.raw} hari`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: { display: true, text: 'Jumlah Hari' },
-                                ticks: { stepSize: 1, precision: 0 }
-                            },
-                            x: {
-                                title: { display: true, text: 'Status Absensi' }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        function renderPendapatanBulananChart(chartData)
-        {
-            const ctx = document.getElementById('chartPendapatanBulanan');
-            if (!ctx) {
-                console.warn('Canvas chartPendapatanBulanan tidak ditemukan');
-                return;
-            }
-
-            // Normalisasi data jika nested
-            if (chartData && chartData.chartData) {
-                chartData = chartData.chartData;
-            }
-
-            // Persiapkan datasets dengan default values
-            const preparedDatasets = chartData.datasets.map(ds => ({
-                ...ds,
-                backgroundColor: ds.backgroundColor || 'rgba(54, 162, 235, 0.6)',
-                borderColor: ds.borderColor || 'rgba(128, 128, 128, 0.5)',
-                borderWidth: ds.borderWidth ?? 1,
-                fill: ds.fill ?? false,
-                type: ds.type || 'bar',
-                stack: ds.type === 'line' ? undefined : (ds.stack || 'pendapatan'),
-                tension: ds.tension ?? (ds.type === 'line' ? 0.3 : 0),
-                pointRadius: ds.pointRadius ?? (ds.type === 'line' ? 4 : 3),
-                pointHoverRadius: ds.pointHoverRadius ?? (ds.type === 'line' ? 6 : 5)
-            }));
-
             const existingChart = Chart.getChart(ctx);
 
             if (existingChart) {
-                // Update yang lebih aman dengan mempertahankan referensi asli
-                existingChart.data.labels = chartData.labels;
+                existingChart.data.labels = statusLabels;
 
-                // Update datasets dengan mempertahankan objek asli jika mungkin
-                chartData.datasets.forEach((newDataset, i) => {
+                // Update or add datasets
+                datasets.forEach((newDataset, i) => {
                     if (existingChart.data.datasets[i]) {
-                        // Update properti yang ada
+                        // Update existing dataset
                         Object.assign(existingChart.data.datasets[i], {
                             label: newDataset.label,
-                            data: newDataset.data,
-                            type: newDataset.type || 'bar',
-                            stack: newDataset.type === 'line' ? undefined : (newDataset.stack || 'pendapatan'),
-                            backgroundColor: newDataset.backgroundColor || existingChart.data.datasets[i].backgroundColor,
-                            borderColor: newDataset.borderColor || existingChart.data.datasets[i].borderColor
+                            data: newDataset.data
                         });
                     } else {
-                        // Tambahkan dataset baru jika diperlukan
-                        existingChart.data.datasets.push(preparedDatasets[i]);
+                        // Add new dataset
+                        existingChart.data.datasets.push(newDataset);
                     }
                 });
 
-                // Hapus dataset yang tidak diperlukan
-                if (existingChart.data.datasets.length > chartData.datasets.length) {
-                    existingChart.data.datasets.splice(chartData.datasets.length);
+                // Remove extra datasets if any
+                if (existingChart.data.datasets.length > datasets.length) {
+                    existingChart.data.datasets.splice(datasets.length);
                 }
-
-                // Update options stacking
-                existingChart.options.scales.x.stacked = preparedDatasets.some(ds => ds.stack);
-                existingChart.options.scales.y.stacked = preparedDatasets.some(ds => ds.stack);
 
                 existingChart.update();
-            } else {
-                // Buat chart baru jika belum ada
-                if (typeof pendapatanBulananChartInstance !== 'undefined' && pendapatanBulananChartInstance) {
-                    pendapatanBulananChartInstance.destroy();
-                }
+                absensiChartInstance = existingChart;
+                return;
+            }
 
-                pendapatanBulananChartInstance = new Chart(ctx, {
-                    type: 'bar', // tipe dasar chart
-                    data: {
-                        labels: chartData.labels,
-                        datasets: preparedDatasets
-                    },
-                    options: {
-                        responsive: true, // Ubah ke true untuk better UX
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    boxWidth: 12,
-                                    padding: 20,
-                                    usePointStyle: true
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: function (context) {
-                                        const value = context.parsed.y ?? 0;
-                                        const label = context.dataset.label;
-
-                                        if (context.dataset.type === 'line') {
-                                            return `${label}: Rp ${value.toLocaleString()}`;
-                                        }
-
-                                        const total = context.chart.data.datasets
-                                            .filter(ds => ds.type !== 'line')
-                                            .reduce((sum, ds) => sum + (ds.data[context.dataIndex] || 0), 0);
-
-                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                                        return `${label}: Rp ${value.toLocaleString()} (${percentage}%)`;
-                                    }
-                                }
-                            }
+            absensiChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: { labels: statusLabels, datasets: datasets },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Rekapitulasi Absensi Karyawan',
+                            font: { size: 16 }
                         },
-                        scales: {
-                            x: {
-                                stacked: preparedDatasets.some(ds => ds.stack),
-                                title: {
-                                    display: true,
-                                    text: 'Bulan'
-                                }
-                            },
-                            y: {
-                                stacked: preparedDatasets.some(ds => ds.stack),
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Pendapatan (Rp)'
-                                },
-                                ticks: {
-                                    callback: function (value) {
-                                        return 'Rp ' + value.toLocaleString();
-                                    }
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 12, padding: 20 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw} hari`;
                                 }
                             }
                         }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Jumlah Hari' },
+                            ticks: { stepSize: 1, precision: 0 }
+                        },
+                        x: {
+                            title: { display: true, text: 'Status Absensi' }
+                        }
                     }
-                });
-            }
+                }
+            });
         }
 
-        function attachLivewireListeners() {
-            if (livewireListenersAttached || !window.Livewire) return;
-
-            Livewire.on('chart-pendapatan-updated', (event) => {
-                renderPendapatanBulananChart(event?.chartData ?? event);
-            });
-
-            Livewire.on('chart-absensi-updated', (event) => {
-                renderAbsensiChart(event?.chartData ?? event);
-            });
-
-            livewireListenersAttached = true;
-        }
-
-        function initializeChart() {
+        function initialize() {
             if (chartInitialized) return;
 
-            attachLivewireListeners(); // Fixed typo from attachLivewireListeners()
+            // Setup Livewire listeners
+            chartPendapatanHandler = (event) => {
+                renderPendapatanBulananChart(event?.chartData ?? event);
+            };
+            chartAbsensiHandler = (event) => {
+                renderAbsensiChart(event?.chartData ?? event);
+            };
 
-            // Initialize both charts if their elements exist
+            if (window.Livewire) {
+                Livewire.on('chart-pendapatan-updated', chartPendapatanHandler);
+                Livewire.on('chart-absensi-updated', chartAbsensiHandler);
+            }
+
+            // Initial render
             const pendapatanData = @json($chartPendapatanBulanan ?? null);
-            const absensiData = @json($chartStatusAbsensi ?? null);
-
-            if (document.getElementById('chartPendapatanBulanan') && pendapatanData) {
+            if (pendapatanData) {
                 renderPendapatanBulananChart(pendapatanData);
             }
 
-            if (document.getElementById('absensiChart') && absensiData) {
+            const absensiData = @json($chartStatusAbsensi ?? null);
+            if (absensiData) {
                 renderAbsensiChart(absensiData);
             }
 
             chartInitialized = true;
         }
 
-        // Event listeners
-        document.addEventListener('livewire:navigated', () => {
-            chartInitialized = false;
-            livewireListenersAttached = false;
-            setTimeout(initializeChart, 100);
-        }, { once: true });
-
+        // First load
         if (document.readyState === 'complete') {
-            initializeChart();
+            initialize();
         } else {
-            document.addEventListener('DOMContentLoaded', initializeChart);
+            document.addEventListener('DOMContentLoaded', initialize);
         }
 
+        // Livewire navigation
+        document.addEventListener('livewire:navigated', () => {
+            chartInitialized = false;
+            setTimeout(initialize, 300);
+        }),{ once : true };
+
+        // Cleanup
         document.addEventListener('livewire:before-unload', () => {
             pendapatanBulananChartInstance = safeDestroyChart(pendapatanBulananChartInstance);
             absensiChartInstance = safeDestroyChart(absensiChartInstance);
-            livewireListenersAttached = false;
         });
     })();
 </script>

@@ -70,7 +70,7 @@
                             <td class="text-center">{{ ($kontens->firstItem() +$loop->iteration) - 1 }}</td>
                             <td>{{ $konten->judul }}</td>
                             <td>{{ $konten->kategori }}</td>
-                            <td>{{ $konten->isi }}</td>
+                            <td>{!! $konten->isi !!}</td>
                             <td>{{ $konten->penulis->nama}}</td>
                             <td class="text-center">
                                 @php
@@ -91,17 +91,17 @@
 
                             <td class="text-center">
                                 <a href="{{ route('konten.edit', ['id' => $konten->id]) }}"
-                                    class="btn btn-warning mb-3 mb-md-0" wire:navigate>
+                                    class="btn btn-warning mb-3 mb-md-2" wire:navigate>
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="d-none d-md-inline ms-1">Edit</span>
                                 </a>
-                                <button class="btn btn-danger mb-3 mb-md-0" data-bs-toggle="modal"
-                                    data-bs-target="#confirm">
+                                <button class="btn btn-danger mb-3 mb-md-2" data-bs-toggle="modal"
+                                    data-bs-target="#confirm-{{ $konten->id }}">
                                     <i class="fas fa-trash-can"></i>
                                     <span class="d-none d-md-inline ms-1">Delete</span>
                                 </button>
 
-                                <x-modal.confirm id="confirm" action="modal" target="delete({{ $konten->id }})"
+                                <x-modal.confirm id="confirm-{{ $konten->id }}" action="" target="delete({{ $konten->id }})"
                                     content="Apakah anda yakin untuk menghapus data ini?" />
                             </td>
                         </tr>

@@ -18,9 +18,9 @@
         }
 
         function renderPendapatanBulananChart(chartData) {
-            const ctx = document.getElementById('chartPendapatanBulanan');
+            const ctx = document.getElementById('chartPendapatan');
             if (!ctx) {
-                console.warn('Canvas chartPendapatanBulanan tidak ditemukan');
+                console.warn('Canvas chartPendapatan tidak ditemukan');
                 return;
             }
 
@@ -249,16 +249,16 @@
 
             attachLivewireListeners();
 
-            const pendapatanCanvas = document.getElementById('chartPendapatanBulanan');
+            const pendapatanCanvas = document.getElementById('chartPendapatan');
             const transaksiCanvas = document.getElementById('chartJumlahTransaksi');
 
-            const pendapatanChartData = @json($chartPendapatanBulanan ?? null);
+            const pendapatanChartData = @json($chartPendapatan ?? null);
             const transaksiChartData = @json($chartJumlahTransaksi ?? null);
 
             if (pendapatanCanvas && pendapatanChartData) {
                 renderPendapatanBulananChart(pendapatanChartData);
             } else if (!pendapatanCanvas) {
-                console.log('Canvas chartPendapatanBulanan tidak ditemukan.');
+                console.log('Canvas chartPendapatan tidak ditemukan.');
             } else {
                 console.warn('Data chart pendapatan bulanan kosong atau null.');
             }
@@ -280,7 +280,7 @@
             livewireListenersAttached = false;
 
             setTimeout(() => {
-                if (document.getElementById('chartPendapatanBulanan')) {
+                if (document.getElementById('chartPendapatan')) {
                     initializeChart();
                 }
             }, 100);
@@ -390,7 +390,7 @@
                     </h5>
                     <hr class="border border-2 opacity-50">
                     <div class="d-flex justify-content-center p-md-5 align-items-center">
-                        <canvas id="chartPendapatanBulanan" wire:ignore></canvas>
+                        <canvas id="chartPendapatan" wire:ignore></canvas>
                     </div>
                 </div>
             </div>

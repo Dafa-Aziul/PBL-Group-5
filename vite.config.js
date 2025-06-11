@@ -10,7 +10,7 @@ export default defineConfig({
                     'resources/sass/app.scss',
                     'resources/css/styles.css',
                     'resources/js/app.js',
-                    'resources/css/app.css'
+                    'resources/js/fas-all.js'
                 ],
             refresh: true,
             resolve: {
@@ -22,4 +22,16 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    chart: ['resources/js/chart.js'],
+                    select2: ['resources/js/select2.js'],
+                    summernote: ['resources/js/summernote.js'],
+                    bootstrap: ['resources/js/bootstrap.js'],
+                }
+            }
+        }
+    }
 });

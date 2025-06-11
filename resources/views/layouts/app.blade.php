@@ -10,10 +10,15 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/kopcv.jpg') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
-    @vite(['resources/sass/app.scss'])
-    @vite('resources/css/styles.css')
+    @vite([
+        'resources/sass/app.scss',
+        'resources/css/styles.css',
+        'resources/js/fas-all.js',
+        'resources/js/app.js'
+    ])
+
     {{-- Font Awesome --}}
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    {{-- <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script> --}}
 
     {{-- @vite(['resources/js/app.js', 'resources/css/app.css']) --}}
     @livewireStyles
@@ -36,6 +41,6 @@
     </div>
     @livewireScripts
     @stack('scripts')
-    @vite('resources/js/app.js')
 </body>
+
 </html>
