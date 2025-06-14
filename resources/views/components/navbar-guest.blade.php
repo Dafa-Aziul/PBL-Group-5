@@ -11,24 +11,18 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="#" class="nav-item nav-link active">Beranda</a>
-                <a href="#" class="nav-item nav-link">Tentang Kami</a>
-                <a href="#" class="nav-item nav-link">Layanan</a>
-                <a href="#" class="nav-item nav-link">Artikel</a>
-                <div class="nav-item dropdown">
-                    <a href="#" class="nav-link" data-bs-toggle="dropdown">
-                        <span class="dropdown-toggle">Halaman</span>
-                    </a>
-                    <div class="dropdown-menu m-0">
-                        <a href="#" class="dropdown-item">Fasilitas Kami</a>
-                        <a href="#" class="dropdown-item">Tim Kami</a>
-                        <a href="#" class="dropdown-item">Testimonial</a>
-                        <a href="#" class="dropdown-item">Penawaran</a>
-                        <a href="#" class="dropdown-item">FAQ</a>
-                        <a href="#" class="dropdown-item">Lacak Service</a>
-                    </div>
-                </div>
-                <a href="#" class="nav-item nav-link">Hubungi Kami</a>
+                <a href="{{ route('home') }}" class="nav-item nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
+                    wire:navigate>Beranda</a>
+                <a href="{{ route('layanan') }}"
+                    class="nav-item nav-link {{ request()->routeIs('layanan') ? 'active' : '' }}"
+                    wire:navigate>Layanan</a>
+                <a href="{{ route('lacakService') }}"
+                    class="nav-item nav-link {{ request()->routeIs('lacakService') ? 'active' : '' }}"
+                    wire:navigate>Lacak Service</a>
+
+                <a href="{{ route('about') }}"
+                    class="nav-item nav-link {{ request()->routeIs('about') ? 'active' : '' }}" wire:navigate>Tentang
+                    Kami</a>
             </div>
             @if (Route::has('login'))
             @auth
@@ -88,8 +82,8 @@
                                 </p>
                                 <!--
         <div class="d-flex justify-content-center flex-shrink-0 mb-4">
-          <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2" href="#"><i class="fas fa-play-circle me-2"></i> Proses Kerja</a>
-          <a class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2" href="#">Booking Sekarang</a>
+            <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2" href="#"><i class="fas fa-play-circle me-2"></i> Proses Kerja</a>
+            <a class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2" href="#">Booking Sekarang</a>
         </div>
         -->
                             </div>

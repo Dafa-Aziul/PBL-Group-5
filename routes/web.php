@@ -9,7 +9,6 @@ use \App\Livewire\Absensi\Show as AbsensiShow;
 use \App\Livewire\User\Create as UserCreate;
 use App\Http\Controllers\auth\VerifyEmailController;
 use App\Http\Controllers\InvoiceController;
-use App\Livewire\About;
 use App\Livewire\Action\Logout;
 
 // user
@@ -22,7 +21,14 @@ use App\Livewire\Auth\ResetPassword;
 // jenis kendaraan
 use App\Livewire\Auth\VerifyEmail;
 use App\Livewire\Dashboard;
+
+//frontend
 use App\Livewire\FrontEnd\Home;
+use App\Livewire\FrontEnd\Layanan;
+use App\Livewire\FrontEnd\About;
+use App\Livewire\FrontEnd\Lacak;
+
+
 // jasa
 use App\Livewire\Gudang\Create as GudangCreate;
 use App\Livewire\Jasa\Create as JasaCreate;
@@ -88,15 +94,10 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
-
-
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-Route::get('/', Home::class);
+Route::get('/', Home::class)->name('home');
+Route::get('/layanan', Layanan::class)->name('layanan');
+Route::get('/tentang-kami', About::class)->name('about');
+Route::get('/lacak-service', Lacak::class)->name('lacakService');
 
 Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 
