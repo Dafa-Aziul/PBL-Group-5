@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('estimasi');
             $table->decimal('harga', 10, 2);
             $table->string('keterangan');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

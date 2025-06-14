@@ -30,6 +30,6 @@ class ServiceJasa extends Model
     // Relasi ke jasa
     public function jasa()
     {
-        return $this->belongsTo(Jasa::class);
-    } 
+        return $this->belongsTo(Jasa::class)->withTrashed();
+    }
 }

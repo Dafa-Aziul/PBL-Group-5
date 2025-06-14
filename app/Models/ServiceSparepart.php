@@ -32,6 +32,6 @@ class ServiceSparepart extends Model
     // Relasi ke sparepart
     public function sparepart()
     {
-        return $this->belongsTo(Sparepart::class);
+        return $this->belongsTo(Sparepart::class)->withTrashed();
     }
 }

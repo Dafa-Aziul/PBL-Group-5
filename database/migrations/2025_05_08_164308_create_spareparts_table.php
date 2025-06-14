@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('tipe_kendaraan');
             $table->string('foto')->nullable();
             $table->string('ket');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
