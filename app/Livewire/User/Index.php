@@ -39,8 +39,26 @@ class Index extends Component
         if (!$this->checkAttemptsLimit()) return;
         if (!$this->verifyPassword()) return;
 
+        // Tidak boleh menghapus akun sendiri
+        if (Auth::id() == $id) {
+            $this->flashMessage('Anda tidak dapat menghapus akun Anda sendiri.', 'error');
+            $this->resetDeleteState();
+            $this->dispatch('closeConfirmPasswordModal', $id);
+            return; // <-- WAJIB return agar proses berhenti
+        }
+
+        // Tidak boleh menghapus akun owner
+        $user = User::find($id);
+        if ($user && $user->role === 'owner') {
+            $this->flashMessage('Anda tidak dapat menghapus akun dengan role owner.', 'error');
+            $this->resetDeleteState();
+            $this->dispatch('closeConfirmPasswordModal', $id);
+            return; // <-- WAJIB return agar proses berhenti
+        }
+
         $this->performDelete($id);
     }
+
 
     // Validasi password tidak boleh kosong
     private function validatePasswordNotEmpty(): bool
