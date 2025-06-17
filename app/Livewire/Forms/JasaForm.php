@@ -20,7 +20,7 @@ class JasaForm extends Form
     public string $estimasi = '';
 
     #[Validate('required|numeric|min:0')]
-    public float $harga;
+    public ?float $harga = 0.0;
 
     #[Validate('required|string|max:255')]
     public string $keterangan = '';
@@ -31,7 +31,7 @@ class JasaForm extends Form
         $this->kode = $jasa->kode;
         $this->nama_jasa = $jasa->nama_jasa;
         $this->estimasi = $jasa->estimasi;
-        $this->harga = $jasa->harga;
+        $this->harga = (float) ($jasa->harga ?? 0);
         $this->keterangan = $jasa->keterangan;
     }
 

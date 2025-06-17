@@ -77,13 +77,13 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                             <span class="d-none d-md-inline ms-1">Check In</span>
                         </a>
                 </div>
-                @else
-                <div class="text-center">
-                    <div class="alert alert-warning text-center mt-3">
-                        Anda sudah melewati jam pulang status anda alpha.
+                    @else
+                    <div class="text-center">
+                        <div class="alert alert-warning text-center mt-3">
+                            Anda sudah melewati jam pulang status anda alpha.
+                        </div>
                     </div>
-                </div>
-                @endif
+                    @endif
                 @endif
 
 

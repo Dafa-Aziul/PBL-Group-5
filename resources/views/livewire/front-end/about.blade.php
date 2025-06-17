@@ -202,9 +202,9 @@
                     <div class="swiper-slide">
                         <div class="team-item text-center">
                             <div class="team-img">
-                                <img src="{{ $karyawan->user && $karyawan->user->profile_photo
-                                ? asset('storage/images/profile/' . $karyawan->user->profile_photo)
-                                : asset('storage/images/profile/default-avatar.png') }}" class="img-fluid" alt="{{ $karyawan->nama }}">
+                                <img src="{{ $karyawan->foto
+                                ? asset('storage/images/karyawan/' . $karyawan->foto)
+                                : asset('images/asset/default-avatar.png') }}" class="img-fluid" alt="{{ $karyawan->nama }}">
                             </div>
                             <div class="team-title mt-3">
                                 <h4 class="mb-0">{{ $karyawan->nama }}</h4>

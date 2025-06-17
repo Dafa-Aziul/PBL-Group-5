@@ -55,36 +55,7 @@ class Create extends Component
 
         if (!$karyawanId) return;
 
-        //  Jika sudah jam 18.00 dan belum absen → ALPHA
-        if (now()->hour >= 18) {
-            $sudahAbsen = Absensi::where('karyawan_id', $karyawanId)
-                ->whereDate('tanggal', $today)
-                ->exists();
-
-            if (!$sudahAbsen) {
-                Absensi::create([
-                    'karyawan_id' => $karyawanId,
-                    'tanggal' => $today,
-                    'status' => 'alpha',
-                    'keterangan' => 'Tidak melakukan absen masuk',
-                ]);
-            }
-        }
-
-        //  Jika sudah check-in tapi belum check-out → buatkan otomatis
-        $absenMasuk = Absensi::where('karyawan_id', $karyawanId)
-            ->whereDate('tanggal', $today)
-            ->whereNotNull('jam_masuk')
-            ->whereNull('jam_keluar')
-            ->first();
-
-        if ($absenMasuk && now()->hour >= 18) {
-            $absenMasuk->update([
-                'jam_keluar' => now()->format('H:i'),
-                'status' => 'hadir',
-                'keterangan' => 'Otomatis checkout karena tidak melakukan absen pulang',
-            ]);
-        }
+        
     }
 
 
@@ -98,16 +69,16 @@ class Create extends Component
         }
 
         if ($this->type === 'check-out') {
-            $batasKeluar = now()->setTime(17, 0);
+            $batasKeluar = now()->setTime(17,0);
 
             // Ambil absensi hari ini
             $absensiHariIni = Absensi::where('karyawan_id', $this->karyawan_id)
                 ->whereDate('tanggal', $now->toDateString())
                 ->first();
 
-            if ($now->greaterThanOrEqualTo($batasKeluar)) {
-                return 'lembur';
-            }
+            // if ($now->greaterThanOrEqualTo($batasKeluar)) {
+            //     return 'lembur';
+            // }
 
             return $absensiHariIni && $absensiHariIni->status === 'terlambat' ? 'terlambat' : 'hadir';
         }
@@ -211,17 +182,18 @@ class Create extends Component
             // Validasi sudah dilakukan sebelumnya: absensiHariIni tersedia dan belum jam_keluar
 
             $statusCheckIn = $absensiHariIni->status;
-            $statusCheckOut = $this->getStatusByTime(); // status berdasarkan jam keluar
+            //$statusCheckOut = $this->getStatusByTime(); // status berdasarkan jam keluar
 
             // Default: status tetap seperti check-in
             $finalStatus = $statusCheckIn;
 
             // Jika check-in tidak terlambat tapi pulang lembur, maka ubah jadi 'lembur'
-            if ($statusCheckIn === 'hadir' && $statusCheckOut === 'lembur') {
-                $finalStatus = 'lembur';
-            } elseif ($statusCheckIn === 'terlambat' && $statusCheckOut === 'lembur') {
+            // if ($statusCheckIn === 'hadir' && $statusCheckOut === 'lembur') {
+            //     $finalStatus = 'lembur';
+            // }
+            if ($statusCheckIn === 'terlambat') {
                 $finalStatus = 'terlambat';
-                $keterangan = 'Karyawan lembur saat pulang pukul ' . now()->format('H:i');
+                // $keterangan = 'Karyawan lembur saat pulang pukul ' . now()->format('H:i');
             }
 
             // Siapkan data yang akan di-update

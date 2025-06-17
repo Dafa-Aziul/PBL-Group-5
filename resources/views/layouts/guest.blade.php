@@ -20,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link rel="stylesheet" href="{{ asset('lib/animate/animate.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('lib/animate/animate.min.css') }}" />
     <link href="{{ asset('lib/lightbox/css/lightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
 
@@ -117,16 +117,19 @@
 
     <!-- Topbar Start -->
     {{-- <div class="container-fluid topbar bg-light px-5 d-none d-lg-block">
-            <div class="row gx-0 align-items-center">
-                <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0">
-                    <div class="d-flex flex-wrap">
-                        <a href="#" class="text-muted small me-4"><i class="fas fa-map-marker-alt text-primary me-2"></i>Jl. Rambutan, No.8, RT01/RW06 Koto Tangah, Padang</a>
-                        <a href="tel:+02112345678" class="text-muted small me-4"><i class="fas fa-phone-alt text-primary me-2"></i>0813-6334-8020 / 0811-6608-020 </a>
-                        <a href="mailto:cv.razkapratama@gmail.com" class="text-muted small me-0"><i class="fas fa-envelope text-primary me-2"></i>cv.razkapratama@gmail.com</a>
-                    </div>
+        <div class="row gx-0 align-items-center">
+            <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0">
+                <div class="d-flex flex-wrap">
+                    <a href="#" class="text-muted small me-4"><i class="fas fa-map-marker-alt text-primary me-2"></i>Jl.
+                        Rambutan, No.8, RT01/RW06 Koto Tangah, Padang</a>
+                    <a href="tel:+02112345678" class="text-muted small me-4"><i
+                            class="fas fa-phone-alt text-primary me-2"></i>0813-6334-8020 / 0811-6608-020 </a>
+                    <a href="mailto:cv.razkapratama@gmail.com" class="text-muted small me-0"><i
+                            class="fas fa-envelope text-primary me-2"></i>cv.razkapratama@gmail.com</a>
                 </div>
             </div>
-        </div> --}}
+        </div>
+    </div> --}}
     <!-- Topbar End -->
 
     <!-- Navbar & Hero Start -->
@@ -205,46 +208,67 @@
     <!-- Footer End -->
 
     <!-- Copyright Start -->
-    <x-copyright-guest></x-copyright>
-    {{-- <div class="container-fluid copyright py-4">
-        <div class="container">
-            <div class="row g-4 align-items-center">
-                <div class="col-md-6 text-center text-md-start mb-md-0">
-                    <span class="text-body text-white">© 2025 <a href="#" class="text-white border-bottom">CV. Razka
-                            Pratama</a>. All rights reserved.</span>
-                </div>
-                <div class="col-md-6 text-center text-md-end text-white">
-                    Designed by <a class="text-white border-bottom" href="https://htmlcodex.com">HTML Codex</a>,
-                    modified by <strong>CV. Razka Pratama</strong>
+    <x-copyright-guest>
+        </x-copyright>
+        {{-- <div class="container-fluid copyright py-4">
+            <div class="container">
+                <div class="row g-4 align-items-center">
+                    <div class="col-md-6 text-center text-md-start mb-md-0">
+                        <span class="text-body text-white">© 2025 <a href="#" class="text-white border-bottom">CV. Razka
+                                Pratama</a>. All rights reserved.</span>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end text-white">
+                        Designed by <a class="text-white border-bottom" href="https://htmlcodex.com">HTML Codex</a>,
+                        modified by <strong>CV. Razka Pratama</strong>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div> --}}
-    <!-- Copyright End -->
+        </div> --}}
+        <!-- Copyright End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-primary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    {{-- <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/counterup/counterup.min.js"></script>
-    <script src="lib/lightbox/js/lightbox.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script> --}}
-    <script src="{{ asset('lib/wow/wow.min.js') }}"></script>
-    <script src="{{ asset('lib/easing/easing.min.js') }}"></script>
-    <script src="{{ asset('lib/waypoints/waypoints.min.js') }}"></script>
-    <script src="{{ asset('lib/counterup/counterup.min.js') }}"></script>
-    <script src="{{ asset('lib/lightbox/js/lightbox.min.js') }}"></script>
-    <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary btn-lg-square rounded-circle back-to-top"><i class="fa fa-arrow-up"></i></a>
 
 
-    <!-- Template Javascript -->
-    <script src="{{ asset('js/main.js') }}"></script>
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        {{-- <script src="lib/wow/wow.min.js"></script>
+        <script src="lib/easing/easing.min.js"></script>
+        <script src="lib/waypoints/waypoints.min.js"></script>
+        <script src="lib/counterup/counterup.min.js"></script>
+        <script src="lib/lightbox/js/lightbox.min.js"></script>
+        <script src="lib/owlcarousel/owl.carousel.min.js"></script> --}}
+        <script src="{{ asset('lib/wow/wow.min.js') }}"></script>
+        <script src="{{ asset('lib/easing/easing.min.js') }}"></script>
+        <script src="{{ asset('lib/waypoints/waypoints.min.js') }}"></script>
+        <script src="{{ asset('lib/counterup/counterup.min.js') }}"></script>
+        <script src="{{ asset('lib/lightbox/js/lightbox.min.js') }}"></script>
+        <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
+
+
+        <!-- Template Javascript -->
+        <script src="{{ asset('js/main.js') }}"></script>
+
+        <script>
+            $(document).ready(function(){
+            $(".blog-carousel").owlCarousel({
+                loop: true,
+                margin: 30,
+                nav: true,
+                dots: true,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                responsive: {
+                    0: { items: 1 },
+                    768: { items: 2 },
+                    992: { items: 3 }
+                }
+            });
+        });
+
+        new WOW().init();
+        </script>
 </body>
 
 </html>

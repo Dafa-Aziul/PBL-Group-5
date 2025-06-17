@@ -339,14 +339,16 @@
 
                         {{-- Label kategori --}}
                         <div class="blog-title position-absolute top-0 start-0 m-3">
-                            <span class="btn btn-primary text-white px-3">
+                            <span class="btn btn-primary text-white px-3" href="{{ route('berita', $konten->id) }}"
+                                wire:navigate>
                                 {{ ucfirst($konten->kategori) }}
                             </span>
                         </div>
                     </div>
 
                     {{-- Judul konten --}}
-                    <a href="#" class="h5 d-inline-block mb-2 text-dark text-decoration-none">
+                    <a href="{{ route('berita', $konten->id) }}"
+                        class="h5 d-inline-block mb-2 text-dark text-decoration-none">
                         {{ $konten->judul }}
                     </a>
 
@@ -373,11 +375,11 @@
                 </div>
                 @endforeach
             </div>
-
-
         </div>
     </div>
     <!-- Blog End -->
+
+
 
 
 

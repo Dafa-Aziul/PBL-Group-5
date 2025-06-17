@@ -1,7 +1,8 @@
 <div>
     <h2 class="mt-4">Manajemen Kontent</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none" href="{{ route('konten.view') }}">Kontent</a></li>
+        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('konten.view') }}">Kontent</a></li>
         <li class="breadcrumb-item active">Tambah Konten</li>
     </ol>
     <div class="card mb-4">
@@ -33,7 +34,8 @@
                 <div class="mb-3">
                     <label class="form-label">Isi Konten</label>
                     <div wire:ignore>
-                        <textarea id="isi-berita" class="form-control text-editor" wire:model.defer="form.isi"></textarea>
+                        <textarea id="isi-berita" class="form-control text-editor"
+                            wire:model.defer="form.isi"></textarea>
                     </div>
                     @error('form.isi') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>

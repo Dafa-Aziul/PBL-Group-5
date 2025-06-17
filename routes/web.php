@@ -27,6 +27,8 @@ use App\Livewire\FrontEnd\Home;
 use App\Livewire\FrontEnd\Layanan;
 use App\Livewire\FrontEnd\About;
 use App\Livewire\FrontEnd\Lacak;
+use App\Livewire\FrontEnd\KontenDetail;
+
 
 
 // jasa
@@ -98,8 +100,9 @@ Route::get('/', Home::class)->name('home');
 Route::get('/layanan', Layanan::class)->name('layanan');
 Route::get('/tentang-kami', About::class)->name('about');
 Route::get('/lacak-service', Lacak::class)->name('lacakService');
+Route::get('/berita/{id}', KontenDetail::class)->name('berita');
 
-Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
+// Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('logout', Logout::class)->name('logout');

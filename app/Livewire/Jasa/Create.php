@@ -15,6 +15,7 @@ class Create extends Component
 
     public function submit()
     {
+        $this->form->harga = $this->form->harga ?? 0;
         $validated = $this->form->validate();
 
         logger()->info('Data valid:', $validated); // log ke storage/logs/laravel.log

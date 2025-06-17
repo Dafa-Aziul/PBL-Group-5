@@ -101,7 +101,8 @@
                                     <span class="d-none d-md-inline ms-1">Delete</span>
                                 </button>
 
-                                <x-modal.confirm id="confirm-{{ $konten->id }}" action="" target="delete({{ $konten->id }})"
+                                <x-modal.confirm id="confirm-{{ $konten->id }}" action=""
+                                    target="delete({{ $konten->id }})"
                                     content="Apakah anda yakin untuk menghapus data ini?" />
                             </td>
                         </tr>
