@@ -7,6 +7,10 @@ use App\Models\StatusService;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use GuzzleHttp\Client;
+
 
 #[Layout('layouts.guest')]
 class Lacak extends Component
@@ -26,42 +30,68 @@ class Lacak extends Component
     public $service;
     public $submitted = false;
 
-    public function getStatusColor($statusName)
+
+
+    public function mount()
     {
-        $currentIndex = array_search(strtolower($this->currentStatus), $this->allStatus);
-        $statusIndex = array_search(strtolower($statusName), $this->allStatus);
+        // $kode = 'Dolores numquam sunt'; // Ganti dengan kode service valid
 
-        if ($statusIndex === false) return 'secondary'; // fallback warna abu
+        // $client = new Client([
+        //     'base_uri' => 'http://127.0.0.1:8000',
+        //     'timeout'  => 10.0,
+        // ]);
 
-        return $statusIndex <= $currentIndex ? 'primary' : 'secondary';
+        // try {
+        //     $response = $client->request('GET', "/api/tracking/{$kode}");
+
+        //     if ($response->getStatusCode() === 200) {
+        //         $json = json_decode($response->getBody()->getContents(), true);
+        //         $data = $json['data'];
+
+        //         // Debug: Lihat hasilnya dulu
+        //         dd($data);
+        //     } else {
+        //         dd("Status gagal: " . $response->getStatusCode());
+        //     }
+        // } catch (\Throwable $e) {
+        //     dd("Error: " . $e->getMessage());
+        // }
     }
+
+
 
     public function checkStatus()
     {
-        $this->submitted = true; // tandai bahwa user sudah men-submit
+        $this->submitted = true;
         $this->reset(['status', 'currentStatus', 'statusHistory', 'service']);
 
-        $search = strtoupper(trim($this->input));
+        $kode = strtoupper(trim($this->input));
 
-        $this->service = Service::with('montir')
-            ->where(function ($q) use ($search) {
-                $q->where('kode_service', $search)
-                ;
-            })
-            ->first();
+        if (empty($kode)) {
+            $this->status = "Silakan masukkan kode service.";
+            return;
+        }
 
-        if ($this->service) {
-            $allHistory = StatusService::where('service_id', $this->service->id)
-                ->orderBy('changed_at')
-                ->get();
+        try {
+            $client = new Client(['base_uri' => 'http://127.0.0.1:8000']);
+            $response = $client->request('GET', "/api/tracking/{$kode}");
 
-            $this->statusHistory = $allHistory;
-            $this->currentStatus = $allHistory->last()?->status;
-            $this->status = null;
-        } else {
-            $this->status = "Nomor tidak ditemukan. Silakan hubungi admin.";
+            if ($response->getStatusCode() === 200) {
+                $data = json_decode($response->getBody()->getContents(), true)['data'];
+
+                $this->service = collect([$data['service']]);
+                $this->statusHistory = collect($data['statusHistory']);
+                $this->currentStatus = $data['currentStatus'];
+                $this->status = null;
+            } else {
+                $this->status = "Service tidak ditemukan.";
+            }
+        } catch (\Throwable $e) {
+            $this->status = "Belum ada service tercatat, masukan kode service yang benar";
         }
     }
+
+
 
 
 

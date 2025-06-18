@@ -204,18 +204,19 @@
                             <div class="team-img">
                                 <img src="{{ $karyawan->foto
                                 ? asset('storage/images/karyawan/' . $karyawan->foto)
-                                : asset('images/asset/default-avatar.png') }}" class="img-fluid" alt="{{ $karyawan->nama }}">
+                                : asset('images/asset/default-avatar.png') }}" class="img-fluid"
+                                    alt="{{ $karyawan->nama }}">
                             </div>
                             <div class="team-title mt-3">
                                 <h4 class="mb-0">{{ $karyawan->nama }}</h4>
                                 <p class="mb-0">{{ $karyawan->jabatan }}</p>
                             </div>
                             <div class="team-icon mt-2">
-                                <a class="btn btn-primary btn-sm-square rounded-circle me-2" href="#"><i
+                                <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
                                         class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-primary btn-sm-square rounded-circle me-2" href="#"><i
+                                <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
                                         class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-primary btn-sm-square rounded-circle" href="#"><i
+                                <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
                                         class="fab fa-instagram"></i></a>
                             </div>
                         </div>

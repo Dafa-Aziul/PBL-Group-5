@@ -32,7 +32,7 @@
     <div class="container my-5">
         <div class="text-center mb-4">
             <h2 class="text-primary">Lacak Status Service</h2>
-            <p>Masukkan nomor polisi atau ID service kendaraan Anda</p>
+            <p>Masukkan Kode Service kendaraan Anda</p>
         </div>
 
         <div class="row justify-content-center">
@@ -40,180 +40,182 @@
                 <form wire:submit.prevent="checkStatus">
                     <div class="input-group mb-3">
                         <input type="text" wire:model="input" class="form-control"
-                            placeholder="Contoh: BA1234CD atau SRV001">
+                            placeholder="Contoh: SRV-1234">
                         <button type="submit" class="btn btn-primary">Cek Status</button>
                     </div>
                 </form>
+
+                @if ($status)
+                <div class="alert alert-danger text-center">
+                    <i class="fas fa-info-circle me-1"></i> {{ $status }}
+                </div>
+                @endif
             </div>
         </div>
 
+        @if ($submitted && $service)
         <div class="row justify-content-center">
-
             <div class="col-lg-6">
-                @if ($submitted)
-                    @if ($service)
-                    <style>
-                        .timeline-container {
-                            position: relative;
-                            margin-left: 30px;
-                        }
 
-                        .timeline-container::before {
-                            content: '';
-                            position: absolute;
-                            left: 14px;
-                            top: 0;
-                            bottom: 0;
-                            width: 2px;
-                            background-color: #dee2e6;
-                        }
+                <div class="card mt-4 shadow-sm border-0 wow fadeInUp">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="fas fa-stream me-2"></i>
+                        <strong>Log Status Service</strong>
+                    </div>
 
-                        .timeline-step {
-                            position: relative;
-                            display: flex;
-                            align-items: flex-start;
-                            margin-bottom: 30px;
-                        }
+                    <div class="card-body">
 
-                        .timeline-step::before {
-                            content: none !important;
-                            display: none !important;
-                        }
-
-
-                        .timeline-icon {
-                            width: 28px;
-                            height: 28px;
-                            border-radius: 50%;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: white;
-                            font-size: 14px;
-                            z-index: 1;
-                            margin-right: 16px;
-                            flex-shrink: 0;
-                        }
-
-                        .timeline-icon.success {
-                            background-color: #198754;
-                        }
-
-                        .timeline-icon.primary {
-                            background-color: #0d6efd;
-                        }
-
-                        .timeline-icon.gray {
-                            background-color: #adb5bd;
-                        }
-
-                        .timeline-content {
-                            flex: 1;
-                        }
-
-                        .timeline-title {
-                            font-weight: 600;
-                            margin-bottom: 4px;
-                            font-size: 16px;
-                            text-transform: capitalize;
-                        }
-
-                        .timeline-desc {
-                            font-size: 14px;
-                            color: #6c757d;
-                            margin-bottom: 4px;
-                        }
-
-                        .timeline-keterangan {
-                            font-size: 14px;
-                            color: #495057;
-                            margin-top: 4px;
-                        }
-                    </style>
-                    <div class="card mt-4 shadow-sm border-0 wow fadeInUp">
-                        <div class="card-header bg-primary text-white d-flex align-items-center">
-                            <i class="fas fa-stream me-2"></i>
-                            <strong>Log Status Service</strong>
+                        {{-- Info dasar --}}
+                        <div class="mb-3">
+                            <strong>Kode Service:</strong> {{ $service[0]['kode_service'] ?? '-' }}<br>
+                            <strong>No Polisi:</strong> {{ $service[0]['no_polisi'] ?? '-' }}<br>
+                            <strong>Montir:</strong> {{ $service[0]['montir']['nama'] ?? '-' }}
                         </div>
 
-                        <div class="card-body">
+                        {{-- Timeline --}}
+                        <style>
+                            .timeline-container {
+                                position: relative;
+                                margin-left: 0;
+                                
+                            }
 
-                            {{-- Jika service ditemukan, tampilkan timeline --}}
+                            .timeline-container::before {
+                                content: '';
+                                position: absolute;
+                                left: 14px;
+                                /* posisi garis vertikal tetap */
+                                top: 0;
+                                bottom: 0;
+                                width: 3px;
+                                background-color: #dee2e6;
+                            }
 
-                            <div class="timeline-container">
-                                @php
-                                $icons = [
-                                'dalam antrian' => 'fas fa-check',
-                                'dianalisis' => 'fas fa-tools',
-                                'analisis selesai' => 'fas fa-clipboard-check',
-                                'dalam proses' => 'fas fa-cogs',
-                                'selesai' => 'fas fa-car',
-                                'batal' => 'fas fa-times-circle'
-                                ];
+                            .timeline-step {
+                                position: relative;
+                                display: flex;
+                                align-items: flex-start;
+                                margin-bottom: 30px;
+                            }
 
-                                // Filter hanya status yang sudah dilewati dan sekarang
-                                $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
-                                return array_search($step->status, $allStatus) <= array_search($currentStatus, $allStatus);
-                                    })->reverse(); 
-                                    @endphp 
-                                    @foreach ($filteredStatus as $step) 
-                                        @php $status=$step->status;
-                                        $isActive = $status === $currentStatus;
-                                        $isDone = array_search($status, $allStatus) < array_search($currentStatus, $allStatus);
-                                            $iconClass=$icons[$status] ?? 'fas fa-circle' ; $badgeClass=$isDone ? 'success' :
-                                            ($isActive ? 'primary' : 'gray' ); 
-                                            
-                                        @endphp 
-                                        <div class="timeline-step">
-                                            <div class="timeline-icon {{ $badgeClass }}">
-                                                <i class="{{ $iconClass }}"></i>
-                                            </div>
-                                            <div class="timeline-content">
-                                                <p class="timeline-title">{{ $status }}</p>
-                                                <p class="timeline-desc">
-                                                    <i class="fas fa-clock me-1"></i>
-                                                    {{ \Carbon\Carbon::parse($step->created_at)->format('d M Y H:i') }}
-                                                    @if ($step->service && $step->service->montir)
-                                                    | <i class="bi bi-person"></i> {{ $step->service->montir->nama }}
-                                                    @endif
-                                                </p>
-                                                <p class="timeline-keterangan">{{ $step->keterangan ?? '-' }}</p>
-                                            </div>
-                                        
-                                         </div>
-                                        
-                                    @endforeach
-                            </div>
+                            .timeline-step::before {
+                                content: none !important;
+                                display: none !important;
+                            }
+
+                            .timeline-icon {
+                                width: 28px;
+                                height: 28px;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-size: 14px;
+                                z-index: 1;
+                                margin-right: 16px;
+                                flex-shrink: 0;
+                            }
+
+                            .timeline-icon.success {
+                                background-color: #198754;
+                            }
+
+                            .timeline-icon.primary {
+                                background-color: #0d6efd;
+                            }
+
+                            .timeline-icon.gray {
+                                background-color: #adb5bd;
+                            }
+
+                            .timeline-content {
+                                flex: 1;
+                            }
+
+                            .timeline-title {
+                                font-weight: 600;
+                                margin-bottom: 4px;
+                                font-size: 16px;
+                                text-transform: capitalize;
+                            }
+
+                            .timeline-desc {
+                                font-size: 14px;
+                                color: #6c757d;
+                                margin-bottom: 4px;
+                            }
+
+                            .timeline-keterangan {
+                                font-size: 14px;
+                                color: #495057;
+                                margin-top: 4px;
+                            }
 
                             
+                        </style>
+
+
+                        <div class="timeline-container">
+                            @php
+                            $icons = [
+                            'dalam antrian' => 'fas fa-check',
+                            'dianalisis' => 'fas fa-tools',
+                            'analisis selesai' => 'fas fa-clipboard-check',
+                            'dalam proses' => 'fas fa-cogs',
+                            'selesai' => 'fas fa-car',
+                            'batal' => 'fas fa-times-circle'
+                            ];
+
+                            $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
+                            return array_search($step['status'], $allStatus) <= array_search($currentStatus,
+                                $allStatus); })->reverse();
+                                @endphp
+
+                                @foreach ($filteredStatus as $step)
+                                @php
+                                $status = $step['status'];
+                                $isActive = $status === $currentStatus;
+                                $isDone = array_search($status, $allStatus) < array_search($currentStatus, $allStatus);
+                                    $iconClass=$icons[$status] ?? 'fas fa-circle' ; $badgeClass=$isDone ? 'success' :
+                                    ($isActive ? 'primary' : 'gray' ); @endphp <div class="timeline-step">
+                                    <div class="timeline-icon {{ $badgeClass }}">
+                                        <i class="{{ $iconClass }}"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <p class="timeline-title">{{ $status }}</p>
+                                        <p class="timeline-desc">
+                                            <i class="fas fa-clock me-1"></i>
+                                            {{ \Carbon\Carbon::parse($step['changed_at'])->format('d M Y H:i') }}
+                                        </p>
+                                        <p class="timeline-keterangan">{{ $step['keterangan'] ?? '-' }}</p>
+                                    </div>
+
                         </div>
-
-
-
-                    </div>
-                    @else
-                    <div class="alert alert-warning wow fadeInUp" data-wow-delay="0.2s">
-                        <i class=" fas fa-exclamation-triangle me-1"></i>
-                        Belum ada service tercatat.
+                        @endforeach
                     </div>
 
-                    @endif
-
-                @endif
-
+                </div>
             </div>
 
 
 
-
-
         </div>
+        @endif
 
+
+
+        
     </div>
 
-</div>
 
 </div>
+
+
+
+
+
+
 
 
 
