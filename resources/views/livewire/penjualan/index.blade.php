@@ -222,7 +222,7 @@
     </div>
     @endif
 
-    <div class="row g-3 mb-4" wire:poll.visible.3000ms>
+    <div class="row g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
         <div class="col-12 col-lg-4">
             <div class="d-flex h-100 flex-column gap-3 ">
                 <div class="card card-jumlah flex-fill card-hover">
@@ -424,5 +424,4 @@
             </div>
         </div>
     </div>
-
 </div>

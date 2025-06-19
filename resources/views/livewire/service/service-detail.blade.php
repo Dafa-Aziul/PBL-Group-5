@@ -20,15 +20,80 @@
             theme: 'bootstrap-5',
             width: '100%',
             placeholder: '-- Pilih --',
-            allowClear: true
+            allowClear: true,
+            templateResult: formatSparepartOption,
+            templateSelection: formatSparepartOption
         }).on('change', function () {
-            // Cari instance Livewire dari elemen parent dengan atribut wire:id
             const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
             const component = Livewire.find(componentId);
             if (component) {
                 component.set("selectedSparepartId", $(this).val());
             }
         });
+
+        function formatSparepartOption(option) {
+            if (!option.id) return option.text;
+
+            const $el = $(option.element);
+            const img = $el.data('image');
+            const nama = $el.data('nama');
+            const harga = $el.data('harga');
+            const tipe = $el.data('tipe');
+
+            return $(`
+                <div class="d-flex align-items-center gap-2">
+                    <img src="${img}" width="75" class="rounded"/>
+                    <div class="small lh-sm">
+                        <div><strong>Nama:</strong> ${nama}</div>
+                        <div><strong>Harga:</strong> ${harga}</div>
+                        <div><strong>Tipe Kendaraan:</strong> ${tipe}</div>
+                    </div>
+                </div>
+            `);
+        }
+    }
+    function initSparepartSelect2() {
+        $('#sparepart_id').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: '-- Pilih --',
+            allowClear: true,
+            templateResult: formatSparepartOption,
+            templateSelection: formatSparepartSelection
+        }).on('change', function () {
+            const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
+            const component = Livewire.find(componentId);
+            if (component) {
+                component.set("selectedSparepartId", $(this).val());
+            }
+        });
+
+        function formatSparepartOption(option) {
+            if (!option.id) return option.text;
+
+            const $el = $(option.element);
+            const img = $el.data('image');
+            const nama = $el.data('nama');
+            const harga = $el.data('harga');
+            const tipe = $el.data('tipe');
+
+            return $(`
+                <div class="d-flex align-items-center gap-2">
+                    <img src="${img}" width="75" class="rounded"/>
+                    <div class="small lh-sm">
+                        <div><strong>Nama:</strong> ${nama}</div>
+                        <div><strong>Harga:</strong> ${harga}</div>
+                        <div><strong>Tipe Kendaraan:</strong> ${tipe}</div>
+                    </div>
+                </div>
+            `);
+        }
+        function formatSparepartSelection(option) {
+            if (!option.id) return option.text;
+
+            const $el = $(option.element);
+            return `${$el.data('nama')} - ${$el.data('harga')}`;
+        }
     }
 
     // Ketika Livewire selesai load halaman
@@ -162,9 +227,9 @@
                                 <div class="col-10 col-md-11">
                                     <div wire:ignore>
                                         <select wire:model.live="selectedJasaId" class="form-select select2" id="jasa_id">
-                                            <option value="">-- Pilih Jasa --</option>
+                                            <option></option>
                                             @foreach($jasas as $jasa)
-                                            <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}</option>
+                                            <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}, {{ $jasa->jenisKendaraan->nama_jenis }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -232,11 +297,16 @@
                         <div class="row g-2 mb-3">
                             <div class="col-12 col-md-9">
                                 <div wire:ignore>
-                                    <select wire:model="selectedSparepartId" class="form-select select2" id="sparepart_id">
-                                        <option value="">-- Pilih Sparepart --</option>
+                                    <select wire:model="selectedSparepartId" class="form-select select2"
+                                        id="sparepart_id">
+                                        <option></option>
                                         @foreach($spareparts as $sparepart)
-                                        <option value="{{ $sparepart->id }}">
-                                            {{ $sparepart->nama }} - Rp {{ number_format($sparepart->harga, 0, ',', '.') }}
+                                        <option value="{{ $sparepart->id }}"
+                                            data-image="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('storage/images/sparepart/default.png') }}"
+                                            data-nama="{{ $sparepart->nama }}"
+                                            data-harga="Rp {{ number_format($sparepart->harga, 0, ',', '.') }}"
+                                            data-tipe="{{ $sparepart->tipe_kendaraan }}">
+                                            {{ $sparepart->nama }}, {{ $sparepart->tipe_kendaraan }}
                                         </option>
                                         @endforeach
                                     </select>

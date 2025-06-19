@@ -205,7 +205,7 @@ class Dashboard extends Component
     }
     public function render()
     {
-
+        $this->emitChartData();
         //untuk card absensi (admin-mekanik)
         $today = Carbon::today()->toDateString();
 
