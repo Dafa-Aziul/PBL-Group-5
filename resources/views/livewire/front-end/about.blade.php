@@ -202,23 +202,22 @@
                     <div class="swiper-slide">
                         <div class="team-item text-center">
                             <div class="team-img">
-                                <img src="{{ $karyawan->user && $karyawan->user->profile_photo
-                                ? asset('storage/images/profile/' . $karyawan->user->profile_photo)
-                                : asset('storage/images/profile/default-avatar.png') }}" class="img-fluid" alt="{{ $karyawan->nama }}">
+                                <img src="{{ $karyawan->foto
+                                ? asset('storage/images/karyawan/' . $karyawan->foto)
+                                : asset('images/asset/default-avatar.png') }}" class="img-fluid"
+                                    alt="{{ $karyawan->nama }}">
                             </div>
                             <div class="team-title mt-3">
                                 <h4 class="mb-0">{{ $karyawan->nama }}</h4>
                                 <p class="mb-0">{{ $karyawan->jabatan }}</p>
                             </div>
                             <div class="team-icon mt-2">
-                                <div class="d-flex">
-                                    <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
-                                            class="fab fa-facebook-f"></i></a>
-                                    <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
-                                            class="fab fa-instagram"></i></a>
-                                    <a class="btn btn-sm-square rounded-circle me-0" href="#"><i
-                                            class="fab fa-linkedin-in"></i></a>
-                                </div>
+                                <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
+                                        class="fab fa-facebook-f"></i></a>
+                                <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
+                                        class="fab fa-linkedin-in"></i></a>
+                                <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
+                                        class="fab fa-instagram"></i></a>
                             </div>
                         </div>
                     </div>
@@ -475,9 +474,5 @@
         </div>
     </div>
     <!-- Contact End -->
-
-
-
-
 
 </div>

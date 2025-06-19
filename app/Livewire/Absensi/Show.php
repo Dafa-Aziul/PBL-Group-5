@@ -168,7 +168,7 @@ class Show extends Component
 
     public function resetFilters()
     {
-        $this->reset(['filterStatus', 'filterBulan']);
+        $this->reset(['filterStatus', 'filterBulan', 'search', 'tanggalAwal', 'tanggalAkhir', 'sortDirection']);
         $this->resetPage();
         $this->emitChartData();
     }
