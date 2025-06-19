@@ -28,7 +28,7 @@
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
 
-                <img src="{{ auth()->user()->profile_photo ? asset('storage/images/profile/' . auth()->user()->profile_photo) : asset('storage/images/default.png') }}"
+                <img src="{{ auth()->user()->profile_photo ? asset('storage/images/profile/' . auth()->user()->profile_photo) : asset('images/user/default.jpg') }}"
                     alt="Foto Karyawan" height="35" class="rounded-circle">
 
             </a>

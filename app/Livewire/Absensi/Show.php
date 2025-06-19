@@ -24,6 +24,11 @@ class Show extends Component
     public $tanggalAwal;
     public $tanggalAkhir;
 
+    public $start_date;
+    public $end_date;
+    public $format = 'pdf';
+    public $action = '';
+
     public function mount()
     {
         $this->tanggalAwal = null;
@@ -43,6 +48,28 @@ class Show extends Component
         }
         $this->emitChartData();
     }
+
+
+    public function submitForm()
+    {
+        $this->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'format' => 'required|in:pdf',
+        ]);
+
+        $url = route(
+            $this->action === 'preview' ? 'absensi.preview' : 'absensi.export',
+            [
+                'start_date' => $this->start_date,
+                'end_date' => $this->end_date,
+            ]
+        );
+
+        return redirect()->away($url);
+    }
+
+
 
     public function updatingSearch()
     {

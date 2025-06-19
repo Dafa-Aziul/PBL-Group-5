@@ -307,6 +307,8 @@
     <!-- About End -->
 
     <!-- Blog Start -->
+
+
     <div class="container-fluid blog py-5">
         <div class="container py-5">
             <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.2s" style="max-width: 800px;">
@@ -339,14 +341,16 @@
 
                         {{-- Label kategori --}}
                         <div class="blog-title position-absolute top-0 start-0 m-3">
-                            <span class="btn btn-primary text-white px-3">
+                            <span class="btn btn-primary text-white px-3" href="{{ route('berita', $konten->id) }}"
+                                wire:navigate>
                                 {{ ucfirst($konten->kategori) }}
                             </span>
                         </div>
                     </div>
 
                     {{-- Judul konten --}}
-                    <a href="#" class="h5 d-inline-block mb-2 text-dark text-decoration-none">
+                    <a href="{{ route('berita', $konten->id) }}"
+                        class="h5 d-inline-block mb-2 text-dark text-decoration-none">
                         {{ $konten->judul }}
                     </a>
 
@@ -373,11 +377,76 @@
                 </div>
                 @endforeach
             </div>
-
-
         </div>
     </div>
+
     <!-- Blog End -->
+
+    @push('scripts')
+    <script>
+        // Fungsi untuk menginisialisasi carousel
+        function initCarousels() {
+            // Hancurkan carousel yang sudah ada jika ada
+            $('.header-carousel, .blog-carousel').each(function() {
+                if ($(this).data('owl.carousel')) {
+                    $(this).trigger('destroy.owl.carousel');
+                    $(this).removeClass('owl-loaded owl-hidden');
+                    $(this).find('.owl-stage-outer').children().unwrap();
+                }
+            });
+
+            // Hero Header carousel
+            $(".header-carousel").owlCarousel({
+                animateOut: 'fadeOut',
+                items: 1,
+                margin: 0,
+                stagePadding: 0,
+                autoplay: true,
+                smartSpeed: 500,
+                dots: true,
+                loop: true,
+                nav: true,
+                navText: [
+                    '<i class="bi bi-arrow-left"></i>',
+                    '<i class="bi bi-arrow-right"></i>'
+                ],
+            });
+
+            // Blog carousel
+            $(".blog-carousel").owlCarousel({
+                autoplay: true,
+                smartSpeed: 1500,
+                center: false,
+                dots: false,
+                loop: true,
+                margin: 25,
+                nav: true,
+                navText: [
+                    '<i class="fa fa-angle-right"></i>',
+                    '<i class="fa fa-angle-left"></i>'
+                ],
+                responsiveClass: true,
+                responsive: {
+                    0: { items: 1 },
+                    576: { items: 1 },
+                    768: { items: 2 },
+                    992: { items: 2 },
+                    1200: { items: 3 }
+                }
+            });
+        }
+
+        // Inisialisasi pertama kali saat halaman dimuat
+        $(document).ready(function() {
+            initCarousels();
+        });
+
+        // Livewire V3 - navigasi antar halaman (SPA behavior)
+        document.addEventListener('livewire:navigated', () => {
+            setTimeout(initCarousels, 100);
+        });
+    </script>
+    @endpush
 
 
 

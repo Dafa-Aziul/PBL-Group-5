@@ -44,7 +44,13 @@
                         <button type="submit" class="btn btn-primary">Cek Status</button>
                     </div>
                 </form>
+            </div>
+        </div>
 
+        <div class="row justify-content-center">
+
+            <div class="col-lg-6">
+                @if ($submitted)
                 @if ($service)
                 <style>
                     .timeline-container {
@@ -124,9 +130,7 @@
                         margin-top: 4px;
                     }
                 </style>
-
-
-                <div class="card mt-4 shadow-sm border-0">
+                <div class="card mt-4 shadow-sm border-0 wow fadeInUp">
                     <div class="card-header bg-primary text-white d-flex align-items-center">
                         <i class="fas fa-stream me-2"></i>
                         <strong>Log Status Service</strong>
@@ -135,7 +139,7 @@
                     <div class="card-body">
 
                         {{-- Jika service ditemukan, tampilkan timeline --}}
-                        @if ($service)
+
                         <div class="timeline-container">
                             @php
                             $icons = [
@@ -146,75 +150,67 @@
                             'selesai' => 'fas fa-car',
                             'batal' => 'fas fa-times-circle'
                             ];
-                            @endphp
 
-                            @forelse ($allStatus as $step)
-                            @php
-                            $found = $statusHistory->firstWhere('status', $step);
-                            $isActive = $step === $currentStatus;
-                            $isDone = array_search($step, $allStatus) < array_search($currentStatus, $allStatus);
-                                $iconClass=$icons[$step] ?? 'fas fa-circle' ; $badgeClass=$isDone ? 'success' :
-                                ($isActive ? 'primary' : 'gray' ); @endphp <div class="timeline-step">
-                                <div class="timeline-icon {{ $badgeClass }}">
-                                    <i class="{{ $iconClass }}"></i>
-                                </div>
-                                <div class="timeline-content">
-                                    <p class="timeline-title">{{ $step }}</p>
+                            // Filter hanya status yang sudah dilewati dan sekarang
+                            $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
+                            return array_search($step->status, $allStatus) <= array_search($currentStatus, $allStatus);
+                                })->reverse();
+                                @endphp
+                                @foreach ($filteredStatus as $step)
+                                @php $status=$step->status;
+                                $isActive = $status === $currentStatus;
+                                $isDone = array_search($status, $allStatus) < array_search($currentStatus, $allStatus);
+                                    $iconClass=$icons[$status] ?? 'fas fa-circle' ; $badgeClass=$isDone ? 'success' :
+                                    ($isActive ? 'primary' : 'gray' ); @endphp <div class="timeline-step">
+                                    <div class="timeline-icon {{ $badgeClass }}">
+                                        <i class="{{ $iconClass }}"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <p class="timeline-title">{{ $status }}</p>
+                                        <p class="timeline-desc">
+                                            <i class="fas fa-clock me-1"></i>
+                                            {{ \Carbon\Carbon::parse($step->created_at)->format('d M Y H:i') }}
+                                            @if ($step->service && $step->service->montir)
+                                            | <i class="bi bi-person"></i> {{ $step->service->montir->nama }}
+                                            @endif
+                                        </p>
+                                        <p class="timeline-keterangan">{{ $step->keterangan ?? '-' }}</p>
+                                    </div>
 
-                                    @if ($found)
-                                    <p class="timeline-desc">
-                                        <i class="fas fa-clock me-1"></i>
-                                        {{ \Carbon\Carbon::parse($found->created_at)->format('d M Y H:i') }}
-                                        @if($found->service && $found->service->montir)
-                                        | <i class="bi bi-person"></i> {{ $found->service->montir->nama }}
-                                        @endif
-                                    </p>
-                                    <p class="timeline-keterangan">{{ $found->keterangan ?? '-' }}</p>
-                                    @else
-                                    <p class="timeline-desc text-muted">Belum dimulai</p>
-                                    @endif
-                                </div>
                         </div>
-                        @empty
-                        <div class="text-muted fst-italic">Belum ada status tercatat.</div>
-                        @endforelse
-                    </div>
-                    @else
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-1"></i>
-                        {{ $status ?? 'Belum ada service tercatat.' }}
+
+                        @endforeach
                     </div>
 
-                    @endif
 
                 </div>
+
+
+
+            </div>
+            @else
+            <div class="alert alert-warning wow fadeInUp" data-wow-delay="0.2s">
+                <i class=" fas fa-exclamation-triangle me-1"></i>
+                Belum ada service tercatat.
             </div>
 
+            @endif
+
+            @endif
+
         </div>
+
+
+
+
 
     </div>
 
 </div>
 
-
-
-
-
-@endif
-
-
-
-
-
-
-
-
-</div>
-</div>
 </div>
 
-
-
+</div>
 
 
 <!-- Simulasi JS Tracking -->

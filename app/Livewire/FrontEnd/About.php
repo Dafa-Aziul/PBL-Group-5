@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 
 #[layout('layouts.guest')]
+
 class About extends Component
 {
     public function render()

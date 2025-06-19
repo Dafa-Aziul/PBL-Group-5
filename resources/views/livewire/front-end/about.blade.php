@@ -211,12 +211,14 @@
                                 <p class="mb-0">{{ $karyawan->jabatan }}</p>
                             </div>
                             <div class="team-icon mt-2">
-                                <a class="btn btn-primary btn-sm-square rounded-circle me-2" href="#"><i
-                                        class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-primary btn-sm-square rounded-circle me-2" href="#"><i
-                                        class="fab fa-linkedin-in"></i></a>
-                                <a class="btn btn-primary btn-sm-square rounded-circle" href="#"><i
-                                        class="fab fa-instagram"></i></a>
+                                <div class="d-flex">
+                                    <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
+                                            class="fab fa-facebook-f"></i></a>
+                                    <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
+                                            class="fab fa-instagram"></i></a>
+                                    <a class="btn btn-sm-square rounded-circle me-0" href="#"><i
+                                            class="fab fa-linkedin-in"></i></a>
+                                </div>
                             </div>
                         </div>
                     </div>

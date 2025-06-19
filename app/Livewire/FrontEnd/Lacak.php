@@ -24,6 +24,7 @@ class Lacak extends Component
     ];
     public $statusHistory = [];
     public $service;
+    public $submitted = false;
 
     public function getStatusColor($statusName)
     {
@@ -37,11 +38,15 @@ class Lacak extends Component
 
     public function checkStatus()
     {
+        $this->submitted = true; // tandai bahwa user sudah men-submit
+        $this->reset(['status', 'currentStatus', 'statusHistory', 'service']);
+
         $search = strtoupper(trim($this->input));
 
         $this->service = Service::with('montir')
             ->where(function ($q) use ($search) {
-                $q->where('kode_service', $search);
+                $q->where('kode_service', $search)
+                ;
             })
             ->first();
 
@@ -51,18 +56,14 @@ class Lacak extends Component
                 ->get();
 
             $this->statusHistory = $allHistory;
-
-            // Ambil currentStatus dari data TERAKHIR
             $this->currentStatus = $allHistory->last()?->status;
-
             $this->status = null;
         } else {
             $this->status = "Nomor tidak ditemukan. Silakan hubungi admin.";
-            $this->currentStatus = null;
-            $this->statusHistory = [];
-            $this->service = null;
         }
     }
+
+
 
     public function render()
     {

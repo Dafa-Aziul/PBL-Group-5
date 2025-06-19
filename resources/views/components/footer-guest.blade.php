@@ -4,38 +4,37 @@
         <div class="row g-5">
             <div class="col-md-6 col-lg-6 col-xl-4">
                 <div class="footer-item">
-                    <a href="index.html" class="p-0">
+                    <a href="{{ route('home') }}" class="p-0" wire:navigate>
                         <h4 class="text-white"><i class="fas fa-tools me-3"></i>CV. Razka Pratama</h4>
                     </a>
                     <p class="mb-4">Bengkel spesialis truk dan mobil terpercaya. Kami siap memberikan pelayanan
                         terbaik untuk kendaraan Anda.</p>
                     <div class="d-flex">
-                        <a class="btn btn-primary btn-sm-square rounded-circle me-3" href="#"><i
-                                class="fab fa-facebook-f text-white"></i></a>
-                        <a class="btn btn-primary btn-sm-square rounded-circle me-3" href="#"><i
-                                class="fab fa-instagram text-white"></i></a>
-                        <a class="btn btn-primary btn-sm-square rounded-circle me-0" href="#"><i
-                                class="fab fa-linkedin-in text-white"></i></a>
+                        <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a class="btn btn-sm-square rounded-circle me-3" href="#"><i
+                                class="fab fa-instagram"></i></a>
+                        <a class="btn btn-sm-square rounded-circle me-0" href="#"><i
+                                class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-lg-6 col-xl-2">
                 <div class="footer-item">
                     <h4 class="text-white mb-4">Link Cepat</h4>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> Tentang Kami</a>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> Layanan</a>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> Booking Service</a>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> Lacak Service</a>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> Kontak</a>
+                    <a href="{{ route('about') }}" wire:navigate><i class="fas fa-angle-right me-2"></i> Tentang
+                        Kami</a>
+                    <a href="{{ route('layanan') }}" wire:navigate><i class="fas fa-angle-right me-2"></i> Layanan</a>
+
+                    <a href="{{ route('lacakService') }}" wire:navigate><i class="fas fa-angle-right me-2"></i> Lacak
+                        Service</a>
+                    <a href="{{ route('about') }}" wire:navigate><i class="fas fa-angle-right me-2"></i> Kontak</a>
                 </div>
             </div>
             <div class="col-md-6 col-lg-6 col-xl-3">
                 <div class="footer-item">
                     <h4 class="text-white mb-4">Bantuan</h4>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> Kebijakan Privasi</a>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> Syarat & Ketentuan</a>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> FAQ</a>
-                    <a href="#"><i class="fas fa-angle-right me-2"></i> Pusat Bantuan</a>
+                    <a href="{{ route('about') }}" wire:navigate><i class="fas fa-angle-right me-2"></i> FAQ</a>
                 </div>
             </div>
             <div class="col-md-6 col-lg-6 col-xl-3">

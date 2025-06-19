@@ -242,7 +242,7 @@
     <script src="{{ asset('lib/lightbox/js/lightbox.min.js') }}"></script>
     <script src="{{ asset('lib/owlcarousel/owl.carousel.min.js') }}"></script>
 
-
+    @stack('scripts')
     <!-- Template Javascript -->
     <script src="{{ asset('js/main.js') }}"></script>
 </body>

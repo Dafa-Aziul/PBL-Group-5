@@ -203,7 +203,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                     </div>
                     @else
                     <div class="text-center">
-                        <img src="{{ asset('storage/icons/Checking boxes-amico.svg') }}" alt="stok aman" width="60%"
+                        <img src="{{ asset('images/icons/Checking boxes-amico.svg') }}" alt="stok aman" width="60%"
                             class="mb-3">
                         <h5 class="text-muted fw-semibold">Stok sparepart dalam kondisi aman</h5>
                     </div>
@@ -283,10 +283,11 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                     </div>
                     @else
                     <div class="text-center">
-                        <img src="{{ asset('storage/icons/Confirmed attendance-amico.svg') }}" alt="absen"
+                        <img src="{{ asset('images/icons/Confirmed attendance-amico.svg') }}" alt="absen"
                             class="animate-pop" width="60%">
                         <h4 class="card-text semibold text-muted">Semua Karyawan Sudah absen</h4>
                     </div>
+                    {{ $belumAbsen }}
                     @endif
                 </div>
             </div>
@@ -322,10 +323,11 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                     </div>
                     @else
                     <div class="text-center">
-                        <img src="{{ asset('storage/icons/Checking boxes-amico.svg') }}" alt="stok aman" width="60%"
+                        <img src="{{ asset('images/icons/Checking boxes-amico.svg') }}" alt="stok aman" width="60%"
                             class="mb-3">
                         <h5 class="text-muted fw-semibold">Stok sparepart dalam kondisi aman</h5>
                     </div>
+                    {{ $stokmenipis }}
                     @endif
                 </div>
             </div>
