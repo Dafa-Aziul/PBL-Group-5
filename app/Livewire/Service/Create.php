@@ -60,7 +60,14 @@ class Create extends Component
 
         $validated = $this->form->validate();
 
+        $kendaraanSedangService = Service::where('kendaraan_id', $this->form->kendaraan_id)
+            ->whereNotIn('status', ['selesai', 'batal'])
+            ->exists();
 
+        if ($kendaraanSedangService) {
+            $this->addError('form.kendaraan_id', 'Kendaraan ini sedang dalam proses service dan belum selesai.');
+            return;
+        }
         // Cek apakah kendaraan terpilih ada
         if (!$this->selectedKendaraan) {
             session()->flash('error', 'Pilih kendaraan terlebih dahulu!');

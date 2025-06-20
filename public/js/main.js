@@ -1,15 +1,13 @@
 (function ($) {
     "use strict";
 
-    // Spinner
-    var spinner = function () {
+    $(document).ready(function () {
         setTimeout(function () {
             if ($('#spinner').length > 0) {
                 $('#spinner').removeClass('show');
             }
-        }, 1);
-    };
-    spinner(0);
+        }, 300); // sedikit delay agar efek terlihat
+    });
 
 
     // Initiate the wowjs

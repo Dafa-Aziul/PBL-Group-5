@@ -239,7 +239,8 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga, 0, ',', '.') }}</td>
-                                        <td class="text-end fw-semibold text-primary">Rp {{ number_format($sp->sub_total,
+                                        <td class="text-end fw-semibold text-primary">Rp {{
+                                            number_format($sp->sub_total,
                                             0, ',', '.') }}</td>
                                     </tr>
                                     @endforeach
@@ -258,15 +259,34 @@
 
                     {{-- 3. Estimasi Biaya --}}
                     @if($totalJasa > 0 || $totalSparepart > 0)
-                    <div class="alert alert-info d-flex align-items-center" role="alert">
-                        <i class="fas fa-calculator me-2"></i>
+                    <div class="alert alert-primary shadow-sm d-flex align-items-start gap-3"
+                        role="alert">
+                        <i class="fas fa-info-circle text-info fs-3 mt-1"></i>
                         <div>
-                            <strong>Total Estimasi Biaya:</strong>
-                            <span class="text-success fs-5 ms-2">Rp {{ number_format($totalEstimasi, 0, ',', '.')
-                                }}</span>
+                            <div class="fw-semibold text-muted small mb-2">Rincian Estimasi</div>
+
+                            {{-- Baris: Estimasi Biaya --}}
+                            <div class="d-flex align-items-center text-success mb-2">
+                                <i class="fas fa-money-bill-wave me-2"></i>
+                                <div>
+                                    <strong>Total Estimasi Biaya:</strong>
+                                    <span class="fs-5 ms-1">Rp {{ number_format($totalEstimasi, 0, ',', '.') }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Baris: Estimasi Waktu --}}
+                            <div class="d-flex align-items-center text-primary">
+                                <i class="fas fa-stopwatch me-2"></i>
+                                <div>
+                                    <strong>Total Estimasi Waktu:</strong>
+                                    <span class="fs-5 ms-1">{{ $estimasiWaktuReadable }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     @endif
+
+
 
                 </div>
             </div>

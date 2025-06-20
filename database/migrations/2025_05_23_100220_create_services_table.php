@@ -29,6 +29,7 @@ return new class extends Migration
                 'batal'
             ])->default('dalam antrian');
             $table->decimal('estimasi_harga', 12, 2)->nullable();
+            $table->time('estimasi_waktu')->default('00:00:00');
             $table->dateTime('tanggal_mulai_service')->nullable();
             $table->dateTime('tanggal_selesai_service')->nullable();
             $table->text('keterangan')->nullable();

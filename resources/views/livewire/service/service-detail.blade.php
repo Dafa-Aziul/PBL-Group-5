@@ -92,7 +92,7 @@
             if (!option.id) return option.text;
 
             const $el = $(option.element);
-            return `${$el.data('nama')} - ${$el.data('harga')}`;
+            return `${$el.data('nama')} : (${$el.data('tipe')}) - ${$el.data('harga')}`;
         }
     }
 
@@ -122,6 +122,7 @@
     window.addEventListener('open-edit-modal', event => {
         var myModal = new bootstrap.Modal(document.getElementById('editJumlahModal'));
         myModal.show();
+        Livewire.dispatch('modalOpened');
     });
 
     window.addEventListener('hide-edit-jumlah-modal', event => {
@@ -226,10 +227,12 @@
                             <div class="row g-2">
                                 <div class="col-10 col-md-11">
                                     <div wire:ignore>
-                                        <select wire:model.live="selectedJasaId" class="form-select select2" id="jasa_id">
+                                        <select wire:model.live="selectedJasaId" class="form-select select2"
+                                            id="jasa_id">
                                             <option></option>
                                             @foreach($jasas as $jasa)
-                                            <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}, {{ $jasa->jenisKendaraan->nama_jenis }}</option>
+                                            <option value="{{ $jasa->id }}">{{ $jasa->nama_jasa }}, {{
+                                                $jasa->jenisKendaraan->nama_jenis }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -351,7 +354,9 @@
                                     <tr wire:key="sparepart-{{ $sparepart['sparepart_id'] ?? 'new-'.$index }}">
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $sparepart['nama'] }}</td>
-                                        <td wire:click="openEditModal({{ $index }})" style="cursor: pointer;">
+                                        <td wire:click="openEditModal({{ $index }})" style="cursor: pointer;"
+                                            @if($isProcessing)
+                                            style="pointer-events: none; opacity: 0.6; cursor: not-allowed;" @endif>
                                             {{ $sparepart['jumlah'] }}
                                         </td>
                                         <td>Rp {{ number_format($sparepart['harga'], 0, ',', '.') }}</td>
@@ -382,16 +387,34 @@
                     </div>
                 </div>
                 @if($totalJasa > 0 || $totalSparepart > 0)
-                <div class="card mb-4">
-                    <div class="card-header">Estimasi Total Biaya</div>
-                    <div class="card-body">
-                        <h5>Total Keseluruhan: <strong>Rp {{ number_format($totalSemua, 0, ',', '.') }}</strong></h5>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white d-flex align-items-center">
+                        <i class="fas fa-calculator me-2"></i>
+                        Estimasi Total Service
+                    </div>
+                    <div class="card-body bg-light">
+                        <div class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-money-bill-wave me-2 text-success fs-5"></i>
+                            <h5 class="mb-0">
+                                Total Biaya:
+                                <strong class="text-dark">Rp {{ number_format($totalSemua, 0, ',', '.') }}</strong>
+                            </h5>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-stopwatch me-2 text-primary fs-5"></i>
+                            <h5 class="mb-0">
+                                Estimasi Waktu:
+                                <strong class="text-dark">{{ $estimasiWaktuReadable }}</strong>
+                            </h5>
+                        </div>
                     </div>
                 </div>
                 @endif
+
                 {{-- Tombol Submit --}}
                 <div class="text-end mb-4">
-                    <button type="submit" class="btn btn-success">💾 Simpan Service & Detail</button>
+                    <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> Simpan Service
+                        & Detail</button>
                 </div>
             </form>
             <!-- Modal Edit Jumlah Sparepart -->
@@ -419,7 +442,6 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

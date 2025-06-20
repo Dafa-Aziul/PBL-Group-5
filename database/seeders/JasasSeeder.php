@@ -18,7 +18,7 @@ class JasasSeeder extends Seeder
                 'jenis_kendaraan_id' => 1,
                 'kode' => 'JS001',
                 'nama_jasa' => 'Ganti Oli',
-                'estimasi' => '00:30', // 30 menit
+                'estimasi' => '00:30:00', // 30 menit
                 'harga' => 25000,
                 'keterangan' => 'Ganti oli mesin dengan oli standar'
             ],
@@ -26,7 +26,7 @@ class JasasSeeder extends Seeder
                 'jenis_kendaraan_id' => 1,
                 'kode' => 'JS002',
                 'nama_jasa' => 'Tune Up',
-                'estimasi' => '01:11', // 1 jam 11 menit
+                'estimasi' => '01:11:00', // 1 jam 11 menit
                 'harga' => 100000,
                 'keterangan' => 'Penyetelan ulang komponen mesin'
             ],
@@ -34,7 +34,7 @@ class JasasSeeder extends Seeder
                 'jenis_kendaraan_id' => 2,
                 'kode' => 'JS003',
                 'nama_jasa' => 'Servis Rem',
-                'estimasi' => '00:45',
+                'estimasi' => '00:45:00', // 45 menit
                 'harga' => 75000,
                 'keterangan' => 'Pemeriksaan dan penggantian kampas rem'
             ],

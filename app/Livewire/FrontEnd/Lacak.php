@@ -10,9 +10,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
-
+use Livewire\Attributes\Title;
 
 #[Layout('layouts.guest')]
+#[Title('Lacak Status Service Anda')]
 class Lacak extends Component
 {
     public $input;

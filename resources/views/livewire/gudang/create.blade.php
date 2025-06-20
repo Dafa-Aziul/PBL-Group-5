@@ -29,7 +29,7 @@
 
 
 
-                 <div class="mb-3">
+                <div class="mb-3">
                     <label for="aktivitas" class="form-label">Aktivitas</label>
                     <select id="aktivitas" class="form-select" wire:model="form.aktivitas" required>
                         <option value="" disabled selected hidden>-- Pilih Aktivitas --</option>
@@ -48,7 +48,8 @@
 
                 <div class="mb-3">
                     <label for="keterangan" class="form-label">Keterangan</label>
-                    <textarea id="keterangan" class="form-control" rows="3" wire:model="form.keterangan" placeholder="Tulis keterangan tambahan..."></textarea>
+                    <textarea id="keterangan" class="form-control" rows="3" wire:model="form.keterangan"
+                        placeholder="Tulis keterangan tambahan..."></textarea>
                     @error('form.keterangan') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 

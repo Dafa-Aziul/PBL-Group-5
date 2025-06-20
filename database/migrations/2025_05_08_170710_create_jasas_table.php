@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('jenis_kendaraan_id')->constrained('jenis_kendaraans');
             $table->string('kode');
             $table->string('nama_jasa');
-            $table->string('estimasi');
+            $table->time('estimasi');
             $table->decimal('harga', 10, 2);
             $table->string('keterangan');
             $table->softDeletes();

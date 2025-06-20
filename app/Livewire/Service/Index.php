@@ -89,13 +89,23 @@ class Index extends Component
         $updated = Service::where('id', $id)->update($dataUpdate);
 
         if ($updated) {
+            $statusSudahAda = StatusService::where('service_id', $service->id)
+                ->where('status', $newStatus)
+                ->exists();
+
+            if ($statusSudahAda) {
+                $this->addError('statuses.' . $service->id, 'Status "' . $newStatus . '" sudah pernah dicatat sebelumnya.');
+                return;
+            }
+
             $namaMontir = $service->montir->nama ?? 'montir';
+            $estimasiWaktu = $this->formatEstimasiWaktu($service->estimasi_waktu);
 
             $keterangan = match ($newStatus) {
                 'dalam antrian'     => 'Service telah masuk ke dalam antrian.',
                 'dianalisis'        => 'Service sedang dalam proses analisis oleh ' . $namaMontir . '.',
                 'analisis selesai'  => 'Analisis telah selesai dilakukan oleh ' . $namaMontir . '.',
-                'dalam proses'      => 'Service sedang dikerjakan oleh ' . $namaMontir . '.',
+                'dalam proses'      => 'Service sedang dikerjakan oleh ' . $namaMontir . ', estimasi pengerjaan selesai dalam ' . $estimasiWaktu,
                 'selesai'           => 'Service telah selesai dan siap diambil.',
                 'batal'             => 'Service dibatalkan oleh pelanggan atau admin.',
                 default             => null,
@@ -246,6 +256,19 @@ class Index extends Component
         ];
     }
 
+    protected function formatEstimasiWaktu($waktu)
+    {
+        [$jam, $menit, $detik] = array_pad(explode(':', $waktu ?? '00:00:00'), 3, 0);
+
+        $jam = (int) $jam;
+        $menit = (int) $menit;
+
+        $output = [];
+        if ($jam > 0) $output[] = "{$jam} jam";
+        if ($menit > 0) $output[] = "{$menit} menit";
+
+        return $output ? implode(' ', $output) : '0 menit';
+    }
 
 
     public function getJumlahServicePerHariLineChart()

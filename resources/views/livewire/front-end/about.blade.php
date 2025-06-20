@@ -1,3 +1,31 @@
+@push('scripts')
+    <!-- Swiper Init -->
+    <script>
+        var swiper = new Swiper(".teamSwiper", {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+            576: {
+                slidesPerView: 1,
+            },
+            768: {
+                slidesPerView: 2,
+            },
+            992: {
+                slidesPerView: 3,
+            },
+            1200: {
+                slidesPerView: 4,
+            },
+        },
+    });
+    </script>
+@endpush
 <div>
     <div class="container-fluid py-5" style="background-color:#373390; ">
         <div class="container" style="max-width: 900px;">
@@ -8,12 +36,6 @@
                     <p class="text-white mb-3">
                         Bengkel kami, solusi terpercaya untuk perawatan mobil hingga truk Anda.
                     </p>
-                    {{-- <ol
-                        class="breadcrumb d-flex justify-content-center justify-content-md-start mb-0 wow fadeInDown mt-3"
-                        data-wow-delay="0.3s">
-                        <li class="breadcrumb-item"><a href="/" class="text-white text-info">Beranda</a></li>
-                        <li class="breadcrumb-item active text-primary">Layanan</li>
-                    </ol> --}}
                 </div>
 
                 <!-- Kolom Gambar -->
@@ -184,7 +206,7 @@
 
     <div class="container-fluid team mt-4">
         <div class="container pb-5">
-            <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.2s" style="max-width: 800px;">
+            <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.3s" style="max-width: 800px;">
                 <h4 class="text-primary">Tim Kami</h4>
                 <h1 class="display-5 mb-4">Kenali Tim Ahli Kami</h1>
                 <p class="mb-0">
@@ -231,36 +253,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Swiper JS -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
-    <!-- Swiper Init -->
-    <script>
-        var swiper = new Swiper(".teamSwiper", {
-        slidesPerView: 1,
-        spaceBetween: 30,
-        loop: true,
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-            576: {
-                slidesPerView: 1,
-            },
-            768: {
-                slidesPerView: 2,
-            },
-            992: {
-                slidesPerView: 3,
-            },
-            1200: {
-                slidesPerView: 4,
-            },
-        },
-    });
-    </script>
 
 
     <!-- Team End -->
@@ -466,7 +458,7 @@
                 <div class="col-xl-6 wow fadeInRight" data-wow-delay="0.2s">
                     <div class="rounded h-100">
                         <iframe class="rounded h-100 w-100" style="height: 400px;"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.325647468693!2d100.3542744147539!3d-0.9023356355670164!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4b942e2b117bb%3A0x5647e6a5b4a3b1a1!2sJl.%20Rambutan%20No.8%2C%20Koto%20Tangah%2C%20Kec.%20Koto%20Tangah%2C%20Kota%20Padang%2C%20Sumatera%20Barat%2025173!5e0!3m2!1sen!2sid!4v1652345678901!5m2!1sen!2sid"
+                            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d249.33595051252453!2d100.3719382!3d-0.8539293!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2fd4c7d431cffce7%3A0x26db4dfa8b152b0b!2sRazka%20Motor%20(CV%20Razka%20Pratama)!5e0!3m2!1sen!2sid!4v1750404071682!5m2!1sen!2sid"
                             loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                 </div>

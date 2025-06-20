@@ -11,12 +11,6 @@
                         Pantau status kendaraanmu secara real-time, tanpa repot — cukup masukkan nomor polisi atau kode
                         service!
                     </p>
-                    {{-- <ol
-                        class="breadcrumb d-flex justify-content-center justify-content-md-start mb-0 wow fadeInDown mt-3"
-                        data-wow-delay="0.3s">
-                        <li class="breadcrumb-item"><a href="/" class="text-white text-info">Beranda</a></li>
-                        <li class="breadcrumb-item active text-primary">Layanan</li>
-                    </ol> --}}
                 </div>
 
                 <!-- Kolom Gambar -->
@@ -55,9 +49,8 @@
 
         @if ($submitted && $service)
         <div class="row justify-content-center">
-            <div class="col-lg-6">
-
-                <div class="card mt-4 shadow-sm border-0 wow fadeInUp">
+            <div class="col-lg-6 wow fadeInUp">
+                <div class="card mt-4 shadow-sm border-0" >
                     <div class="card-header bg-primary text-white d-flex align-items-center">
                         <i class="fas fa-stream me-2"></i>
                         <strong>Log Status Service</strong>
@@ -208,63 +201,5 @@
 
     </div>
 
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Simulasi JS Tracking -->
-<script>
-    function checkStatus() {
-        const input = document.getElementById("serviceInput").value.trim().toUpperCase();
-        const result = document.getElementById("resultArea");
-
-        const dataTracking = {
-            "BA1234CD": "Dalam Pengecekan",
-            "BA5678EF": "Dalam Perbaikan",
-            "SRV001": "Menunggu Suku Cadang",
-            "SRV002": "Servis Selesai - Siap Diambil",
-        };
-
-        if (input === "") {
-            result.className = "alert alert-warning";
-            result.innerText = "Silakan masukkan nomor yang valid!";
-            result.classList.remove("d-none");
-            return;
-        }
-
-        if (dataTracking[input]) {
-            result.className = "alert alert-success";
-            result.innerHTML = `<strong>Status:</strong> ${dataTracking[input]}`;
-        } else {
-            result.className = "alert alert-danger";
-            result.innerText = "Nomor tidak ditemukan. Silakan hubungi admin.";
-        }
-        result.classList.remove("d-none");
-    }
-</script>
 
 </div>

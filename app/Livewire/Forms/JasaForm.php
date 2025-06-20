@@ -16,7 +16,7 @@ class JasaForm extends Form
     #[Validate('required|string|max:255')]
     public string $nama_jasa = '';
 
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:8')]
     public string $estimasi = '';
 
     #[Validate('required|numeric|min:0')]

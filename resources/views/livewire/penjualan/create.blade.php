@@ -22,7 +22,7 @@
             placeholder: '-- Pilih --',
             allowClear: true,
             templateResult: formatSparepartOption,
-            templateSelection: formatSparepartOption
+            templateSelection: formatSparepartSelection
         }).on('change', function () {
             const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
             const component = Livewire.find(componentId);
@@ -50,6 +50,12 @@
                     </div>
                 </div>
             `);
+        }
+        function formatSparepartSelection(option) {
+            if (!option.id) return option.text;
+
+            const $el = $(option.element);
+            return `${$el.data('nama')} : (${$el.data('tipe')}) - ${$el.data('harga')}`;
         }
     }
 
@@ -79,6 +85,7 @@
     window.addEventListener('open-edit-modal', event => {
         var myModal = new bootstrap.Modal(document.getElementById('editJumlahModal'));
         myModal.show();
+        Livewire.dispatch('modalOpened');
     });
 
     window.addEventListener('hide-edit-jumlah-modal', event => {
@@ -151,7 +158,7 @@
                                             data-nama="{{ $sparepart->nama }}"
                                             data-harga="Rp {{ number_format($sparepart->harga, 0, ',', '.') }}"
                                             data-tipe="{{ $sparepart->tipe_kendaraan }}">
-                                            {{ $sparepart->nama }}
+                                            {{ $sparepart->nama }}, {{ $sparepart->tipe_kendaraan }}
                                         </option>
                                         @endforeach
                                     </select>
@@ -197,8 +204,11 @@
                                     <tr wire:key="sparepart-{{ $sparepart['sparepart_id'] ?? 'new-'.$index }}">
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $sparepart['nama'] }}</td>
-                                        <td wire:click="openEditModal({{ $index }})" style="cursor: pointer;">{{
-                                            $sparepart['jumlah'] }}</td>
+                                        <td wire:click="openEditModal({{ $index }})" style="cursor: pointer;"
+                                            @if($isProcessing)
+                                            style="pointer-events: none; opacity: 0.6; cursor: not-allowed;" @endif>
+                                            {{ $sparepart['jumlah'] }}
+                                        </td>
                                         <td>Rp {{ number_format($sparepart['harga'], 0, ',', '.') }}</td>
                                         <td>Rp {{ number_format($sparepart['sub_total'], 0, ',', '.') }}</td>
                                         <td>

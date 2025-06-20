@@ -18,11 +18,11 @@
                                 </p>
                                 <div class="d-flex justify-content-center mb-4 mobile-btn-wrapper ">
                                     <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2 btn-custom-mobile"
-                                        href="#">
+                                        href="{{ route('lacakService') }}">
                                         <i class="fas fa-play-circle me-2"></i> Lacak Service
                                     </a>
                                     <a class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2 btn-custom-mobile"
-                                        href="#">
+                                        href="{{ route('layanan') }}">
                                         Layanan Kami
                                     </a>
                                 </div>
@@ -44,12 +44,6 @@
                                     Dengan teknisi bersertifikat dan peralatan modern, kami
                                     memberikan solusi terbaik untuk masalah kendaraan Anda.
                                 </p>
-                                <!--
-        <div class="d-flex justify-content-center flex-shrink-0 mb-4">
-          <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2" href="#"><i class="fas fa-play-circle me-2"></i> Proses Kerja</a>
-          <a class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2" href="#">Booking Sekarang</a>
-        </div>
-        -->
                             </div>
                         </div>
                     </div>
@@ -58,6 +52,7 @@
         </div>
     </div>
     <!-- Carousel End -->
+
     <!-- Services Start -->
     <div class="container-fluid service bg-light py-5">
         <div class="container py-5">
@@ -323,15 +318,6 @@
                 @foreach ($kontens as $konten)
                 <div class="blog-item p-4 shadow-sm rounded bg-white">
                     <div class="blog-img mb-4 position-relative">
-
-                        {{-- Tampilkan video jika ada --}}
-                        @if ($konten->video_konten)
-                        <video class="w-100 rounded" controls style="max-height: 250px; object-fit: cover;">
-                            <source src="{{ asset('storage/konten/video/' . $konten->video_konten) }}" type="video/mp4">
-                            Browser Anda tidak mendukung video.
-                        </video>
-                        @endif
-
                         {{-- Gambar konten --}}
                         @if ($konten->foto_konten)
                         <img src="{{ asset('storage/konten/gambar/' . $konten->foto_konten) }}"
@@ -363,7 +349,7 @@
                     <div class="d-flex align-items-center border-top pt-3">
                         <img src="{{ $konten->penulis && $konten->penulis->user && $konten->penulis->user->profile_photo
                     ? asset('storage/images/profile/' . $konten->penulis->user->profile_photo)
-                    : asset('storage/images/profile/default-avatar.png') }}" class="img-fluid rounded-circle"
+                    : asset('images/user/default.jpg') }}" class="img-fluid rounded-circle"
                             style="width: 50px; height: 50px; object-fit: cover;"
                             alt="{{ $konten->penulis->nama ?? 'Penulis' }}">
 
@@ -382,7 +368,8 @@
 
     <!-- Blog End -->
 
-    @push('scripts')
+</div>
+@push('scripts')
     <script>
         // Fungsi untuk menginisialisasi carousel
         function initCarousels() {
@@ -446,9 +433,5 @@
             setTimeout(initCarousels, 100);
         });
     </script>
-    @endpush
+@endpush
 
-
-
-
-</div>

@@ -35,22 +35,27 @@ class ServiceDetail extends Component
     public $totalSparepart = 0;
     public $totalSemua = 0;
 
+    public $estimasiWaktu = '';
+    public $estimasiWaktuReadable = '';
+
     public $editIndex = null;
     public $editJumlah = null;
-    // public function mount($id)
-    // {
-    //     $this->service = Service::findOrFail($id);
-    //     $this->jasas = Jasa::all();
-    //     $this->spareparts = Sparepart::all();
-    // }
+
+    public $isProcessing = false;
+    protected $listeners = ['modalOpened'];
 
     public function hitungTotal()
     {
         Log::info('Hitung Total dipanggil');
         $this->totalJasa = collect($this->jasaList)->sum('harga');
+        $this->estimasiWaktu = $this->hitungEstimasiWaktu();
+        $this->estimasiWaktuReadable = $this->hitungEstimasiWaktuReadable();
         $this->totalSparepart = collect($this->sparepartList)->sum('sub_total');
         $this->totalSemua = $this->totalJasa + $this->totalSparepart;
-        $this->service->update(['estimasi_harga' => $this->totalSemua]);
+        $this->service->update([
+            'estimasi_harga' => $this->totalSemua,
+            'estimasi_waktu' => $this->estimasiWaktu,
+        ]);
     }
 
 
@@ -66,7 +71,8 @@ class ServiceDetail extends Component
             return [
                 'jasa_id' => $item->jasa_id,
                 'nama_jasa' => $item->jasa->nama_jasa,
-                'harga' => $item->harga,
+                'harga' => $item->jasa->harga,
+                'estimasi' => $item->jasa->estimasi,
             ];
         })->toArray();
 
@@ -84,13 +90,23 @@ class ServiceDetail extends Component
         $this->hitungTotal(); // hitung ulang grand_total awal
     }
 
+    public function modalOpened()
+    {
+        $this->isProcessing = false;
+    }
     public function openEditModal($index)
     {
+        if ($this->isProcessing) return;
+
+        $this->isProcessing = true;
         $this->editIndex = $index;
         $this->editJumlah = $this->sparepartList[$index]['jumlah'];
 
         // Kirim event ke frontend agar modal dibuka
         $this->dispatch('open-edit-modal');
+
+        // Setelah proses selesai, reset flag
+        // $this->isProcessing = false;
     }
 
     public function updateJumlah()
@@ -133,6 +149,7 @@ class ServiceDetail extends Component
             'jasa_id' => $jasa->id,
             'nama_jasa' => $jasa->nama_jasa,
             'harga' => $jasa->harga,
+            'estimasi' => $jasa->estimasi
         ];
 
         $this->selectedJasaId = '';
@@ -250,6 +267,42 @@ class ServiceDetail extends Component
         session()->flash('success', 'Detail service berhasil disimpan.');
         return redirect()->route('service.view');
     }
+    protected function hitungEstimasiWaktu(): string
+    {
+        $totalDetik = collect($this->jasaList)->reduce(function ($carry, $item) {
+            $waktu = $item['estimasi'] ?? '00:00:00'; // default jika tidak ada estimasi
+
+            // Gunakan array_pad untuk mencegah error undefined key
+            [$jam, $menit, $detik] = array_pad(explode(':', $waktu), 3, 0);
+
+            return $carry + ((int)$jam * 3600 + (int)$menit * 60 + (int)$detik);
+        }, 0);
+
+        $jam = floor($totalDetik / 3600);
+        $menit = floor(($totalDetik % 3600) / 60);
+        $detik = $totalDetik % 60;
+
+        return sprintf('%02d:%02d:%02d', $jam, $menit, $detik);
+    }
+
+    protected function hitungEstimasiWaktuReadable(): string
+    {
+        $totalDetik = collect($this->jasaList)->reduce(function ($carry, $item) {
+            $waktu = $item['estimasi'] ?? '00:00:00';
+            [$jam, $menit, $detik] = array_pad(explode(':', $waktu), 3, 0);
+            return $carry + ((int)$jam * 3600 + (int)$menit * 60 + (int)$detik);
+        }, 0);
+
+        $jam = floor($totalDetik / 3600);
+        $menit = floor(($totalDetik % 3600) / 60);
+
+        $output = [];
+        if ($jam > 0) $output[] = $jam . ' jam';
+        if ($menit > 0) $output[] = $menit . ' menit';
+
+        return $output ? implode(' ', $output) : '0 menit';
+    }
+
 
     public function render()
     {
