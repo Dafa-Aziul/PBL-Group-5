@@ -22,6 +22,7 @@ class InvoiceController extends Controller
 
         return $pdf->stream('invoice_'  . $transaksi->kode_transaksi . '.pdf');
     }
+
     public function download($id)
     {
         $transaksi = Transaksi::with([

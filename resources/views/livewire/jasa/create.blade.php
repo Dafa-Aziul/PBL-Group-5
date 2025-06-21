@@ -49,7 +49,7 @@
                     <label>Jenis Kendaraan </label>
                     <select class="form-select @error('form.jenis_kendaraan_id') is-invalid @enderror"
                         wire:model="form.jenis_kendaraan_id">
-                        <option value="" disabled selected hidden>-- Pilih Jenis Kendaraan --</option>
+                        <option selected hidden>-- Pilih Jenis Kendaraan --</option>
                         @foreach ($jenis_kendaraan as $jenis)
                         <option value="{{$jenis->id}}">{{$jenis->nama_jenis}}</option>
                         @endforeach
@@ -75,7 +75,7 @@
                     Estimasi: {{ $jam }} jam {{ $menit }} menit
                 </p>
                 @endif
-                
+
                 <div class="mb-3">
                     <label>Harga</label>
                     <input type="text" id="harga" class="form-control" oninput="formatHargaLivewire(this)"

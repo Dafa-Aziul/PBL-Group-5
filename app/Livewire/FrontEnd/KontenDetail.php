@@ -5,9 +5,10 @@ namespace App\Livewire\FrontEnd;
 use App\Models\Konten;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 
 #[layout('layouts.guest')]
-
+#[Title('Berita & Promosi Bengkel')]
 class KontenDetail extends Component
 {
     public $konten;

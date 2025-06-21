@@ -42,7 +42,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         @can('akses-admin-owner')
         <div class="col-12 col-lg-9">
             <!-- Chart Transaksi Card (EXACTLY THE SAME CONTENT) -->
-            <div class="card card-hover" wire:poll.visible.3000ms='emitChartData'>
+            <div class="card card-hover" wire:poll.visible.3000ms>
                 <div class="card-body">
                     <h3 class="card-title text-center text-success">
                         <i class="fa-solid fa-chart-simple"></i> Chart Transaksi
@@ -247,7 +247,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         {{-- Chart Absensi --}}
         <div class="col-md-6">
             <div class="card h-100">
-                <div class="card-body" wire:poll.visible.3000ms='emitChartData'>
+                <div class="card-body" wire:poll.visible.3000ms>
                     <h3 class="card-title text-center">
                         <i class="fa-solid fa-chart-simple"></i> Chart Absensi
                     </h3>

@@ -205,7 +205,7 @@ class Dashboard extends Component
     }
     public function render()
     {
-
+        $this->emitChartData();
         //untuk card absensi (admin-mekanik)
         $today = Carbon::today()->toDateString();
 
@@ -217,12 +217,12 @@ class Dashboard extends Component
             ->orderBy('jam_masuk', 'asc')
             ->get();
 
-        $spareparts = Sparepart::where('stok', '<', 10)->get();
+        $spareparts = Sparepart::where('stok', '<=', 10)->get();
         $stokmenipis = $spareparts->count();
 
         // untuk card absensi (owner)
         $chartStatusAbsensi = $this->getAllStatusChartData();
-        $belumAbsen = $this->getBelumAbsen(10, 0); // jam 10:00
+        $belumAbsen = $this->getBelumAbsen(7, 0); // jam 10:00
 
         $jumlahTransaksi = $this->getFilteredTransaksisTanpaSearch()
             ->whereDate('created_at', today())

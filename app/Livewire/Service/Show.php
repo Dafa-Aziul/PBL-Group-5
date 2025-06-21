@@ -10,10 +10,12 @@ use Livewire\Attributes\Title;
 class Show extends Component
 {
     public $service;
+    public $estimasiWaktuReadable = '';
 
     public function mount($id)
     {
         $this->service = Service::findOrFail($id);
+        $this->estimasiWaktuReadable = $this->hitungEstimasiWaktuReadable();
     }
 
     function getStatusColor(string $status): string
@@ -27,6 +29,21 @@ class Show extends Component
             'batal'            => 'danger',
             default            => 'dark',
         };
+    }
+
+    protected function hitungEstimasiWaktuReadable(): string
+    {
+        $waktu = $this->service->estimasi_waktu ?? '00:00:00';
+        [$jam, $menit, $detik] = array_pad(explode(':', $waktu), 3, 0);
+
+        $jam = (int) $jam;
+        $menit = (int) $menit;
+
+        $output = [];
+        if ($jam > 0) $output[] = "{$jam} jam";
+        if ($menit > 0) $output[] = "{$menit} menit";
+
+        return $output ? implode(' ', $output) : '0 menit';
     }
 
     public function render()

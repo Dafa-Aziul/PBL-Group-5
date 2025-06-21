@@ -166,40 +166,66 @@
 </div>
 
 @push('scripts')
-    @if ($type === 'check-in' || $type === 'check-out')
-        <script>
-            const video = document.getElementById('camera');
-            const canvas = document.getElementById('snapshot');
-            const input = document.getElementById('fotoInput');
+@if ($type === 'check-in' || $type === 'check-out')
+<script>
+    const canvas = document.getElementById('snapshot');
+    const input = document.getElementById('fotoInput');
+    let streamRef = null;
 
-            if (video) {
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(stream => video.srcObject = stream)
-                    .catch(e => alert('Tidak bisa akses kamera: ' + e.message));
-            }
+    function startCamera() {
+        const video = document.getElementById('camera');
+        if (!video) return;
 
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => video.srcObject = stream)
-                .catch(e => alert('Tidak bisa akses kamera: ' + e.message));
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                streamRef = stream;
+            })
+            .catch(e => alert('Tidak bisa akses kamera: ' + e.message));
+    }
 
-            function takePicture() {
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-                canvas.toBlob(blob => {
-                    const file = new File([blob], "absen.jpg", { type: "image/jpeg" });
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    input.files = dataTransfer.files;
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                    @this.upload('{{ $type === "check-in" ? "form.foto_masuk" : "form.foto_keluar" }}', file, (success) => {
-                console.log("Upload sukses!");
-            }, (error) => {
-                console.error("Upload gagal:", error);
-            });
-                }, 'image/jpeg');
+    function stopCamera() {
+        if (streamRef) {
+            streamRef.getTracks().forEach(track => track.stop());
+            streamRef = null;
+        }
+    }
 
-            }
-        </script>
-    @endif
+    function takePicture() {
+        const video = document.getElementById('camera');
+        if (!video) return;
+
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob(blob => {
+            const file = new File([blob], "absen.jpg", { type: "image/jpeg" });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            input.files = dataTransfer.files;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+
+            @this.upload('{{ $type === "check-in" ? "form.foto_masuk" : "form.foto_keluar" }}', file,
+                (success) => console.log("Upload sukses!"),
+                (error) => console.error("Upload gagal:", error)
+            );
+        }, 'image/jpeg');
+    }
+
+    // Start kamera pertama kali saat halaman pertama kali dimuat
+    startCamera();
+
+    // Stop kamera sebelum keluar/navigasi
+    window.addEventListener('beforeunload', stopCamera);
+    document.addEventListener('livewire:navigating', stopCamera);
+
+    // Start kamera ulang setelah kembali ke halaman ini
+    document.addEventListener('livewire:navigated', () => {
+        setTimeout(() => startCamera(), 100); // delay kecil agar video element siap
+    });
+</script>
+@endif
 @endpush
+
+

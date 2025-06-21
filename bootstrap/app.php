@@ -26,7 +26,5 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withSchedule(function (Schedule $schedule){
         $schedule->command('absen:genarate')->dailyAt('18:00');
     })
-    
+
     ->create();
-
-

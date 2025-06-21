@@ -52,5 +52,4 @@ class LacakController extends Controller
             ],
         ]);
     }
-    
 }

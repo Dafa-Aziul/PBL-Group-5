@@ -284,12 +284,14 @@
 </script>
 @endpush
 <div>
-    <h2 class="mt-4">Kelola Absensi</h2>
-    <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
-                href="{{ route('absensi.view') }}">Absensi</a></li>
-        <li class="breadcrumb-item active">Rekap Absensi</li>
-    </ol>
+    <div class="">
+        <h2 class="mt-4">Kelola Absensi</h2>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
+                    href="{{ route('absensi.view') }}">Absensi</a></li>
+            <li class="breadcrumb-item active">Rekap Absensi</li>
+        </ol>
+    </div>
 
     {{-- Perbaikan session flash message --}}
     @if (session()->has('success'))
@@ -361,27 +363,38 @@
         <!-- Reset Button -->
         <div class="col-12 col-md-4 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
             <!-- Checkbox "Semua" -->
-            <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
-                <option value="" disabled selected hidden>Pilih Bulan</option>
-                @foreach(range(1, 12) as $bulan)
-                <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
-                </option>
-                @endforeach
-            </select>
-            <select class="form-select" wire:model.change="filterStatus" style="cursor:pointer;">
-                <option value="" disabled selected hidden>Pilih Status</option>
-                <option value="hadir">Hadir</option>
-                <option value="terlambat">Terlambat</option>
-                <option value="lembur">Lembur</option>
-                <option value="izin">Izin</option>
-                <option value="sakit">Sakit</option>
-                <option value="alpha">Alpha</option>
-            </select>
-            <select class="form-select" wire:model.change="sortDirection">
-                <option value="desc">Terbaru</option>
-                <option value="asc">Terlama</option>
-            </select>
-            <button class="btn btn-outline-secondary w-100" wire:click="resetFilters">Reset Filter</button>
+            <div>
+                <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                    <option value="" disabled selected hidden>Pilih Bulan</option>
+                    @foreach(range(1, 12) as $bulan)
+                    <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <select class="form-select" wire:model.change="filterStatus" style="cursor:pointer;">
+                    <option value="" disabled selected hidden>Pilih Status</option>
+                    <option value="hadir">Hadir</option>
+                    <option value="terlambat">Terlambat</option>
+                    <option value="lembur">Lembur</option>
+                    <option value="izin">Izin</option>
+                    <option value="sakit">Sakit</option>
+                    <option value="alpha">Alpha</option>
+                </select>
+            </div>
+            <div>
+                <select class="form-select" wire:model.change="sortDirection">
+                    <option value="desc">Terbaru</option>
+                    <option value="asc">Terlama</option>
+                </select>
+            </div>
+            <div class="">
+                <button wire:click="resetFilters" class="btn btn-outline-secondary d-flex align-items-center">
+                    <i class="fas fa-rotate me-1"></i>
+                    <span class="d-none d-md-inline">Reset</span>
+                </button>
+            </div>
         </div>
 
 
@@ -391,6 +404,77 @@
             <div>
                 <i class="fas fa-table me-1"></i>
                 <span class="d-none d-md-inline ms-1 semibold">Rekap Absensi</span>
+            </div>
+            <div class="d-flex align-items-center">
+                <button type="button" class="btn btn-outline-primary" title="Export data" data-bs-toggle="modal"
+                    data-bs-target="#exportModal">
+                    Export <i class="fa-solid fa-file-export ms-1"></i>
+                </button>
+            </div>
+            <div wire:ignore.self class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <form wire:submit.prevent="submitForm" class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Export Laporan Absensi</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            {{-- Start Date --}}
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">Tanggal Mulai</label>
+                                <input type="date" class="form-control @error('start_date') is-invalid @enderror"
+                                    id="startDate" wire:model="start_date">
+                                @error('start_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- End Date --}}
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">Tanggal Akhir</label>
+                                <input type="date" class="form-control @error('end_date') is-invalid @enderror"
+                                    id="endDate" wire:model="end_date">
+                                @error('end_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            {{-- Format --}}
+                            <div class="mb-3">
+                                <label class="form-label">Format Export</label>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" id="formatPdf" wire:model="format"
+                                        value="pdf">
+                                    <label class="btn btn-outline-danger" for="formatPdf">
+                                        <i class="fa-solid fa-file-pdf me-1"></i> PDF
+                                    </label>
+                                    <input type="radio" class="btn-check" id="formatExcel" wire:model="format"
+                                        value="excel">
+                                    <label class="btn btn-outline-success" for="formatExcel">
+                                        <i class="fa-solid fa-file-excel me-1"></i> Excel
+                                    </label>
+                                </div>
+                                @error('format')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+
+                            <button type="submit" class="btn btn-info" wire:click="$set('action', 'preview')">
+                                <i class="fa-solid fa-eye me-1"></i> Preview
+                            </button>
+
+                            <button type="submit" class="btn btn-primary" wire:click="$set('action', 'download')">
+                                <i class="fa-solid fa-download me-1"></i> Download
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -453,14 +537,14 @@
 
                             {{-- Foto masuk, dengan fallback default --}}
                             <td class="text-center">
-                                <img src="{{ $absensi->foto_masuk ? asset('storage/absensi/foto_masuk/' . $absensi->foto_masuk) : asset('images/default.jpg') }}"
+                                <img src="{{ $absensi->foto_masuk ? asset('storage/absensi/foto_masuk/' . $absensi->foto_masuk) : asset('images/user/default.jpg') }}"
                                     alt="Foto Masuk" class="img-thumbnail"
                                     style="max-width: 100px; max-height: 100px; object-fit: contain;">
                             </td>
 
                             {{-- Foto keluar, dengan fallback default --}}
                             <td class="text-center">
-                                <img src="{{ $absensi->foto_keluar ? asset('storage/absensi/foto_keluar/' . $absensi->foto_keluar) : asset('storage/absensi/foto_keluar/default.jpg') }}"
+                                <img src="{{ $absensi->foto_keluar ? asset('storage/absensi/foto_keluar/' . $absensi->foto_keluar) : asset('images/user/default.jpg') }}"
                                     alt="Foto Keluar" class="img-thumbnail"
                                     style="max-width: 100px; max-height: 100px; object-fit: contain;">
                             </td>

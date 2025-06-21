@@ -24,6 +24,7 @@ class Service extends Model
         'deskripsi_keluhan',
         'status',
         'estimasi_harga',
+        'estimasi_waktu',
         'tanggal_mulai_service',
         'tanggal_selesai_service',
         'keterangan',

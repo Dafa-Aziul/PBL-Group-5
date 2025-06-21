@@ -18,11 +18,11 @@
                                 </p>
                                 <div class="d-flex justify-content-center mb-4 mobile-btn-wrapper ">
                                     <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2 btn-custom-mobile"
-                                        href="#">
+                                        href="{{ route('lacakService') }}">
                                         <i class="fas fa-play-circle me-2"></i> Lacak Service
                                     </a>
                                     <a class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2 btn-custom-mobile"
-                                        href="#">
+                                        href="{{ route('layanan') }}">
                                         Layanan Kami
                                     </a>
                                 </div>
@@ -44,12 +44,6 @@
                                     Dengan teknisi bersertifikat dan peralatan modern, kami
                                     memberikan solusi terbaik untuk masalah kendaraan Anda.
                                 </p>
-                                <!--
-        <div class="d-flex justify-content-center flex-shrink-0 mb-4">
-          <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2" href="#"><i class="fas fa-play-circle me-2"></i> Proses Kerja</a>
-          <a class="btn btn-primary rounded-pill py-3 px-4 px-md-5 ms-2" href="#">Booking Sekarang</a>
-        </div>
-        -->
                             </div>
                         </div>
                     </div>
@@ -58,6 +52,7 @@
         </div>
     </div>
     <!-- Carousel End -->
+
     <!-- Services Start -->
     <div class="container-fluid service bg-light py-5">
         <div class="container py-5">
@@ -307,6 +302,8 @@
     <!-- About End -->
 
     <!-- Blog Start -->
+
+
     <div class="container-fluid blog py-5">
         <div class="container py-5">
             <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.2s" style="max-width: 800px;">
@@ -321,15 +318,6 @@
                 @foreach ($kontens as $konten)
                 <div class="blog-item p-4 shadow-sm rounded bg-white">
                     <div class="blog-img mb-4 position-relative">
-
-                        {{-- Tampilkan video jika ada --}}
-                        @if ($konten->video_konten)
-                        <video class="w-100 rounded" controls style="max-height: 250px; object-fit: cover;">
-                            <source src="{{ asset('storage/konten/video/' . $konten->video_konten) }}" type="video/mp4">
-                            Browser Anda tidak mendukung video.
-                        </video>
-                        @endif
-
                         {{-- Gambar konten --}}
                         @if ($konten->foto_konten)
                         <img src="{{ asset('storage/konten/gambar/' . $konten->foto_konten) }}"
@@ -361,7 +349,7 @@
                     <div class="d-flex align-items-center border-top pt-3">
                         <img src="{{ $konten->penulis && $konten->penulis->user && $konten->penulis->user->profile_photo
                     ? asset('storage/images/profile/' . $konten->penulis->user->profile_photo)
-                    : asset('storage/images/profile/default-avatar.png') }}" class="img-fluid rounded-circle"
+                    : asset('images/user/default.jpg') }}" class="img-fluid rounded-circle"
                             style="width: 50px; height: 50px; object-fit: cover;"
                             alt="{{ $konten->penulis->nama ?? 'Penulis' }}">
 
@@ -377,11 +365,73 @@
             </div>
         </div>
     </div>
+
     <!-- Blog End -->
 
-
-
-
-
-
 </div>
+@push('scripts')
+    <script>
+        // Fungsi untuk menginisialisasi carousel
+        function initCarousels() {
+            // Hancurkan carousel yang sudah ada jika ada
+            $('.header-carousel, .blog-carousel').each(function() {
+                if ($(this).data('owl.carousel')) {
+                    $(this).trigger('destroy.owl.carousel');
+                    $(this).removeClass('owl-loaded owl-hidden');
+                    $(this).find('.owl-stage-outer').children().unwrap();
+                }
+            });
+
+            // Hero Header carousel
+            $(".header-carousel").owlCarousel({
+                animateOut: 'fadeOut',
+                items: 1,
+                margin: 0,
+                stagePadding: 0,
+                autoplay: true,
+                smartSpeed: 500,
+                dots: true,
+                loop: true,
+                nav: true,
+                navText: [
+                    '<i class="bi bi-arrow-left"></i>',
+                    '<i class="bi bi-arrow-right"></i>'
+                ],
+            });
+
+            // Blog carousel
+            $(".blog-carousel").owlCarousel({
+                autoplay: true,
+                smartSpeed: 1500,
+                center: false,
+                dots: false,
+                loop: true,
+                margin: 25,
+                nav: true,
+                navText: [
+                    '<i class="fa fa-angle-right"></i>',
+                    '<i class="fa fa-angle-left"></i>'
+                ],
+                responsiveClass: true,
+                responsive: {
+                    0: { items: 1 },
+                    576: { items: 1 },
+                    768: { items: 2 },
+                    992: { items: 2 },
+                    1200: { items: 3 }
+                }
+            });
+        }
+
+        // Inisialisasi pertama kali saat halaman dimuat
+        $(document).ready(function() {
+            initCarousels();
+        });
+
+        // Livewire V3 - navigasi antar halaman (SPA behavior)
+        document.addEventListener('livewire:navigated', () => {
+            setTimeout(initCarousels, 100);
+        });
+    </script>
+@endpush
+

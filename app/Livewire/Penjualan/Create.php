@@ -27,6 +27,9 @@ class Create extends Component
     public $editJumlah = null;
     public float $total_diskon = 0;
 
+    public $isProcessing = false;
+    protected $listeners = ['modalOpened'];
+
     public function mount()
     {
         $this->pelanggans = Pelanggan::all();
@@ -61,11 +64,23 @@ class Create extends Component
 
 
 
+    public function modalOpened()
+    {
+        $this->isProcessing = false;
+    }
     public function openEditModal($index)
     {
+        if ($this->isProcessing) return;
+
+        $this->isProcessing = true;
         $this->editIndex = $index;
         $this->editJumlah = $this->sparepartList[$index]['jumlah'];
+
+        // Kirim event ke frontend agar modal dibuka
         $this->dispatch('open-edit-modal');
+
+        // Setelah proses selesai, reset flag
+        // $this->isProcessing = false;
     }
 
     public function updateJumlah()

@@ -15,6 +15,10 @@ class Create extends Component
 
     public function submit()
     {
+        // Tambahkan detik jika hanya HH:MM
+        if (preg_match('/^\d{2}:\d{2}$/', $this->form->estimasi)) {
+            $this->form->estimasi .= ':00';
+        }
         $this->form->harga = $this->form->harga ?? 0;
         $validated = $this->form->validate();
 

@@ -11,12 +11,6 @@
                         Pantau status kendaraanmu secara real-time, tanpa repot — cukup masukkan nomor polisi atau kode
                         service!
                     </p>
-                    {{-- <ol
-                        class="breadcrumb d-flex justify-content-center justify-content-md-start mb-0 wow fadeInDown mt-3"
-                        data-wow-delay="0.3s">
-                        <li class="breadcrumb-item"><a href="/" class="text-white text-info">Beranda</a></li>
-                        <li class="breadcrumb-item active text-primary">Layanan</li>
-                    </ol> --}}
                 </div>
 
                 <!-- Kolom Gambar -->
@@ -39,8 +33,7 @@
             <div class="col-md-6">
                 <form wire:submit.prevent="checkStatus">
                     <div class="input-group mb-3">
-                        <input type="text" wire:model="input" class="form-control"
-                            placeholder="Contoh: SRV-1234">
+                        <input type="text" wire:model="input" class="form-control" placeholder="Contoh: SRV-1234">
                         <button type="submit" class="btn btn-primary">Cek Status</button>
                     </div>
                 </form>
@@ -55,24 +48,71 @@
 
         @if ($submitted && $service)
         <div class="row justify-content-center">
-            <div class="col-lg-6">
+            <div class="col-lg-6 wow fadeInUp">
+                {{-- CARD: Info Dasar Service --}}
+                <div class="card mt-4 shadow-sm border-0">
+                    <div class="card-header bg-primary text-white fs-6 fw-semibold">
+                        <i class="fas fa-info-circle me-2"></i> 
+                        <strong>Info Dasar Service</strong>
+                        
+                    </div>
+                    <div class="card-body fs-6">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2">
+                                <strong>Kode Service:</strong>
+                                <span class="badge bg-light text-dark px-2 py-1">{{ $service[0]['kode_service'] ?? '-'
+                                    }}</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong>No Polisi:</strong>
+                                <span class="badge bg-info text-white px-2 py-1">{{ $service[0]['no_polisi'] ?? '-'
+                                    }}</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong>Montir:</strong>
+                                <span class="badge bg-success text-white px-2 py-1">{{ $service[0]['montir']['nama'] ??
+                                    '-' }}</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong>Estimasi Waktu:</strong>
+                                @php
+                                $waktu = $service[0]['estimasi_waktu'] ?? null;
+                                $jam = $menit = 0;
+                                if ($waktu) {
+                                $carbon = \Carbon\Carbon::parse($waktu);
+                                $jam = (int) $carbon->format('G');
+                                $menit = (int) $carbon->format('i');
+                                }
+                                @endphp
+                                <span class="badge bg-warning text-dark px-2 py-1">
+                                    @if ($waktu)
+                                    @if ($jam > 0 && $menit > 0)
+                                    {{ $jam }} jam {{ $menit }} menit
+                                    @elseif ($jam > 0)
+                                    {{ $jam }} jam
+                                    @elseif ($menit > 0)
+                                    {{ $menit }} menit
+                                    @else
+                                    -
+                                    @endif
+                                    @else
+                                    -
+                                    @endif
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
-                <div class="card mt-4 shadow-sm border-0 wow fadeInUp">
+                {{-- CARD: Log Status Service --}}
+                <div class="card mt-4 shadow-sm border-0">
                     <div class="card-header bg-primary text-white d-flex align-items-center">
                         <i class="fas fa-stream me-2"></i>
                         <strong>Log Status Service</strong>
                     </div>
-
                     <div class="card-body">
 
-                        {{-- Info dasar --}}
-                        <div class="mb-3">
-                            <strong>Kode Service:</strong> {{ $service[0]['kode_service'] ?? '-' }}<br>
-                            <strong>No Polisi:</strong> {{ $service[0]['no_polisi'] ?? '-' }}<br>
-                            <strong>Montir:</strong> {{ $service[0]['montir']['nama'] ?? '-' }}
-                        </div>
-
-                        {{-- Timeline --}}
+                        {{-- Timeline Styles --}}
                         <style>
                             .timeline-container {
                                 position: relative;
@@ -155,23 +195,23 @@
                             
                         </style>
 
+                        {{-- Timeline --}}
+                        @php
+                        $icons = [
+                        'dalam antrian' => 'fas fa-check',
+                        'dianalisis' => 'fas fa-tools',
+                        'analisis selesai' => 'fas fa-clipboard-check',
+                        'dalam proses' => 'fas fa-cogs',
+                        'selesai' => 'fas fa-car',
+                        'batal' => 'fas fa-times-circle'
+                        ];
 
-                        <div class="timeline-container">
-                            @php
-                            $icons = [
-                            'dalam antrian' => 'fas fa-check',
-                            'dianalisis' => 'fas fa-tools',
-                            'analisis selesai' => 'fas fa-clipboard-check',
-                            'dalam proses' => 'fas fa-cogs',
-                            'selesai' => 'fas fa-car',
-                            'batal' => 'fas fa-times-circle'
-                            ];
+                        $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
+                        return array_search($step['status'], $allStatus) <= array_search($currentStatus, $allStatus);
+                            })->reverse();
+                            @endphp
 
-                            $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
-                            return array_search($step['status'], $allStatus) <= array_search($currentStatus,
-                                $allStatus); })->reverse();
-                                @endphp
-
+                            <div class="timeline-container">
                                 @foreach ($filteredStatus as $step)
                                 @php
                                 $status = $step['status'];
@@ -190,81 +230,24 @@
                                         </p>
                                         <p class="timeline-keterangan">{{ $step['keterangan'] ?? '-' }}</p>
                                     </div>
-
-                        </div>
-                        @endforeach
+                            </div>
+                            @endforeach
                     </div>
-
                 </div>
             </div>
 
 
 
         </div>
-        @endif
 
 
 
-        
     </div>
+    @endif
+
+
 
 
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Simulasi JS Tracking -->
-<script>
-    function checkStatus() {
-        const input = document.getElementById("serviceInput").value.trim().toUpperCase();
-        const result = document.getElementById("resultArea");
-
-        const dataTracking = {
-            "BA1234CD": "Dalam Pengecekan",
-            "BA5678EF": "Dalam Perbaikan",
-            "SRV001": "Menunggu Suku Cadang",
-            "SRV002": "Servis Selesai - Siap Diambil",
-        };
-
-        if (input === "") {
-            result.className = "alert alert-warning";
-            result.innerText = "Silakan masukkan nomor yang valid!";
-            result.classList.remove("d-none");
-            return;
-        }
-
-        if (dataTracking[input]) {
-            result.className = "alert alert-success";
-            result.innerHTML = `<strong>Status:</strong> ${dataTracking[input]}`;
-        } else {
-            result.className = "alert alert-danger";
-            result.innerText = "Nomor tidak ditemukan. Silakan hubungi admin.";
-        }
-        result.classList.remove("d-none");
-    }
-</script>
-
-</div>

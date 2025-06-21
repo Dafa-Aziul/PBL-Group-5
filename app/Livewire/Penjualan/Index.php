@@ -196,7 +196,7 @@ class Index extends Component
 
     public function render()
     {
-        $this->emitChartData();
+        // $this->emitChartData();
         $penjualans = $this->getFilteredPenjualans()->latest()->paginate($this->perPage);
         return view('livewire.penjualan.index', array_merge(
             compact('penjualans'),
