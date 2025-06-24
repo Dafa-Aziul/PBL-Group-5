@@ -246,7 +246,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         @can('owner')
         {{-- Chart Absensi --}}
         <div class="col-md-6">
-            <div class="card h-100">
+            <div class="card h-100 card-hover">
                 <div class="card-body" wire:poll.visible.3000ms>
                     <h3 class="card-title text-center">
                         <i class="fa-solid fa-chart-simple"></i> Chart Absensi
@@ -261,7 +261,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 
         {{-- Statistik Karyawan Belum Absen --}}
         <div class="col-12 col-md-3">
-            <div class="card flex-fill h-100" wire:poll.visible.3000ms>
+            <div class="card flex-fill h-100 card-hover" wire:poll.visible.3000ms>
                 <div class="card-body">
                     <h5 class="card-title">
                         <i class="fa-solid fa-hand-point-up"></i> Karyawan Belum Absen
