@@ -556,7 +556,7 @@
     max-width: 100%;
     overflow: hidden;
 
-    /* object-fit: cover; */
+    
 }
 
 .header-carousel .owl-nav .owl-prev,
@@ -868,7 +868,7 @@
 }
 
 .blog .owl-nav .owl-prev:hover {
-    background: var(--bs-dark);
+    background: var(--bs-light);
     color: var(--bs-primary);
 }
 
@@ -884,7 +884,7 @@
 }
 
 .blog .owl-nav .owl-next:hover {
-    background: var(--bs-dark);
+    background: var(--bs-light);
     color: var(--bs-primary);
 }
 /*** Blog End ***/

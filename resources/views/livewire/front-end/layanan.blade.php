@@ -63,7 +63,7 @@
                 <!-- Perbaikan Mesin -->
                 <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.4s">
                     <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                        <img src="{{ asset('images/asset/layanana1.jpg') }}" class="card-img-top"
+                        <img src="{{ asset('images/asset/layanan8.jpg') }}" class="card-img-top"
                             style="height: 250px; object-fit: cover;" alt="Perbaikan Mesin">
                         <div class="card-body p-4">
                             <h5 class="fw-bold text-primary">Perbaikan Mesin</h5>
@@ -104,7 +104,7 @@
                 <!-- Sistem Kelistrikan -->
                 <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
                     <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                        <img src="{{ asset('images/asset/layanan8.jpg') }}" class="card-img-top"
+                        <img src="{{ asset('images/asset/layanana1.jpg') }}" class="card-img-top"
                             style="height: 250px; object-fit: cover;" alt="Sistem Kelistrikan">
                         <div class="card-body p-4">
                             <h5 class="fw-bold text-primary">Sistem Kelistrikan</h5>

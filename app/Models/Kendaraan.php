@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\JenisKendaraan;
 use App\Models\Pelanggan;
+use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
