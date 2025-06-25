@@ -106,7 +106,8 @@ Route::get('/berita/{id}', KontenDetail::class)->name('berita');
 Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('logout', Logout::class)->name('logout');
+    Route::post('logout', App\Livewire\Actions\Logout::class)
+    ->name('logout');
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile.show');
     Route::get('/profile/password', Password::class)->name('profile.password');

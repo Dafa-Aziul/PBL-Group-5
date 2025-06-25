@@ -33,7 +33,7 @@
             <div class="col-md-6">
                 <form wire:submit.prevent="checkStatus">
                     <div class="input-group mb-3">
-                        <input type="text" wire:model="input" class="form-control" placeholder="Contoh: SRV-1234">
+                        <input type="text" wire:model="input" name="kode" class="form-control" placeholder="Contoh: SRV-1234">
                         <button type="submit" class="btn btn-primary">Cek Status</button>
                     </div>
                 </form>

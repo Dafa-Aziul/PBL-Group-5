@@ -82,7 +82,7 @@
                 <!-- Service Card 2 -->
                 <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.4s">
                     <div class="card h-100 shadow-sm border-0 service-card">
-                        <img src="{{ asset('images/asset/layanana1.jpg') }}" class="card-img-top rounded-top img-fluid"
+                        <img src="{{ asset('images/asset/layanan8.jpg') }}" class="card-img-top rounded-top img-fluid"
                             style="height: 250px; object-fit: cover;" alt="Perbaikan Mesin">
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title fw-semibold">Perbaikan Mesin</h5>
@@ -112,7 +112,7 @@
                 <!-- Service Card 4 -->
                 <div class="col-md-6 col-lg-4 wow fadeInUp" data-wow-delay="0.2s">
                     <div class="card h-100 shadow-sm border-0 service-card">
-                        <img src="{{ asset('images/asset/layanan8.jpg') }}" class="card-img-top rounded-top img-fluid"
+                        <img src="{{ asset('images/asset/layanana1.jpg') }}" class="card-img-top rounded-top img-fluid"
                             style="height: 250px; object-fit: cover;" alt="Kelistrikan">
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title fw-semibold">Sistem Kelistrikan</h5>
@@ -318,10 +318,22 @@
                 @foreach ($kontens as $konten)
                 <div class="blog-item p-4 shadow-sm rounded bg-white">
                     <div class="blog-img mb-4 position-relative">
-                        {{-- Gambar konten --}}
-                        @if ($konten->foto_konten)
-                        <img src="{{ asset('storage/konten/gambar/' . $konten->foto_konten) }}"
-                            class="img-fluid w-100 rounded" alt="{{ $konten->judul }}"
+                        {{-- Gambar atau Video konten --}}
+                        @php
+                            $src = $konten->video_konten
+                                ? asset('storage/konten/video/' . $konten->video_konten)
+                                : ($konten->foto_konten
+                                    ? asset('storage/konten/gambar/' . $konten->foto_konten)
+                                    : asset('images/asset/default-konten.jpg'));
+                        @endphp
+
+                        @if ($konten->video_konten)
+                        <video class="img-fluid w-100 rounded" style="object-fit: cover; max-height: 250px;" controls>
+                            <source src="{{ $src }}" type="video/mp4">
+                            Browser kamu tidak mendukung tag video.
+                        </video>
+                        @else
+                        <img src="{{ $src }}" class="img-fluid w-100 rounded" alt="{{ $konten->judul ?? 'Konten' }}"
                             style="object-fit: cover; max-height: 250px;">
                         @endif
 
@@ -333,6 +345,7 @@
                             </span>
                         </div>
                     </div>
+
 
                     {{-- Judul konten --}}
                     <a href="{{ route('berita', $konten->id) }}"
@@ -370,8 +383,8 @@
 
 </div>
 @push('scripts')
-    <script>
-        // Fungsi untuk menginisialisasi carousel
+<script>
+    // Fungsi untuk menginisialisasi carousel
         function initCarousels() {
             // Hancurkan carousel yang sudah ada jika ada
             $('.header-carousel, .blog-carousel').each(function() {
@@ -390,7 +403,7 @@
                 stagePadding: 0,
                 autoplay: true,
                 smartSpeed: 500,
-                dots: true,
+                dots: false,
                 loop: true,
                 nav: true,
                 navText: [
@@ -432,6 +445,5 @@
         document.addEventListener('livewire:navigated', () => {
             setTimeout(initCarousels, 100);
         });
-    </script>
+</script>
 @endpush
-
