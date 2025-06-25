@@ -84,7 +84,7 @@
                             <td>{{ $sparepart->tipe_kendaraan}}</td>
                             <td>{{ $sparepart->ket}}</td>
                             <td class="text-center" @click.stop>
-                                <img src="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('storage/images/sparepart/default.png') }}"
+                                <img src="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('images/asset/default-sparepart.jpg') }}"
                                     alt="Foto Sparepart" class="img-thumbnail"
                                     style="max-width: 150px; max-height: 150px; object-fit: contain;"
                                     data-bs-toggle="modal" data-bs-target="#fotoModal{{ $sparepart->id }}"
@@ -102,7 +102,7 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-center">
-                                                <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('foto/default.png') }}"
+                                                <img src="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('images/asset/default-sparepart.jpg') }}"
                                                     alt="Preview Gambar" class="img-fluid rounded shadow">
                                             </div>
                                         </div>
