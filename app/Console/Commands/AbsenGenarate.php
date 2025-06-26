@@ -59,9 +59,11 @@ class AbsenGenarate extends Command
                 ->first();
 
             if ($absenMasuk) {
+                $status = $absenMasuk->status === 'terlambat' ? 'terlambat' : 'hadir';
+
                 $absenMasuk->update([
                     'jam_keluar' => now()->format('H:i'),
-                    'status' => 'hadir',
+                    'status' => $status,
                     'keterangan' => 'Otomatis checkout karena tidak melakukan absen pulang',
                 ]);
             }
