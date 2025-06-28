@@ -8,11 +8,12 @@
 
     {{-- Perbaikan session flash message --}}
     @if (session()->has('success'))
-    <div class="alert alert-success">
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+        class="alert alert-success">
         {{ session('success') }}
     </div>
     @elseif (session()->has('error'))
-    <div class="alert alert-danger">
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
         {{ session('error') }}
     </div>
     @endif

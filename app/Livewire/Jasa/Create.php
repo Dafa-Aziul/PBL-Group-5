@@ -26,7 +26,7 @@ class Create extends Component
 
         $jasa = Jasa::create($validated);
         session()->flash('success', 'Jasa berhasil ditambahkan!');
-        return redirect()->route('jasa.view')->with('wire:navigate', true);
+        return redirect()->route('jasa.view');
     }
 
     public function render()

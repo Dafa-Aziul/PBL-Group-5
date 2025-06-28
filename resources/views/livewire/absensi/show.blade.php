@@ -295,11 +295,12 @@
 
     {{-- Perbaikan session flash message --}}
     @if (session()->has('success'))
-    <div class="alert alert-success">
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+        class="alert alert-success">
         {{ session('success') }}
     </div>
     @elseif (session()->has('error'))
-    <div class="alert alert-danger">
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
         {{ session('error') }}
     </div>
     @endif
@@ -411,7 +412,7 @@
                     Export <i class="fa-solid fa-file-export ms-1"></i>
                 </button>
             </div>
-            <div wire:ignore.self class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            <div wire:ignore class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog">
                     <form wire:submit.prevent="submitForm" class="modal-content">

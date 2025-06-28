@@ -252,7 +252,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                         <i class="fa-solid fa-chart-simple"></i> Chart Absensi
                     </h3>
                     <hr class="border border-2 opacity-50">
-                    <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+                    <div class="flex-grow-1 d-flex justify-content-center align-items-center" wire:ignore>
                         <canvas id="absensiChart"></canvas>
                     </div>
                 </div>

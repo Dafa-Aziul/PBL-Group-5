@@ -142,7 +142,6 @@ class Index extends Component
         $this->filterBulan = "";
         $this->showAll = false;
         $this->emitChartData();
-        // default: tampilkan hari ini saja
     }
 
     public function updatingSearch()
@@ -316,6 +315,7 @@ class Index extends Component
 
     public function render()
     {
+        $this->emitChartData();
         $services = $this->getFilteredServices()
             ->orderBy('tanggal_mulai_service', 'desc')
             ->paginate($this->perPage);
