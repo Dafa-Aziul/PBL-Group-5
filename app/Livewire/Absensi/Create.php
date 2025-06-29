@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Karyawan;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Livewire\Attributes\Title;
@@ -26,7 +25,6 @@ class Create extends Component
 
     public function getTitle()
     {
-        return match ($this->type) {
         return match ($this->type) {
             'check-in' => 'Check In',
             'check-out' => 'Check Out',
@@ -53,24 +51,11 @@ class Create extends Component
         };
 
         $ip = $getRealIp();
-        $getRealIp = function () {
-            $realIp = getHostByName(gethostname());
-            if ($realIp === '127.0.0.1') {
-                $realIp = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
-            }
-            return $realIp;
-        };
-
-        $ip = $getRealIp();
         $prefix = env('BENGKEL_WIFI_PREFIX');
-        Log::info('Client IP: ' . $ip);
-        Log::info('Prefix: ' . $prefix);
 
-        if (!str_starts_with($ip, $prefix)) {
         if (!str_starts_with($ip, $prefix)) {
             abort(403, 'Absensi hanya bisa dilakukan di jaringan WiFi bengkel.');
         }
-
 
 
 
@@ -99,9 +84,6 @@ class Create extends Component
                 ->whereDate('tanggal', $now->toDateString())
                 ->first();
 
-            // if ($now->greaterThanOrEqualTo($batasKeluar)) {
-            //     return 'lembur';
-            // }
             // if ($now->greaterThanOrEqualTo($batasKeluar)) {
             //     return 'lembur';
             // }
@@ -175,7 +157,7 @@ class Create extends Component
 
 
 
-        if ($this->type === 'tidak-hadir') {
+        if ($this->type === 'tidak hadir') {
             $absensiHariIni = Absensi::where('karyawan_id', $this->karyawan_id)
                 ->whereDate('tanggal', $today)
                 ->first();
@@ -194,7 +176,6 @@ class Create extends Component
             if ($this->form->bukti_tidak_hadir) {
                 $data['bukti_tidak_hadir'] = $this->form->bukti_tidak_hadir->store('absensi/foto_tidak_hadir', 'public');
             }
-            Absensi::create($data);
         }
 
         if ($this->type === 'check-in') {
@@ -210,7 +191,6 @@ class Create extends Component
 
             $statusCheckIn = $absensiHariIni->status;
             //$statusCheckOut = $this->getStatusByTime(); // status berdasarkan jam keluar
-            //$statusCheckOut = $this->getStatusByTime(); // status berdasarkan jam keluar
 
             // Default: status tetap seperti check-in
             $finalStatus = $statusCheckIn;
@@ -220,12 +200,7 @@ class Create extends Component
             //     $finalStatus = 'lembur';
             // }
             if ($statusCheckIn === 'terlambat') {
-            // if ($statusCheckIn === 'hadir' && $statusCheckOut === 'lembur') {
-            //     $finalStatus = 'lembur';
-            // }
-            if ($statusCheckIn === 'terlambat') {
                 $finalStatus = 'terlambat';
-                // $keterangan = 'Karyawan lembur saat pulang pukul ' . now()->format('H:i');
                 // $keterangan = 'Karyawan lembur saat pulang pukul ' . now()->format('H:i');
             }
 
@@ -256,7 +231,6 @@ class Create extends Component
 
 
         // dd($data);
-        //dd($this->type); // Pastikan nilainya benar-benar 'tidak hadir'
         // Simpan data check-in
         // Absensi::create($data);
 
