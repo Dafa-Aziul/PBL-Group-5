@@ -14,19 +14,25 @@ $absenHariIni = $user->karyawan
 $sudahCheckIn = $absenHariIni && $absenHariIni->jam_masuk;
 $sudahCheckOut = $absenHariIni && $absenHariIni->jam_keluar;
 
+// Ambil list absensi hari ini yang status-nya izin atau sakit
+$tidakHadirList = $absensis->filter(function ($item) {
+return in_array(strtolower($item->status), ['izin', 'sakit']);
+});
+
 $statusText = 'Belum Absen';
 
 if ($sudahCheckIn && !$sudahCheckOut) {
 $statusText = 'Kamu sudah Check In';
 } elseif ($sudahCheckIn && $sudahCheckOut) {
 $statusText = 'Selamat beristirahat!';
+} elseif (!$sudahCheckIn && !$sudahCheckOut && $tidakHadirList->isNotEmpty()) {
+$statusText = 'Kamu Tidak Hadir Hari Ini';
 }
-$tidakHadirList = $absensis->filter(function($item) {
-return in_array(strtolower($item->status), ['izin', 'sakit']);
-});
 
+// Untuk keperluan kontrol tombol atau logika lain
 $statusHariIni = $absenHariIni ? strtolower($absenHariIni->status) : null;
 $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
+
 
 @endphp
 <div>
@@ -77,13 +83,13 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                             <span class="d-none d-md-inline ms-1">Check In</span>
                         </a>
                 </div>
-                    @else
-                    <div class="text-center">
-                        <div class="alert alert-warning text-center mt-3">
-                            Anda sudah melewati jam pulang status anda alpha.
-                        </div>
+                @else
+                <div class="text-center">
+                    <div class="alert alert-warning text-center mt-3">
+                        Anda sudah melewati jam pulang status anda alpha.
                     </div>
-                    @endif
+                </div>
+                @endif
                 @endif
 
 

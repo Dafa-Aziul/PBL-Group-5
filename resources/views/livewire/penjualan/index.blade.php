@@ -343,7 +343,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1">Daftar service</span>
+                <span class="d-none d-md-inline ms-1">Daftar Penjualan</span>
             </div>
             <div>
                 @can('admin')

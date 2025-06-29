@@ -27,7 +27,7 @@ class AbsensiForm extends Form
     #[Validate('nullable|image|max:2048')]
     public $bukti_tidak_hadir;
 
-    #[Validate('nullable|in:hadir,terlambat,izin,sakit,alpha,lembur')]
+    #[Validate('nullable|in:hadir,terlambat,izin,sakit,alpha')]
     public string $status;
 
     #[Validate('nullable|string|max:255')]
@@ -40,7 +40,7 @@ class AbsensiForm extends Form
         return [
             'foto_masuk' => $this->type === 'check-in' ? 'required|image|max:2048' : 'nullable',
             'foto_keluar' => $this->type === 'check-out' ? 'required|image|max:2048' : 'nullable',
-            'bukti_tidak_hadir' => $this->type === 'tidak hadir' ? 'required|image|max:2048' : 'nullable',
+            'bukti_tidak_hadir' => $this->type === 'tidak-hadir' ? 'required|image|max:2048' : 'nullable',
         ];
     }
 }
