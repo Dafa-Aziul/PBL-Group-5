@@ -33,7 +33,7 @@
             <div class="col-md-6">
                 <form wire:submit.prevent="checkStatus">
                     <div class="input-group mb-3">
-                        <input type="text" wire:model="input" class="form-control" placeholder="Contoh: SRV-1234">
+                        <input type="text" wire:model="input" name="kode" class="form-control" placeholder="Contoh: SRV-1234">
                         <button type="submit" class="btn btn-primary">Cek Status</button>
                     </div>
                 </form>
@@ -52,9 +52,9 @@
                 {{-- CARD: Info Dasar Service --}}
                 <div class="card mt-4 shadow-sm border-0">
                     <div class="card-header bg-primary text-white fs-6 fw-semibold">
-                        <i class="fas fa-info-circle me-2"></i> 
+                        <i class="fas fa-info-circle me-2"></i>
                         <strong>Info Dasar Service</strong>
-                        
+
                     </div>
                     <div class="card-body fs-6">
                         <ul class="list-unstyled mb-0">
@@ -191,8 +191,6 @@
                                 color: #495057;
                                 margin-top: 4px;
                             }
-
-                            
                         </style>
 
                         {{-- Timeline --}}
@@ -235,19 +233,7 @@
                     </div>
                 </div>
             </div>
-
-
-
         </div>
-
-
-
     </div>
     @endif
-
-
-
-
 </div>
-
-

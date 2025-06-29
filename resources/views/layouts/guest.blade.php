@@ -130,10 +130,6 @@
     {{ $slot }}
 
 
-
-
-
-
     <!-- Footer Start -->
     <x-footer-guest></x-footer-guest>
     </div>

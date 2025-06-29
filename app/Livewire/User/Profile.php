@@ -13,7 +13,7 @@ class Profile extends Component
 {
     use WithFileUploads;
 
-    public $photo;
+    public $photo = null; // Temporary file for the uploaded photo
     public $croppedImage;
 
     protected $listeners = [
@@ -25,11 +25,22 @@ class Profile extends Component
 
     public function updatedPhoto()
     {
-        $this->validate([
-            'photo' => 'image|max:2048', // Max 2MB
-        ]);
+        $validator = validator(
+            ['photo' => $this->photo],
+            ['photo' => 'image|max:2048']
+        );
+
+        if ($validator->fails()) {
+            $this->reset('photo');
+            $this->setErrorBag($validator->errors());
+            $this->dispatch('$refresh'); // Opsional, untuk cepat render error
+            return;
+        }
+
         $this->dispatch('open-cropper-modal');
     }
+
+
 
     public function saveCroppedPhoto($dataUrl)
     {
@@ -49,12 +60,12 @@ class Profile extends Component
             $user = auth()->user();
 
             if ($user->profile_photo) {
-            $oldPath = 'images/profile/' . $user->profile_photo;
-            if (Storage::disk('public')->exists($oldPath)) {
-                Storage::disk('public')->delete($oldPath);
-                logger('Foto lama dihapus: ' . $oldPath);
+                $oldPath = 'images/profile/' . $user->profile_photo;
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                    logger('Foto lama dihapus: ' . $oldPath);
+                }
             }
-        }
 
             $fileName = 'profile_' . auth()->id() . '_' . time() . '.png';
             $path = 'images/profile/' . $fileName;
@@ -65,11 +76,9 @@ class Profile extends Component
 
             $user->profile_photo = $fileName;
             $user->save();
-            auth()->user()->refresh();
-
             session()->flash('success', 'Profile photo updated successfully!');
             $this->dispatch('close-cropper-modal');
-            // return redirect()->route('profile.show'); // Redirect to profile page after saving
+            return redirect()->route('profile.show'); // Redirect to profile page after saving
 
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to save photo: ' . $e->getMessage());
@@ -87,8 +96,6 @@ class Profile extends Component
                 Log::error('Failed to delete temp file: ' . $e->getMessage());
             }
         }
-
-        $this->dispatch('close-cropper-modal');
         $this->photo = null;
     }
 

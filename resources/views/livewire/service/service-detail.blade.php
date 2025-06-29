@@ -418,7 +418,7 @@
                 </div>
             </form>
             <!-- Modal Edit Jumlah Sparepart -->
-            <div wire:ignore.self class="modal fade" id="editJumlahModal" tabindex="-1"
+            <div wire:ignore class="modal fade" id="editJumlahModal" tabindex="-1"
                 aria-labelledby="editJumlahModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <form wire:submit.prevent="updateJumlah">

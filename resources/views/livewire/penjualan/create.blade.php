@@ -154,7 +154,7 @@
                                         <option></option>
                                         @foreach($spareparts as $sparepart)
                                         <option value="{{ $sparepart->id }}"
-                                            data-image="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('storage/images/sparepart/default.png') }}"
+                                            data-image="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('images/asset/default-sparepart.jpg') }}"
                                             data-nama="{{ $sparepart->nama }}"
                                             data-harga="Rp {{ number_format($sparepart->harga, 0, ',', '.') }}"
                                             data-tipe="{{ $sparepart->tipe_kendaraan }}">

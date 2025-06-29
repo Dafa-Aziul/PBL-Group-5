@@ -7,6 +7,7 @@ use App\Models\Absensi;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Karyawan;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Livewire\Attributes\Title;
@@ -24,7 +25,7 @@ class Create extends Component
 
     public function getTitle()
     {
-        return match($this->type) {
+        return match ($this->type) {
             'check-in' => 'Check In',
             'check-out' => 'Check Out',
             default => 'Bukti Izin & Sakit',
@@ -41,12 +42,21 @@ class Create extends Component
         $this->type = $type;
 
         // Validasi WiFi bengkel (IP lokal)
-        $ip = request()->ip();
+        $getRealIp = function () {
+            $realIp = getHostByName(gethostname());
+            if ($realIp === '127.0.0.1') {
+                $realIp = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+            }
+            return $realIp;
+        };
+
+        $ip = $getRealIp();
         $prefix = env('BENGKEL_WIFI_PREFIX');
 
-        if (!str_starts_with($ip, $prefix) && $ip !== '127.0.0.1') {
+        if (!str_starts_with($ip, $prefix)) {
             abort(403, 'Absensi hanya bisa dilakukan di jaringan WiFi bengkel.');
         }
+
 
 
         $today = now()->toDateString();
@@ -54,8 +64,6 @@ class Create extends Component
         $karyawanId = $user?->karyawans?->id;
 
         if (!$karyawanId) return;
-
-        
     }
 
 

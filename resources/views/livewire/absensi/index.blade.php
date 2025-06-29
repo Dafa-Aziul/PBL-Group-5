@@ -37,17 +37,16 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 
     </ol>
     @if (session()->has('success'))
-    <div class="        ">
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    </div @elseif (session()->has('error'))
-    <div class="">
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+        class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @elseif (session()->has('error'))
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
+        {{ session('error') }}
     </div>
     @endif
+
 
 
 
