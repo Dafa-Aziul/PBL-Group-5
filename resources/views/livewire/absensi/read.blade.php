@@ -75,13 +75,22 @@
                             <td>{{ $absensi->jam_masuk ?? '-' }}</td>
                             <td>{{ $absensi->jam_keluar ?? '-' }}</td>
                             <td class="text-center">
-                                <img src="{{ $absensi && $absensi->foto_masuk ? asset('storage/' . $absensi->foto_masuk) : asset('foto/default.jpg') }}"
-                                    alt="Foto Masuk" class="img-thumbnail" style="max-width: 100px;">
+                                @if ($absensi && $absensi->foto_masuk)
+                                <img src="{{ asset('storage/' . $absensi->foto_masuk) }}" alt="Foto Masuk"
+                                    class="img-thumbnail" style="max-width: 100px;">
+                                @else
+                                -
+                                @endif
                             </td>
                             <td class="text-center">
-                                <img src="{{ $absensi && $absensi->foto_keluar ? asset('storage/' . $absensi->foto_keluar) : asset('foto/default.jpg') }}"
-                                    alt="Foto Keluar" class="img-thumbnail" style="max-width: 100px;">
+                                @if ($absensi && $absensi->foto_keluar)
+                                <img src="{{ asset('storage/' . $absensi->foto_keluar) }}" alt="Foto Keluar"
+                                    class="img-thumbnail" style="max-width: 100px;">
+                                @else
+                                -
+                                @endif
                             </td>
+
                             <td>{{ $absensi->status ?? 'Belum Absen' }}</td>
                             <td>{{ $absensi->keterangan ?? '-' }}</td>
                         </tr>

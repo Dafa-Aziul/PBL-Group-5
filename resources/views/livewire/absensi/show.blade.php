@@ -75,7 +75,6 @@
                     },
                     options:{
                         responsive: true,
-                        maintainAspectRatio: false,
                         plugins: {
                             legend: {
                                 position: 'bottom',
@@ -307,14 +306,14 @@
 
     <div class="row g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
         <div class="col-12 col-lg-4">
-            <div class="d-flex flex-column h-100 gap-3">
+            <div class="d-flex h-100 flex-column gap-3 ">
                 <div class="card card-jumlah flex-fill card-hover">
                     <div class="card-body">
                         <h5 class="card-title text-success">
-                            <i class="fa-solid fa-money-bill-1-wave"></i> Rekap Status Absensi
+                            <i class="fa-solid fa-money-bill-1-wave"></i> Penjualan Status Pembayaran
                         </h5>
                         <hr class="border border-2 opacity-50">
-                        <div class="d-flex justify-content-center p-5">
+                        <div class="d-flex justify-content-center p-5 d-flex align-items-center">
                             <canvas id="myChart" wire:ignore></canvas>
                         </div>
                     </div>

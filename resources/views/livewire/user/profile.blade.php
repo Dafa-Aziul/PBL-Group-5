@@ -1,118 +1,144 @@
 @push('scripts')
 <script>
-    let cropper;
-    let modalEl; // ✅ Deklarasikan sekali di scope tertinggi
+    // Gunakan namespace untuk menghindari redeclaration
+    if (!window.profileCropper) {
 
-    window.addEventListener('open-cropper-modal', () => {
-        modalEl = document.getElementById('cropPhotoModal');
-        const modal = new bootstrap.Modal(modalEl, {
-            backdrop: 'static',
-            keyboard: false
-        });
-
-        // Pasang event listener sekali untuk modalEl agar inisialisasi cropper di-trigger setelah modal muncul
-        modalEl.addEventListener('shown.bs.modal', () => {
-            const image = document.getElementById('cropperImage');
-            if (image && image.src) {
-                if (cropper) cropper.destroy();
-
-                cropper = new Cropper(image, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                    autoCropArea: 1,
-                    responsive: true,
-                    restore: false,
-                    checkCrossOrigin: false
+        window.profileCropper = {
+            cropper: null,
+            modalEl: null,
+            init: function() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.setupEventListeners();
                 });
-            }
-        }, { once: true }); // 'once: true' agar event hanya jalan sekali setiap modal dibuka
+            },
+            setupEventListeners: function() {
+                // Open cropper modal
+                window.addEventListener('open-cropper-modal', () => {
+                    this.modalEl = document.getElementById('cropPhotoModal');
+                    const modal = new bootstrap.Modal(this.modalEl, {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
 
-        modal.show();
-    });
+                    this.modalEl.addEventListener('shown.bs.modal', () => {
+                        const image = document.getElementById('cropperImage');
+                        if (image && image.src) {
+                            if (this.cropper) this.cropper.destroy();
 
+                            this.cropper = new Cropper(image, {
+                                aspectRatio: 1,
+                                viewMode: 1,
+                                autoCropArea: 1,
+                                responsive: true,
+                                restore: false,
+                                checkCrossOrigin: false
+                            });
+                        }
+                    });
 
-    window.addEventListener('close-cropper-modal', () => {
-        const modal = bootstrap.Modal.getInstance(modalEl); // ✅ Gunakan modalEl yang sudah dideklarasikan
-        if (modal) modal.hide();
-
-        setTimeout(() => {
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) backdrop.remove();
-
-            document.body.classList.remove('modal-open');
-            document.body.style.removeProperty('padding-right');
-        }, 300);
-
-        if (cropper) {
-            cropper.destroy();
-            cropper = null;
-        }
-
-        if (modalEl) {
-            modalEl.removeEventListener('hidden.bs.modal', this.hideModal); // ✅ Referensi yang sama
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const cropSaveBtn = document.getElementById('cropSaveBtn');
-
-        if (cropSaveBtn) {
-            cropSaveBtn.addEventListener('click', () => {
-                if (!cropper) {
-                    console.error('Cropper tidak ada');
-                    return;
-                }
-
-                // Get cropped canvas with optimized settings
-                const canvas = cropper.getCroppedCanvas({
-                    width: 500,
-                    height: 500,
-                    minWidth: 256,
-                    minHeight: 256,
-                    maxWidth: 1024,
-                    maxHeight: 1024,
-                    fillColor: '#fff',
-                    imageSmoothingEnabled: true,
-                    imageSmoothingQuality: 'high'
+                    modal.show();
                 });
 
-                if (!canvas) {
-                    console.error('Canvas tidak ada');
-                    return;
-                }
+                // Close cropper modal
+                window.addEventListener('close-cropper-modal', () => {
+                    const modal = bootstrap.Modal.getInstance(this.modalEl);
+                    if (modal) modal.hide();
 
-                // Convert canvas to blob
-                canvas.toBlob((blob) => {
-                    if (!blob) {
-                        console.error('Gagal membuat blob');
-                        return;
+                    setTimeout(() => {
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) backdrop.remove();
+
+                        document.body.classList.remove('modal-open');
+                        document.body.style.removeProperty('padding-right');
+                    }, 300);
+
+                    if (this.cropper) {
+                        this.cropper.destroy();
+                        this.cropper = null;
                     }
 
-                    const reader = new FileReader();
+                    const livewireComponent = Livewire.find('{{ $this->getId() }}');
+                    if (livewireComponent) {
+                        livewireComponent.call('closeModal');
+                    }
+                });
 
-                    // Error handling
-                    reader.onerror = () => {
-                        console.error('FileReader error');
-                        return;
-                    };
+                // Save button handler
+                const cropSaveBtn = document.getElementById('cropSaveBtn');
+                if (cropSaveBtn) {
+                    cropSaveBtn.addEventListener('click', () => {
+                        if (!this.cropper) {
+                            console.error('Cropper tidak ada');
+                            return;
+                        }
 
-                    // Success handler
-                    reader.onloadend = () => {
-                        Livewire.find('{{ $this->getId() }}').call('saveCroppedPhoto', reader.result);
-                        // Close modal after dispatch
-                        window.dispatchEvent(new CustomEvent('close-cropper-modal'));
-                    };
+                        const canvas = this.cropper.getCroppedCanvas({
+                            width: 500,
+                            height: 500,
+                            minWidth: 256,
+                            minHeight: 256,
+                            maxWidth: 1024,
+                            maxHeight: 1024,
+                            fillColor: '#fff',
+                            imageSmoothingEnabled: true,
+                            imageSmoothingQuality: 'high'
+                        });
 
-                    reader.readAsDataURL(blob);
-                }, 'image/png', 0.95); // 95% quality
-            });
-        }
-    });
+                        if (!canvas) {
+                            console.error('Canvas tidak ada');
+                            return;
+                        }
+
+                        canvas.toBlob((blob) => {
+                            if (!blob) {
+                                console.error('Gagal membuat blob');
+                                return;
+                            }
+
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                                const livewireComponent = Livewire.find('{{ $this->getId() }}');
+                                if (livewireComponent) {
+                                    livewireComponent.call('saveCroppedPhoto', reader.result);
+                                }
+                            };
+                            reader.readAsDataURL(blob);
+                        }, 'image/png', 0.95);
+                    });
+                }
+
+                // File input handler
+                const input = document.getElementById('photoInput');
+                if (input) {
+                    input.addEventListener('change', function(e) {
+                        if (e.target.files && e.target.files.length > 0) {
+                            const file = e.target.files[0];
+
+                            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                            const maxSizeMB = 2;
+
+                            if (!allowedTypes.includes(file.type)) {
+                                e.target.value = ''; // reset file input
+                                return;
+                            }
+
+                            if (file.size > maxSizeMB * 1024 * 1024) {
+                                e.target.value = ''; // reset file input
+                                return;
+                            }
+
+                            // Jika lolos validasi JS, baru kirim event untuk buka modal
+                            window.dispatchEvent(new CustomEvent('open-cropper-modal'));
+                        }
+                    });
+                }
+            }
+        };
+
+        window.profileCropper.init();
+    }
 </script>
 @endpush
-
-
-
 
 <div>
     <h2 class="mt-4">Profile Menu</h2>
@@ -121,14 +147,13 @@
                 href="{{ route('user.view') }}">Profile</a></li>
         <li class="breadcrumb-item active">Detail User</li>
     </ol>
-    @if (session('success'))
-    <div class="alert alert-success">
+    @if (session()->has('success'))
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+        class="alert alert-success">
         {{ session('success') }}
     </div>
-    @endif
-
-    @if (session('error'))
-    <div class="alert alert-danger">
+    @elseif (session()->has('error'))
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
         {{ session('error') }}
     </div>
     @endif
@@ -148,9 +173,11 @@
                     <div class="text-center mt-2">
                         <div class="position-relative d-inline-block">
                             <img src="{{ auth()->user()->profile_photo
-                                    ? asset('storage/images/profile/' . auth()->user()->profile_photo)
-                                    : asset('storage/images/default.png') }}" alt="Foto Karyawan" width="200"
-                                height="200" class="rounded-circle border mb-3">
+                                ? asset('storage/images/profile/' . auth()->user()->profile_photo)
+                                : asset('storage/images/default.png') }}"
+                                onerror="this.src='{{ asset('storage/images/default.png') }}';" alt="Foto Karyawan"
+                                width="200" height="200" class="rounded-circle border mb-3">
+
 
                             <!-- Tombol Edit -->
                             <a href="#" onclick="event.preventDefault(); document.getElementById('photoInput').click();"
@@ -164,9 +191,11 @@
                                 class="btn btn-warning">Upload Foto</a> --}}
 
                         </div>
-                        <input type="file" id="photoInput" wire:model="photo" style="display:none" accept="image/*">
+                        <input type="file" id="photoInput" wire:model="photo" style="display:none" accept="image/*"
+                            max="2048000">
                         @error('photo')
-                        <div class="alert alert-danger mt-2">
+                        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                            x-transition:leave.duration.300ms class="alert alert-danger mt-2">
                             {{ $message }}
                         </div>
                         @enderror
@@ -180,6 +209,7 @@
                                             onclick="window.dispatchEvent(new CustomEvent('close-cropper-modal'))"></button>
                                     </div>
 
+                                    <!-- Loading overlay -->
                                     <div wire:loading wire:target="photo,croppedImage" class="text-center mt-2">
                                         <div class="spinner-border text-primary" role="status">
                                             <span class="visually-hidden">Loading...</span>
@@ -197,12 +227,18 @@
                                         @else
                                         <p class="text-muted">Tidak ada foto untuk dicrop.</p>
                                         @endif
+
                                     </div>
 
                                     <div class="modal-footer justify-content-between">
                                         <button type="button" class="btn btn-secondary"
                                             onclick="window.dispatchEvent(new CustomEvent('close-cropper-modal'))">Batal</button>
-                                        <button type="button" class="btn btn-primary" id="cropSaveBtn">Simpan</button>
+                                        <button type="button" class="btn btn-primary" id="cropSaveBtn">
+                                            <span wire:loading.remove wire:target="saveCroppedPhoto">Simpan</span>
+                                            <span wire:loading wire:target="saveCroppedPhoto"
+                                                class="spinner-border spinner-border-sm" role="status"
+                                                aria-hidden="true"></span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

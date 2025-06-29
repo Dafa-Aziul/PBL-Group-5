@@ -164,7 +164,7 @@
                             },
                             beginAtZero: true,
                             ticks: {
-                                precision: 0,z
+                                precision: 0,
                                 stepSize: 1 // Pastikan selalu menampilkan bilangan bulat
                             }
                         }
@@ -227,13 +227,16 @@
         <li class="breadcrumb-item active">Daftar service</li>
     </ol>
     @if (session()->has('success'))
-    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
-        class="alert alert-success">
-        {{ session('success') }}
+    <div class="        ">
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
     </div>
     @elseif (session()->has('error'))
-    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
-        {{ session('error') }}
+    <div class="        ">
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
     </div>
     @endif
 
@@ -456,6 +459,7 @@
                                             {{ $message }}
                                         </small>
                                         @enderror
+
                                     </form>
                                     <!-- Modal Konfirmasi Transaksi -->
                                     <div wire:ignore.self class="modal fade" id="modalTransaksi-{{ $service->id }}"
