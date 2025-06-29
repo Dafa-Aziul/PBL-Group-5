@@ -289,10 +289,21 @@ class Index extends Component
 
     public function getJumlahServicePerHariLineChart()
     {
-        // $startDate = now()->subDays(6)->startOfDay();
-        // $endDate = now()->endOfDay();
-        $startDate = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() :  now()->subDays(6)->startOfDay(); // Mulai dari minggu ke-8 terakhir
-        $endDate = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : now()->endOfDay(); // Akhir minggu ini
+
+        if ($this->filterBulan) {
+            // Jika filter bulan dipilih, ambil awal dan akhir bulan tersebut
+            $startDate = Carbon::createFromDate(null, $this->filterBulan, 1)->startOfMonth();
+            $endDate = Carbon::createFromDate(null, $this->filterBulan, 1)->endOfMonth();
+        } else {
+            // Kalau tidak, pakai range berdasarkan tanggalAwal dan tanggalAkhir, atau default 7 hari terakhir
+            $startDate = $this->tanggalAwal
+                ? Carbon::parse($this->tanggalAwal)->startOfDay()
+                : now()->subDays(6)->startOfDay();
+
+            $endDate = $this->tanggalAkhir
+                ? Carbon::parse($this->tanggalAkhir)->endOfDay()
+                : now()->endOfDay();
+        }
 
         $result = $this->getFilteredServicesPerminggu()
             ->whereBetween('tanggal_mulai_service', [$startDate, $endDate])

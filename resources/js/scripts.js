@@ -2,51 +2,59 @@ function initSidebarToggle() {
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (!sidebarToggle || sidebarToggle.dataset.bound) return;
 
-    // Baca status dari localStorage, hanya jika bukan mobile
-    if (window.innerWidth >= 768 && localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        document.body.classList.add('sb-sidenav-toggled');
-    } else {
-        document.body.classList.remove('sb-sidenav-toggled');
-    }
-
     sidebarToggle.addEventListener('click', event => {
         event.preventDefault();
         document.body.classList.toggle('sb-sidenav-toggled');
 
-        // Simpan status ke localStorage hanya jika bukan mobile
-        if (window.innerWidth >= 768) {
-            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+        // Simpan hanya di desktop (≥ 992px)
+        if (window.innerWidth >= 992) {
+            localStorage.setItem(
+                'sb|sidebar-toggle',
+                document.body.classList.contains('sb-sidenav-toggled')
+            );
         }
     });
 
     sidebarToggle.dataset.bound = 'true';
 }
 
+function syncSidebarState() {
+    const width = window.innerWidth;
+
+    if (width >= 992) {
+        const isToggled = localStorage.getItem('sb|sidebar-toggle') === 'true';
+        document.body.classList.toggle('sb-sidenav-toggled', isToggled);
+    } else {
+        // Termasuk 768–991px
+        document.body.classList.remove('sb-sidenav-toggled');
+    }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
+    syncSidebarState();
     initSidebarToggle();
 });
 
 document.addEventListener('livewire:navigated', () => {
     setTimeout(() => {
+        syncSidebarState();
         initSidebarToggle();
-
-        // Jika mobile, otomatis tutup sidebar setelah navigasi
-        if (window.innerWidth < 768) {
-            document.body.classList.remove('sb-sidenav-toggled');
-        }
     }, 50);
 });
 
 document.addEventListener('livewire:morph-updated', () => {
-    setTimeout(initSidebarToggle, 50);
+    setTimeout(() => {
+        initSidebarToggle();
+    }, 50);
 });
 
-// Optional: rebind saat resize
 window.addEventListener('resize', () => {
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) sidebarToggle.dataset.bound = null;
+    syncSidebarState();
     initSidebarToggle();
 });
+
 
 
 

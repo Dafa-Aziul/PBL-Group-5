@@ -290,7 +290,8 @@
                     </label>
                 </div>
                 <div class="">
-                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($showAll)
+                        disabled @endif>
                         <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
                         @foreach(range(1, 12) as $bulan)
                         <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
@@ -316,7 +317,8 @@
                     </label>
                 </div>
                 <div class="col-12 col-md-3 order-1 order-lg-2 w-100">
-                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($showAll)
+                        disabled @endif>
                         <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
                         @foreach(range(1, 12) as $bulan)
                         <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
