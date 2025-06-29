@@ -113,6 +113,7 @@
                     <div class="card-body">
 
                         {{-- Timeline Styles --}}
+                        {{-- Timeline Styles --}}
                         <style>
                             .timeline-container {
                                 position: relative;
@@ -205,12 +206,27 @@
                         'selesai' => 'fas fa-car',
                         'batal' => 'fas fa-times-circle'
                         ];
+                        {{-- Timeline --}}
+                        @php
+                        $icons = [
+                        'dalam antrian' => 'fas fa-check',
+                        'dianalisis' => 'fas fa-tools',
+                        'analisis selesai' => 'fas fa-clipboard-check',
+                        'dalam proses' => 'fas fa-cogs',
+                        'selesai' => 'fas fa-car',
+                        'batal' => 'fas fa-times-circle'
+                        ];
 
                         $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
                         return array_search($step['status'], $allStatus) <= array_search($currentStatus, $allStatus);
                             })->reverse();
                             @endphp
+                        $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
+                        return array_search($step['status'], $allStatus) <= array_search($currentStatus, $allStatus);
+                            })->reverse();
+                            @endphp
 
+                            <div class="timeline-container">
                             <div class="timeline-container">
                                 @foreach ($filteredStatus as $step)
                                 @php
@@ -230,6 +246,8 @@
                                         </p>
                                         <p class="timeline-keterangan">{{ $step['keterangan'] ?? '-' }}</p>
                                     </div>
+                            </div>
+                            @endforeach
                             </div>
                             @endforeach
                     </div>

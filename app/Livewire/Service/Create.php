@@ -122,7 +122,7 @@ class Create extends Component
 
         session()->flash('success', 'Data service berhasil disimpan!');
 
-        return redirect()->route('service.view');
+        return $this->redirect(route('service.view'), navigate: true);
     }
 
 

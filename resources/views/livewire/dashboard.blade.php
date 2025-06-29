@@ -240,31 +240,31 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
     </div>
     @endcan
 
-    {{-- Owner Section --}}
-    @can('owner')
-    {{-- Chart Absensi --}}
-    <div class="col-md-6">
-        <div class="card h-100 card-hover">
-            <div class="card-body" wire:poll.visible.3000ms>
-                <h3 class="card-title text-center">
-                    <i class="fa-solid fa-chart-simple"></i> Chart Absensi
-                </h3>
-                <hr class="border border-2 opacity-50">
-                <div class="flex-grow-1 d-flex justify-content-center align-items-center">
-                    <canvas id="absensiChart"></canvas>
+        {{-- Owner Section --}}
+        @can('owner')
+        {{-- Chart Absensi --}}
+        <div class="col-md-6">
+            <div class="card h-100 card-hover">
+                <div class="card-body" wire:poll.visible.3000ms>
+                    <h3 class="card-title text-center">
+                        <i class="fa-solid fa-chart-simple"></i> Chart Absensi
+                    </h3>
+                    <hr class="border border-2 opacity-50">
+                    <div class="flex-grow-1 d-flex justify-content-center align-items-center" wire:ignore>
+                        <canvas id="absensiChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- Statistik Karyawan Belum Absen --}}
-    <div class="col-12 col-md-3">
-        <div class="card flex-fill h-100 card-hover" wire:poll.visible.3000ms>
-            <div class="card-body">
-                <h5 class="card-title">
-                    <i class="fa-solid fa-hand-point-up"></i> Karyawan Belum Absen
-                </h5>
-                <hr class="border border-2 opacity-50">
+        {{-- Statistik Karyawan Belum Absen --}}
+        <div class="col-12 col-md-3">
+            <div class="card flex-fill h-100 card-hover" wire:poll.visible.3000ms>
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fa-solid fa-hand-point-up"></i> Karyawan Belum Absen
+                    </h5>
+                    <hr class="border border-2 opacity-50">
 
                 @if($belumAbsen->count() > 0)
                 <p class="card-text">
@@ -356,7 +356,6 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         function renderPendapatanBulananChart(chartData) {
             const ctx = document.getElementById('chartPendapatanBulanan');
             if (!ctx) {
-                console.warn('Canvas chartPendapatanBulanan tidak ditemukan');
                 return;
             }
 
@@ -479,7 +478,6 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         function renderAbsensiChart(chartData) {
             const ctx = document.getElementById('absensiChart');
             if (!ctx) {
-                console.log('absensiChart canvas tidak ditemukan');
                 return;
             }
 

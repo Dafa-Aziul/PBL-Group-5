@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice No.{{ $transaksi->kode_transaksi }}</title>
-    @vite('resources/sass/app.scss')
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -52,19 +51,22 @@
             margin-bottom: 15px;
         }
 
+        .divider {
+            border: none;
+            border-top: 2px solid #000;
+            margin: 10px 0 15px;
+        }
+
         .invoice-title {
             font-size: 18px;
             font-weight: bold;
+            text-decoration: underline;
+            text-underline-offset: 2px;
         }
 
         .invoice-number {
             font-size: 14px;
             margin-bottom: 10px;
-        }
-
-        .company-name {
-            font-weight: bold;
-            margin-bottom: 15px;
         }
 
         .total-section {
@@ -93,12 +95,82 @@
             width: 100%;
             text-align: right;
         }
+
+        .kop-header-table {
+            width: 100%;
+            table-layout: fixed;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+        }
+
+        .kop-header-table td {
+            border: none;
+            vertical-align: middle;
+            padding: 0;
+        }
+
+        .kop-logo-cell {
+            width: 20%;
+            padding-left: 10px;
+        }
+
+        .kop-logo-cell img {
+            width: 110px;
+            height: auto;
+            display: block;
+        }
+
+        .kop-text-cell {
+            width: 80%;
+            padding: 0 10px;
+            text-align: center;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .kop-text-cell .kop-title {
+            font-size: 31px;
+            font-weight: normal;
+            margin: 0 0 4px 0;
+            line-height: 1.2;
+        }
+
+        .kop-text-cell .kop-subtitle {
+            font-size: 10.5px;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .kop-text-cell .kop-contact {
+            margin-top: 3px;
+            font-style: italic;
+            font-size: 10px;
+            color: #1a237e;
+        }
     </style>
 </head>
 
 <body>
+    <table class="kop-header-table">
+        <tr>
+            <td class="kop-logo-cell">
+                <img src="{{ public_path('images/kopcv.jpg') }}" alt="Logo">
+            </td>
+            <td class="kop-text-cell">
+                <h1 class="kop-title">CV. RAZKA PRATAMA</h1>
+                <p class="kop-subtitle">Menjual suku cadang dan aksesoris mobil, perdagangan besar,</p>
+                <p class="kop-subtitle">Menyewakan mesin, peralatan konstruksi dan teknik sipil</p>
+                <p class="kop-contact">
+                    Jl. Cimanggis Permai Blok B3 No. 1A - Telp. 08111870588, 08111870581  Email: <i>cv.razkapratama@gmail.com</i>
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <hr class="divider">
+
     <div class="invoice-header">
-        <div class="invoice-title"># INVOICE</div>
+        <div class="invoice-title">INVOICE</div>
         <div class="invoice-number">No. {{ $transaksi->kode_transaksi }}</div>
     </div>
 

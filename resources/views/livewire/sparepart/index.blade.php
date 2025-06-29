@@ -6,15 +6,13 @@
         <li class="breadcrumb-item active">Daftar Sparepart</li>
     </ol>
     @if (session()->has('success'))
-    <div class="        ">
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    </div @elseif (session()->has('error'))
-    <div class="">
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+        class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @elseif (session()->has('error'))
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
+        {{ session('error') }}
     </div>
     @endif
     <div class="card mb-4">
@@ -102,7 +100,7 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-center">
-                                                <img src="{{ $sparepart->foto ? asset('storage/' . $sparepart->foto) : asset('foto/default.png') }}"
+                                                <img src="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('images/asset/default-sparepart.jpg') }}"
                                                     alt="Preview Gambar" class="img-fluid rounded shadow">
                                             </div>
                                         </div>

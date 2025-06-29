@@ -210,19 +210,18 @@
         <li class="breadcrumb-item active">Daftar Penjualan</li>
     </ol>
     @if (session()->has('success'))
-    <div class="        ">
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    </div @elseif (session()->has('error'))
-    <div class="        ">
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+        class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @elseif (session()->has('error'))
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
+        {{ session('error') }}
     </div>
     @endif
 
-    <div class="row g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
+
+    <div class="row g-3 mb-4" wire:poll.visible.3000ms>
         <div class="col-12 col-lg-4">
             <div class="d-flex h-100 flex-column gap-3 ">
                 <div class="card card-jumlah flex-fill card-hover">
@@ -232,7 +231,7 @@
                         </h5>
                         <hr class="border border-2 opacity-50">
                         <div class="d-flex justify-content-center p-5 d-flex align-items-center">
-                            <canvas id="statusChartPembayaran" wire:ignore.self></canvas>
+                            <canvas id="statusChartPembayaran" wire:ignore></canvas>
                         </div>
                     </div>
                 </div>
@@ -248,7 +247,7 @@
                         </h5>
                         <hr class="border border-2 opacity-50">
                         <div class="d-flex justify-content-center p-5">
-                            <canvas id="sparepartChart" wire:ignore.self></canvas>
+                            <canvas id="sparepartChart" wire:ignore></canvas>
                         </div>
                     </div>
                 </div>

@@ -345,6 +345,7 @@
                     </div>
 
 
+
                     {{-- Judul konten --}}
                     <a href="{{ route('berita', $konten->id) }}"
                         class="h5 d-inline-block mb-2 text-dark text-decoration-none">
@@ -383,6 +384,8 @@
 @push('scripts')
 <script>
     // Fungsi untuk menginisialisasi carousel
+<script>
+    // Fungsi untuk menginisialisasi carousel
         function initCarousels() {
             // Hancurkan carousel yang sudah ada jika ada
             $('.header-carousel, .blog-carousel').each(function() {
@@ -401,6 +404,7 @@
                 stagePadding: 0,
                 autoplay: true,
                 smartSpeed: 500,
+                dots: false,
                 dots: false,
                 loop: true,
                 nav: true,
@@ -443,5 +447,6 @@
         document.addEventListener('livewire:navigated', () => {
             setTimeout(initCarousels, 100);
         });
+</script>
 </script>
 @endpush

@@ -231,7 +231,8 @@
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
-    </div @elseif (session()->has('error'))
+    </div>
+    @elseif (session()->has('error'))
     <div class="        ">
         <div class="alert alert-danger">
             {{ session('error') }}
@@ -239,28 +240,21 @@
     </div>
     @endif
 
-    <div class="row g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
+    <div class="row g-3 mb-4" wire:poll.visible.3000ms>
         {{-- 🔸 Kolom Kiri: Ringkasan Pendapatan dan Transaksi --}}
         <div class="col-12 col-lg-4">
-            <div class="d-flex flex-column gap-3">
-
-                {{-- 🔹 Jumlah Transaksi --}}
-                <div class="card h-100 shadow-sm card-hover">
+            <div class="d-flex h-100 flex-column gap-3 ">
+                <div class="card card-jumlah flex-fill card-hover">
                     <div class="card-body">
                         <h5 class="card-title text-success">
-                            <i class="fa-solid fa-file-invoice-dollar"></i> Jumlah Service
+                            <i class="fa-solid fa-money-bill-1-wave"></i> Penjualan Status Pembayaran
                         </h5>
                         <hr class="border border-2 opacity-50">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <div class="d-flex justify-content-center p-3">
-                                <canvas id="statusServiceChart" wire:ignore wire:key='statusServiceChart'></canvas>
-                            </div>
+                        <div class="d-flex justify-content-center p-5 d-flex align-items-center">
+                            <canvas id="statusServiceChart" wire:ignore></canvas>
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
         </div>
 
@@ -274,7 +268,7 @@
                     </h5>
                     <hr class="border border-2 opacity-50">
                     <div class="d-flex justify-content-center p-md-5 align-items-center">
-                        <canvas id="chartJumlahServiceHarian" wire:ignore wire:key='chartJumlahServiceHarian'></canvas>
+                        <canvas id="chartJumlahServiceHarian" wire:ignore></canvas>
                     </div>
                 </div>
             </div>
@@ -459,8 +453,13 @@
                                             </button>
                                         </div>
                                         @error('statuses.' . $service->id)
-                                        <small class="text-danger small mt-1">{{ $message }}</small>
+                                        <small x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)"
+                                            x-show="show" x-transition:leave.duration.300ms
+                                            class="text-danger small mt-1">
+                                            {{ $message }}
+                                        </small>
                                         @enderror
+
                                     </form>
                                     <!-- Modal Konfirmasi Transaksi -->
                                     <div wire:ignore.self class="modal fade" id="modalTransaksi-{{ $service->id }}"
