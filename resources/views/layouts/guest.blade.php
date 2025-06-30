@@ -121,8 +121,6 @@
     </div>
     <!-- Spinner End -->
 
-    <!-- Topbar Start -->
-
     <!-- Navbar & Hero Start -->
     <x-navbar-guest></x-navbar-guest>
 
