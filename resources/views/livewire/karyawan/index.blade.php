@@ -98,7 +98,7 @@
                             <td class="text-center">
                                 <div class="d-flex justify-content-center">
                                     <a href="{{ route('karyawan.edit', ['id' => $karyawan->id]) }}"
-                                        class="btn btn-warning btn-sm me-1">
+                                        class="btn btn-warning btn-sm me-1" wire:navigate>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>

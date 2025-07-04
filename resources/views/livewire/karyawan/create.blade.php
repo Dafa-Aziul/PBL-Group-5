@@ -21,10 +21,9 @@
             <form wire:submit.prevent="submit">
                 <div class="mb-3">
                     <label>User</label>
-                    <select class="form-select" wire:model.live="user_id">
-                        <option value="" disabled selected hidden>-- Pilih User --</option>
+                    <select class="form-select" wire:model.live="user_id">  
                         @foreach($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        <option value="{{ $user->id }}">{{ $user->email }}</option>
                         @endforeach
                     </select>
                     @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
@@ -112,14 +111,14 @@
                 </div>
 
 
-                <<div class="row g-3">
+                <div class="row g-3">
                     <div class="col-8 col-md-3">
                         <button type="submit" class="btn btn-success w-100">
                             <i class="fa-solid fa-paper-plane me-1"></i> Simpan
                         </button>
                     </div>
                     <div class="col-4 col-md-2">
-                        <button type="button" class="btn btn-warning" wire:click="resetForm">Reset</button>
+                        <button type="button" class="btn btn-warning w-100" wire:click="resetForm">Reset</button>
                     </div>
                 </div>
             </form>

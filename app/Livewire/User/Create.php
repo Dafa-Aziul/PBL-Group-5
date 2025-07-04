@@ -61,6 +61,13 @@ class Create extends Component
             }
 
             $user = User::create($validated);
+
+            Karyawan::create([
+                'user_id' => $user->id,
+                'nama' => $validated['name'],
+                'jabatan' => $validated['role'] ?? '',
+                'status' => 'aktif', // default status
+            ]);
             event(new Registered($user));
             session()->flash('success', 'User berhasil ditambahkan!');
             return redirect()->route('user.view');
