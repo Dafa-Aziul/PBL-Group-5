@@ -52,6 +52,14 @@ class Create extends Component
 
         try {
             $validated = $this->validateInput();
+
+            // Tambahkan password default jika kosong
+            if (empty($validated['password'])) {
+                $validated['password'] = bcrypt('Bengkel@2025!');
+            } else {
+                $validated['password'] = bcrypt($validated['password']);
+            }
+
             $user = User::create($validated);
             event(new Registered($user));
             session()->flash('success', 'User berhasil ditambahkan!');

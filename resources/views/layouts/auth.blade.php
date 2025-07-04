@@ -13,7 +13,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet"/>
+        rel="stylesheet" />
 
     <style>
         body {
@@ -78,8 +78,27 @@
             top: 50%;
             right: 16px;
             transform: translateY(-50%);
-            font-size: 15px;
+            font-size: 18px;
             color: #999;
+            pointer-events: auto;
+            z-index: 2;
+        }
+
+        .form-control.is-invalid {
+            background-image: none !important;
+        }
+
+        .input-box input.is-invalid+i {
+            color: #dc3545;
+        }
+
+        .input-box .invalid-feedback {
+            display: block;
+            position: absolute;
+            bottom: -18px;
+            left: 0;
+            font-size: 12px;
+            color: #dc3545;
         }
 
         .input-box input:focus+i {
@@ -87,7 +106,7 @@
         }
 
         .btn-custom {
-            background-color: #7494ec;
+            background-color: #6c89e6;
             color: #fff;
             height: 48px;
             border-radius: 8px;
@@ -97,10 +116,29 @@
         }
 
         .btn-custom:hover {
-            background-color: #5d7be0;
-            color: #cccc;
+            background-color: #4a69d4;
+            color: #fff;
             box-shadow: 0 8px 20px rgba(92, 123, 236, 0.3);
             transform: translateY(-2px);
+        }
+
+        .btn-custom:active {
+            background-color: #cccccc;
+            /* abu-abu */
+            color: #333;
+            /* teks abu gelap */
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(1px);
+        }
+
+        .btn-custom:disabled,
+        .btn-custom[disabled] {
+            background-color: #cccccc;
+            color: #333;
+            cursor: not-allowed;
+            opacity: 1;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(1px);
         }
 
         .toggle-box {
@@ -152,7 +190,9 @@
         @media (max-width: 767.98px) {
             .card-login {
                 flex-direction: column;
-                height: calc(100vh - 40px);
+                height: auto;
+                min-height: 65vh;
+                /* atau hapus jika ingin benar-benar mengikuti konten */
             }
 
             .toggle-box {
@@ -191,6 +231,8 @@
                 height: 44px;
                 font-size: 15px;
             }
+
+
         }
     </style>
     @livewireStyles
@@ -200,27 +242,8 @@
     <div class="container h-100 d-flex align-items-center justify-content-center">
         {{ $slot }}
     </div>
-    {{-- <div id="layoutAuthentication">
-        <div id="layoutAuthentication_content">
-            <main>
-            </main>
-        </div>
-        <div id="layoutAuthentication_footer">
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid px-4">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                        <div>
-                            <a href="#">Privacy Policy</a>
-                            &middot;
-                            <a href="#">Terms &amp; Conditions</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    </div> --}}
 </body>
+@stack('scripts')
 @livewireScripts
 @vite('resources/js/app.js')
 

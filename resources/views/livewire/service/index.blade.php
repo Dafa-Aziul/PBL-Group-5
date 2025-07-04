@@ -220,7 +220,7 @@
 @endpush
 
 <div>
-    <h2 class="mt-4">Kelola Service</h2>
+    <h2 class="mt-4">Manajemen Service</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('service.view') }}">service</a></li>
