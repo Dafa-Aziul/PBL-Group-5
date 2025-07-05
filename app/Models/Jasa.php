@@ -23,7 +23,7 @@ class Jasa extends Model
     ];
     public function jenisKendaraan()
     {
-        return $this->belongsTo(JenisKendaraan::class);
+        return $this->belongsTo(JenisKendaraan::class)->withTrashed();
     }
 
     public function scopeSearch($query, $value)

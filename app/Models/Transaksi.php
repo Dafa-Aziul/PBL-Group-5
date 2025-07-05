@@ -29,7 +29,7 @@ class Transaksi extends Model
 
     public function kasir()
     {
-        return $this->belongsTo(Karyawan::class, 'kasir_id');
+        return $this->belongsTo(Karyawan::class, 'kasir_id')->withTrashed();
     }
 
     public function pelanggan()

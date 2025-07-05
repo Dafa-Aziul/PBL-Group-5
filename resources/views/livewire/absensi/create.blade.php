@@ -102,22 +102,12 @@
 
             @endif
 
-            {{-- @if ($type === 'check-in' && $form->foto_masuk)
-            <div class="mb-4">
-                <img src="{{ $form->foto_masuk->temporaryUrl() }}" class="rounded w-100">
-            </div>
-            @elseif ($type === 'check-out' && $form->foto_keluar)
-            <div class="mb-4">
-                <img src="{{ $form->foto_keluar->temporaryUrl() }}" class="rounded w-100">
-            </div>
-            @endif --}}
-
             <form wire:submit.prevent="submit">
                 @if (!in_array($type, ['check-in', 'check-out']))
                 <div class="mb-3">
                     <label class="form-label">Status</label>
                     <select wire:model="form.status" class="form-select">
-                        <option value="">pilih status tidak hadir</option>
+                        <option value="" selected hidden>-- Pilih Status Tidak Hadir --</option>
                         <option value="izin">Izin</option>
                         <option value="sakit">Sakit</option>
 

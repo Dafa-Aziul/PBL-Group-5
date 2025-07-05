@@ -14,17 +14,21 @@ $absenHariIni = $user->karyawan
 
 $sudahCheckIn = $absenHariIni && $absenHariIni->jam_masuk;
 $sudahCheckOut = $absenHariIni && $absenHariIni->jam_keluar;
+$tipeTidakHadir    = $absenHariIni && ($absenHariIni->status === 'izin' || $absenHariIni->status === 'sakit');
 
 $statusText = 'Belum Absen';
 if ($sudahCheckIn && !$sudahCheckOut) {
 $statusText = 'Kamu sudah Check In';
 } elseif ($sudahCheckIn && $sudahCheckOut) {
 $statusText = 'Selamat beristirahat!';
+}elseif (!$sudahCheckIn && !$sudahCheckOut && $tipeTidakHadir) {
+    $statusText = 'Kamu Tidak Hadir Hari Ini';
 }
 
 $statusHariIni = $absenHariIni ? strtolower($absenHariIni->status) : null;
 $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 @endphp
+
 
 <div>
     <h1 class="mt-4" style="color: #09005d;">
@@ -114,7 +118,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                                         wire:navigate
                                         @if (!$bolehCheckIn) aria-disabled="true" tabindex="-1" @endif>
                                         <i class="fas fa-plus"></i>
-                                        <span class="d-none d-md-inline ms-1">Check In</span>
+                                        <span class="ms-1">Check In</span>
                                     </a>
                                 </div>
                             @else
@@ -137,7 +141,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                                         href="{{ route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'check-out']) }}"
                                         wire:navigate>
                                         <i class="fas fa-sign-out-alt"></i>
-                                        <span class="d-none d-md-inline ms-1">Check Out</span>
+                                        <span class="ms-1">Check Out</span>
                                     </a>
                                 </div>
                             @else
@@ -155,7 +159,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                                     wire:navigate
                                     @if (!$bolehCheckIn) aria-disabled="true" tabindex="-1" @endif>
                                     <i class="fas fa-user-times"></i>
-                                    <span class="d-none d-md-inline ms-1">Tidak Hadir</span>
+                                    <span class="ms-1">Tidak Hadir</span>
                                 </a>
                             </div>
                         @endif

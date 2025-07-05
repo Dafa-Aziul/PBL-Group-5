@@ -40,7 +40,7 @@ class AbsensiForm extends Form
         return [
             'foto_masuk' => $this->type === 'check-in' ? 'required|image|max:2048' : 'nullable',
             'foto_keluar' => $this->type === 'check-out' ? 'required|image|max:2048' : 'nullable',
-            'bukti_tidak_hadir' => $this->type === 'tidak hadir' ? 'required|image|max:2048' : 'nullable',
+            'bukti_tidak_hadir' => $this->type === 'tidak-hadir' ? 'required|image|max:2048' : 'nullable',
         ];
     }
 }

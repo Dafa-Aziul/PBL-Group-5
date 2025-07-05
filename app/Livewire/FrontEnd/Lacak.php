@@ -2,13 +2,8 @@
 
 namespace App\Livewire\FrontEnd;
 
-use App\Models\Service;
-use App\Models\StatusService;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Client;
 use Livewire\Attributes\Title;
 
