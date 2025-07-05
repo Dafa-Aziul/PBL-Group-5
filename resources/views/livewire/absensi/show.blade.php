@@ -347,13 +347,13 @@
                 <!-- From -->
                 <div class="d-flex align-items-center gap-2 me-md-0 mb-2 mb-md-0">
                     <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
-                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control">
+                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if ($filterBulan) disabled @endif>
                 </div>
 
                 <!-- To -->
                 <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
                     <label for="tanggalAkhir" class="form-label mb-0" style="width: 50px;">To :</label>
-                    <input type="date" id="tanggalAkhir" wire:model.lazy="tanggalAkhir" class="form-control">
+                    <input type="date" id="tanggalAkhir" wire:model.lazy="tanggalAkhir" class="form-control" @if ($filterBulan) disabled @endif>
                 </div>
 
             </div>

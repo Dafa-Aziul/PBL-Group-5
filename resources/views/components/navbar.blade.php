@@ -49,7 +49,7 @@
                     <a class="dropdown-item d-flex align-items-center" href="{{ route('profile.password') }}"
                         wire:navigate>
                         <i class="fas fa-key p-2"></i>
-                        <span class="ms-2">Reset Password</span>
+                        <span class="ms-2">Ganti Password</span>
                     </a>
                 </li>
                 <li>

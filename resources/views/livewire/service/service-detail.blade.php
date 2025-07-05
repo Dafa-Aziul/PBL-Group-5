@@ -412,10 +412,21 @@
                 @endif
 
                 {{-- Tombol Submit --}}
-                <div class="text-end mb-4">
+                <div class="row g-3">
+                    <div class="col-8 col-md-3">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fa-solid fa-floppy-disk"></i> Simpan Service
+                        & Detail
+                        </button>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <button type="reset" class="btn btn-warning w-100">Reset</button>
+                    </div>
+                </div>
+                {{-- <div class="text-end mb-4">
                     <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> Simpan Service
                         & Detail</button>
-                </div>
+                </div> --}}
             </form>
             <!-- Modal Edit Jumlah Sparepart -->
             <div wire:ignore class="modal fade" id="editJumlahModal" tabindex="-1"

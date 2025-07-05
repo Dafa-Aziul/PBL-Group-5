@@ -183,8 +183,10 @@
                                         <th>Nama Jasa</th>
                                         <th style="width: 50px;">Qty</th>
                                         <th style="width: 70px;">Satuan</th>
+                                        @can('akses-admin-owner')
                                         <th>Harga</th>
                                         <th>Subtotal</th>
+                                        @endcan
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -195,15 +197,19 @@
                                         <td class="text-start">{{ $jasa->jasa->nama_jasa }}</td>
                                         <td class="text-center"> - </td>
                                         <td class="text-center"> - </td>
+                                        @can('akses-admin-owner')
                                         <td class="text-end">Rp {{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</td>
                                         <td class="text-end">Rp {{ number_format($jasa->harga ?? 0, 0, ',', '.') }}</td>
+                                        @endcan
                                     </tr>
                                     @endforeach
+                                    @can('akses-admin-owner')
                                     <tr class="table-light fw-bold">
                                         <td colspan="6" d>Total Biaya Jasa</td>
                                         <td class="text-end text-success">Rp {{ number_format($totalJasa, 0, ',', '.')
                                             }}</td>
                                     </tr>
+                                    @endcan
                                 </tbody>
                             </table>
                         </div>
@@ -225,8 +231,10 @@
                                         <th>Nama</th>
                                         <th style="width: 50px;">Qty</th>
                                         <th style="width: 70px;">Satuan</th>
-                                        <th>Harga</th>
-                                        <th>Subtotal</th>
+                                        @can('akses-admin-owner')
+                                            <th>Harga</th>
+                                            <th>Subtotal</th>
+                                        @endcan
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -238,17 +246,20 @@
                                         <td>{{ $sp->sparepart->nama }}</td>
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
-                                        <td class="text-end">Rp {{ number_format($sp->harga, 0, ',', '.') }}</td>
-                                        <td class="text-end fw-semibold text-primary">Rp {{
-                                            number_format($sp->sub_total,
+                                        @can('akses-admin-owner')
+                                            <td class="text-end">Rp {{ number_format($sp->harga, 0, ',', '.') }}</td>
+                                            <td class="text-end fw-semibold text-primary">Rp {{ number_format($sp->sub_total,
                                             0, ',', '.') }}</td>
+                                        @endcan
                                     </tr>
                                     @endforeach
+                                    @can('akses-admin-owner')
                                     <tr class="table-light fw-bold">
                                         <td colspan="6" class="">Total Biaya Sparepart</td>
                                         <td class="text-end text-success">Rp {{ number_format($totalSparepart, 0, ',',
                                             '.') }}</td>
                                     </tr>
+                                    @endcan
                                 </tbody>
                             </table>
                         </div>
@@ -259,20 +270,21 @@
 
                     {{-- 3. Estimasi Biaya --}}
                     @if($totalJasa > 0 || $totalSparepart > 0)
-                    <div class="alert alert-primary shadow-sm d-flex align-items-start gap-3"
-                        role="alert">
+                    <div class="alert alert-primary shadow-sm d-flex align-items-start gap-3" role="alert">
                         <i class="fas fa-info-circle text-info fs-3 mt-1"></i>
                         <div>
                             <div class="fw-semibold text-muted small mb-2">Rincian Estimasi</div>
 
                             {{-- Baris: Estimasi Biaya --}}
-                            <div class="d-flex align-items-center text-success mb-2">
-                                <i class="fas fa-money-bill-wave me-2"></i>
-                                <div>
-                                    <strong>Total Estimasi Biaya:</strong>
-                                    <span class="fs-5 ms-1">Rp {{ number_format($totalEstimasi, 0, ',', '.') }}</span>
+                            @can('akses-admin-owner')
+                                <div class="d-flex align-items-center text-success mb-2">
+                                    <i class="fas fa-money-bill-wave me-2"></i>
+                                    <div>
+                                        <strong>Total Estimasi Biaya:</strong>
+                                        <span class="fs-5 ms-1">Rp {{ number_format($totalEstimasi, 0, ',', '.') }}</span>
+                                    </div>
                                 </div>
-                            </div>
+                                @endcan
 
                             {{-- Baris: Estimasi Waktu --}}
                             <div class="d-flex align-items-center text-primary">
