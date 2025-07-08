@@ -349,7 +349,7 @@
 
                     {{-- Judul konten --}}
                     <a href="{{ route('berita', $konten->id) }}"
-                        class="h5 d-inline-block mb-2 text-dark text-decoration-none">
+                        class="h5 d-inline-block mb-2 text-dark text-decoration-none" >
                         {{ $konten->judul }}
                     </a>
 
