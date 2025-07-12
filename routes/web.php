@@ -9,7 +9,6 @@ use App\Http\Controllers\AbsensiController;
 //auth
 use \App\Livewire\User\Create as UserCreate;
 use App\Http\Controllers\auth\VerifyEmailController;
-use App\Livewire\Action\Logout;
 
 // user
 use App\Livewire\Auth\ForgotPassword;
@@ -31,7 +30,6 @@ use App\Livewire\FrontEnd\Lacak;
 
 // jasa
 use App\Livewire\FrontEnd\Layanan;
-use App\Livewire\Gudang\Create as GudangCreate;
 use App\Livewire\Jasa\Create as JasaCreate;
 use App\Livewire\Jasa\Edit as JasaEdit;
 use App\Livewire\Jasa\Index as JasaIndex;
@@ -102,8 +100,6 @@ Route::get('/layanan', Layanan::class)->name('layanan');
 Route::get('/tentang-kami', About::class)->name('about');
 Route::get('/lacak-service', Lacak::class)->name('lacakService');
 Route::get('/berita/{id}', KontenDetail::class)->name('berita');
-
-Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('logout', App\Livewire\Actions\Logout::class)
