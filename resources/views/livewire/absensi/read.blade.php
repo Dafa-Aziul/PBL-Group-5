@@ -84,7 +84,7 @@
                                 </td>
                                 <td>{{ $absensi->status ?? 'Belum Absen' }}</td>
                                 <td>{{ $absensi->keterangan ?? '-' }}</td>
-                                
+
                             </tr>
                             @empty
                             <tr>

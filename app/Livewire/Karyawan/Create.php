@@ -38,26 +38,24 @@ class Create extends Component
 
     public function submit()
     {
-        $this->validateOnly('user_id');
+        // Pastikan nilai user_id dimasukkan ke dalam objek form
+        $this->form->user_id = $this->user_id;
 
+        // Debug untuk melihat semua isi form (termasuk user_id sekarang)
+
+        // Validasi semua input termasuk user_id dari form
         $validated = $this->form->validate();
+        // dd($validated); // Debug untuk melihat data yang divalidasi
         if ($this->form->foto) {
-            // Simpan file dengan nama yang di-hash ke folder 'foto'
             $path = $this->form->foto->store('images/profile', 'public');
-
-            // Ambil hanya nama file-nya saja (tanpa folder 'foto/')
-            $filename = basename($path);
-
-            // Simpan ke database hanya nama file-nya
-            $validated['foto'] = $filename;
+            $validated['foto'] = basename($path);
         }
-
-        $validated['user_id'] = $this->user_id;
 
         Karyawan::create($validated);
 
         return redirect()->route('karyawan.view')->with('success', 'Karyawan berhasil ditambahkan!');
     }
+
 
     public function render()
     {

@@ -1,41 +1,66 @@
-<div class="container-fluid">
-    <main class="card shadow-lg p-4 rounded-4 position-absolute top-50 start-50 translate-middle" style="width: 100%; max-width: 420px;">
-        <form wire:submit="resetPassword" class="form-signin">
-            <div class="text-center mb-4">
-                <i class="fa-solid fa-lock fs-1 text-primary mb-4"></i>
-                <h1 class="h4 fw-bold">Atur Ulang Kata Sandi</h1>
-                <p class="text-muted small">Masukkan kata sandi baru untuk akun Anda.</p>
-            </div>
+<div class="row card-login d-flex flex-md-row flex-column">
+    <!-- Kiri: Info Visual -->
+    <div class="col-md-6 toggle-box d-flex align-items-center justify-content-center">
+        <div class="text-center">
+            <h1><strong>Atur Ulang Sandi</strong></h1>
+            <p>Masukkan sandi baru untuk akunmu.</p>
+        </div>
+    </div>
 
-            <div class="form-floating mb-3">
-                <input type="email" class="form-control @error('email') is-invalid @enderror" wire:model="email" id="resetEmail" placeholder="name@example.com" readonly>
-                <label for="resetEmail">Alamat Email</label>
+    <!-- Kanan: Form -->
+    <div class="col-md-6 form-box">
+        <form wire:submit.prevent="resetPassword">
+            <h1>Reset Password</h1>
+
+            <div class="input-box">
+                <input type="email" id="resetEmail" class="form-control @error('email') is-invalid @enderror"
+                    wire:model="email" placeholder="Email" readonly>
+                <i class="fa-solid fa-envelope"></i>
                 @error('email')
-                    <small class="invalid-feedback">{{ $message }}</small>
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="form-floating mb-3">
-                <input type="password" class="form-control @error('password') is-invalid @enderror" wire:model="password" id="resetPassword" placeholder="Password Baru">
-                <label for="resetPassword">Kata Sandi Baru</label>
+            <div class="input-box">
+                <input type="password" id="passwordInput" class="form-control @error('password') is-invalid @enderror"
+                    wire:model="password" placeholder="Kata Sandi Baru">
+                <i class="fa-solid fa-eye toggle-password" data-target="passwordInput" style="top: 50%; right: 16px; transform: translateY(-50%); cursor: pointer; position: absolute;"></i>
                 @error('password')
-                    <small class="invalid-feedback">{{ $message }}</small>
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="form-floating mb-3">
-                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" wire:model="password_confirmation" id="resetConfirm" placeholder="Konfirmasi Password">
-                <label for="resetConfirm">Konfirmasi Kata Sandi</label>
+            <div class="input-box">
+                <input type="password" id="confirmInput" class="form-control @error('password_confirmation') is-invalid @enderror"
+                    wire:model="password_confirmation" placeholder="Konfirmasi Sandi">
+                <i class="fa-solid fa-eye toggle-password" data-target="confirmInput" style="top: 50%; right: 16px; transform: translateY(-50%); cursor: pointer; position: absolute;"></i>
                 @error('password_confirmation')
-                    <small class="invalid-feedback">{{ $message }}</small>
+                    <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
 
-            <button class="btn btn-primary w-100 py-2" type="submit">Atur Ulang</button>
+            <button class="btn btn-custom w-100" type="submit">Atur Ulang</button>
 
             <div class="mt-3 text-center">
                 <a href="{{ route('login') }}" class="small text-decoration-none" wire:navigate>← Kembali ke Login</a>
             </div>
         </form>
-    </main>
+    </div>
 </div>
+@push('scripts')
+<script>
+    document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', () => {
+            const targetId = icon.dataset.target;
+            const input = document.getElementById(targetId);
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+            icon.classList.toggle('fa-eye', !isPassword);
+            icon.classList.toggle('fa-eye-slash', isPassword);
+        });
+    });
+</script>
+@endpush
+

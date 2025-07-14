@@ -19,8 +19,9 @@ class Show extends Component
         abort_if($kendaraan->pelanggan_id !== $pelanggan->id, 403);
 
         $this->pelanggan = $pelanggan;
-        $this->kendaraan = $kendaraan->load('services');
-        // dd($this->kendaraan->services);
+        $this->kendaraan = $kendaraan->load(['services' => function ($query) {
+            $query->whereIn('status', ['selesai', 'batal']);
+        }]);
     }
 
     public function render()

@@ -407,14 +407,14 @@
                 <div class="d-flex align-items-center gap-2 me-md-0 mb-2 mb-md-0">
                     <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
                     <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if($showAll)
-                        disabled @endif>
+                        disabled @endif @if ($filterBulan) disabled @endif>
                 </div>
 
                 <!-- To -->
                 <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
                     <label for="tanggalAkhir" class="form-label mb-0" style="width: 50px;">To :</label>
                     <input type="date" id="tanggalAkhir" wire:model.live="tanggalAkhir" class="form-control"
-                        @if($showAll) disabled @endif>
+                        @if($showAll) disabled @endif @if ($filterBulan) disabled @endif>
                 </div>
 
             </div>
@@ -425,16 +425,20 @@
             <!-- Checkbox "Semua" -->
             <div class="d-none d-md-flex gap-1">
                 <div class="">
-                    <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll" autocomplete="off">
+                    <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll"
+                        autocomplete="off" @if($tanggalAwal || $tanggalAkhir) disabled @endif @if ($filterBulan)
+                        disabled @endif>
                     <label class="btn btn-outline-primary mb-0" for="showAllCheck">
                         Semua
                     </label>
                 </div>
                 <div class="">
-                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                    <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($showAll)
+                        disabled @endif @if($tanggalAwal || $tanggalAkhir) disabled @endif>
                         <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
                         @foreach(range(1, 12) as $bulan)
-                        <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
+                        <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
+                            }}
                         </option>
                         @endforeach
                     </select>
@@ -464,7 +468,8 @@
                 </div>
                 <div class="col-6 col-md-3 order-1 order-lg-2">
                     <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
-                        <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
+                        <option value="" disabled selected hidden class="text-muted" @if($showAll) disabled @endif
+                            @if($tanggalAwal || $tanggalAkhir) disabled @endif>Pilih bulan</option>
                         @foreach(range(1, 12) as $bulan)
                         <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
                             }}

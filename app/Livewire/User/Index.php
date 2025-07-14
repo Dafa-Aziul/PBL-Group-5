@@ -57,6 +57,7 @@ class Index extends Component
         }
 
         $this->performDelete($id);
+        $this->password_confirmation = null; // Reset password confirmation setelah sukses
     }
 
 

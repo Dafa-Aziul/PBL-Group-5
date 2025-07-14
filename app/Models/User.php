@@ -27,7 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'role',
-        'profile_photo  ',
+        'profile_photo',
     ];
 
     /**
@@ -54,7 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function karyawan(): HasOne {
-        return $this->hasOne(Karyawan::class);
+        return $this->hasOne(Karyawan::class)->withTrashed();
     }
 
     public function scopeSearch($query, $value)
