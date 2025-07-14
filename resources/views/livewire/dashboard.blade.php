@@ -14,12 +14,15 @@ $absenHariIni = $user->karyawan
 
 $sudahCheckIn = $absenHariIni && $absenHariIni->jam_masuk;
 $sudahCheckOut = $absenHariIni && $absenHariIni->jam_keluar;
+$tipeTidakHadir    = $absenHariIni && ($absenHariIni->status === 'izin' || $absenHariIni->status === 'sakit');
 
 $statusText = 'Belum Absen';
 if ($sudahCheckIn && !$sudahCheckOut) {
 $statusText = 'Kamu sudah Check In';
 } elseif ($sudahCheckIn && $sudahCheckOut) {
 $statusText = 'Selamat beristirahat!';
+}elseif (!$sudahCheckIn && !$sudahCheckOut && $tipeTidakHadir) {
+    $statusText = 'Kamu Tidak Hadir Hari Ini';
 }
 
 $statusHariIni = $absenHariIni ? strtolower($absenHariIni->status) : null;
@@ -105,142 +108,140 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 
                     @if ($user && $user->karyawan)
 
-                        {{-- Check In --}}
-                        @if (!$sudahCheckIn)
-                            @if ($jamSekarang < $jamPulang)
-                                <div class="text-center">
-                                    <a class="btn btn-absen btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"
-                                        href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'check-in']) : '#' }}"
-                                        wire:navigate
-                                        @if (!$bolehCheckIn) aria-disabled="true" tabindex="-1" @endif>
-                                        <i class="fas fa-plus"></i>
-                                        <span class="d-none d-md-inline ms-1">Check In</span>
-                                    </a>
-                                </div>
-                            @else
-                                <div class="alert alert-warning text-center mt-3">
-                                    Anda sudah melewati jam pulang, status Anda alpha.
-                                </div>
-                            @endif
-                        @else
-                            {{-- Sudah Check In --}}
-                            <div class="text-center">
-                                <a href="{{ route('absensi.read') }}" class="btn btn-lihat btn-sm" wire:navigate>Lihat Rekap Absensi</a>
-                            </div>
-                        @endif
-
-                        {{-- Check Out --}}
-                        @if ($sudahCheckIn && !$sudahCheckOut)
-                            @if ($jamSekarang >= $jamPulang)
-                                <div class="text-center">
-                                    <a class="btn btn-absen btn-sm mt-3 float"
-                                        href="{{ route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'check-out']) }}"
-                                        wire:navigate>
-                                        <i class="fas fa-sign-out-alt"></i>
-                                        <span class="d-none d-md-inline ms-1">Check Out</span>
-                                    </a>
-                                </div>
-                            @else
-                                <div class="alert alert-info mt-3 text-center">
-                                    Check Out hanya bisa dilakukan setelah jam {{ $jamPulang }}.
-                                </div>
-                            @endif
-                        @endif
-
-                        {{-- Tidak Hadir --}}
-                        @if (!$sudahCheckIn && !$sudahCheckOut)
-                            <div class="text-center">
-                                <a class="btn btn-outline-primary btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"
-                                    href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'tidak hadir']) : '#' }}"
-                                    wire:navigate
-                                    @if (!$bolehCheckIn) aria-disabled="true" tabindex="-1" @endif>
-                                    <i class="fas fa-user-times"></i>
-                                    <span class="d-none d-md-inline ms-1">Tidak Hadir</span>
-                                </a>
-                            </div>
-                        @endif
-
-                    @else
-                        {{-- Tidak terkait karyawan --}}
-                        <div class="alert alert-warning text-center mt-3">
-                            Akun Anda belum dikaitkan dengan data karyawan. Hubungi admin.
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-        @endcan
-
-        {{-- Admin Section --}}
-        @can('akses-admin')
-        {{-- Kolom Sparepart Menipis --}}
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card h-100 card-hover">
-                <div class="card-body">
-                    <h3 class="card-title text-danger mb-3">
-                        <i class="fa-solid fa-triangle-exclamation"></i> Sparepart Menipis
-                    </h3>
-                    <hr class="border border-2 opacity-50 mb-4">
-
-                    @if ($stokmenipis != 0)
-                    <p class="card-text mb-3">
-                        Ditemukan <strong>{{ $stokmenipis }} sparepart</strong> dengan stok rendah:
-                    </p>
-                    <div class="list-group list-group-flush mb-3">
-                        @foreach ($spareparts as $item)
-                        <a href="{{ route('sparepart.show', ['id' => $item->id]) }}"
-                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                            wire:navigate>
-                            <span class="fw-semibold">{{ $item->nama }}</span>
-                            <span class="badge bg-danger rounded-pill">{{ $item->stok }} tersisa</span>
-                        </a>
-                        @endforeach
-                    </div>
-                    <div class="text-center">
-                        <a href="{{ route('sparepart.view') }}" class="btn btn-danger btn-sm" wire:navigate>
-                            Lihat Semua Sparepart
-                        </a>
-                    </div>
-                    @else
-                    <div class="text-center">
-                        <img src="{{ asset('images/icons/Checking boxes-amico.svg') }}" alt="stok aman" width="60%"
-                            class="mb-3">
-                        <h5 class="text-muted fw-semibold">Stok sparepart dalam kondisi aman</h5>
-                    </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        {{-- Quick Access --}}
-        <div class="col-12 col-md-6 col-lg-4">
-            <div class="card h-100 card-hover">
-                <div class="card-body">
-                    <h3 class="card-title text-success mb-3">
-                        <i class="fa-solid fa-universal-access"></i> Quick Access
-                    </h3>
-                    <hr class="border border-2 opacity-50 mb-4">
-
-                    @foreach ([
-                    ['route' => 'pelanggan.create', 'label' => 'Tambah Pelanggan', 'icon' => 'fa-user-plus'],
-                    ['route' => 'service.create', 'label' => 'Tambah Service', 'icon' => 'fa-tools'],
-                    ['route' => 'penjualan.create', 'label' => 'Tambah Penjualan', 'icon' => 'fa-cash-register'],
-                    ['route' => 'konten.create', 'label' => 'Tambah Konten', 'icon' => 'fa-file-alt']
-                    ] as $menu)
-                    <div class="d-flex justify-content-between align-items-center mb-4 px-4">
-                        <div class="d-flex align-items-center">
-                            <i class="fas {{ $menu['icon'] }} text-muted me-2"></i>
-                            <span class="fw-semibold">{{ $menu['label'] }}</span>
-                        </div>
-                        <a href="{{ route($menu['route']) }}" wire:navigate class="btn btn-primary">
+                    {{-- Check In --}}
+                    @if (!$sudahCheckIn)
+                    @if ($jamSekarang < $jamPulang) <div class="text-center">
+                        <a class="btn btn-absen btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"
+                            href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'check-in']) : '#' }}"
+                            wire:navigate @if (!$bolehCheckIn) aria-disabled="true" tabindex="-1" @endif>
                             <i class="fas fa-plus"></i>
+                            <span class="d-none d-md-inline ms-1">Check In</span>
                         </a>
-                    </div>
+                </div>
+                @else
+                <div class="alert alert-warning text-center mt-3">
+                    Anda sudah melewati jam pulang, status Anda alpha.
+                </div>
+                @endif
+                @else
+                {{-- Sudah Check In --}}
+                <div class="text-center">
+                    <a href="{{ route('absensi.read') }}" class="btn btn-lihat btn-sm" wire:navigate>Lihat Rekap
+                        Absensi</a>
+                </div>
+                @endif
+
+                {{-- Check Out --}}
+                @if ($sudahCheckIn && !$sudahCheckOut)
+                @if ($jamSekarang >= $jamPulang)
+                <div class="text-center">
+                    <a class="btn btn-absen btn-sm mt-3 float"
+                        href="{{ route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'check-out']) }}"
+                        wire:navigate>
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="d-none d-md-inline ms-1">Check Out</span>
+                    </a>
+                </div>
+                @else
+                <div class="alert alert-info mt-3 text-center">
+                    Check Out hanya bisa dilakukan setelah jam {{ $jamPulang }}.
+                </div>
+                @endif
+                @endif
+
+                {{-- Tidak Hadir --}}
+                @if (!$sudahCheckIn && !$sudahCheckOut)
+                <div class="text-center">
+                    <a class="btn btn-outline-primary btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"
+                        href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'tidak-hadir']) : '#' }}"
+                        wire:navigate @if (!$bolehCheckIn) aria-disabled="true" tabindex="-1" @endif>
+                        <i class="fas fa-user-times"></i>
+                        <span class="d-none d-md-inline ms-1">Tidak Hadir</span>
+                    </a>
+                </div>
+                @endif
+
+                @else
+                {{-- Tidak terkait karyawan --}}
+                <div class="alert alert-warning text-center mt-3">
+                    Akun Anda belum dikaitkan dengan data karyawan. Hubungi admin.
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endcan
+
+    {{-- Admin Section --}}
+    @can('akses-admin')
+    {{-- Kolom Sparepart Menipis --}}
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 card-hover">
+            <div class="card-body">
+                <h3 class="card-title text-danger mb-3">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Sparepart Menipis
+                </h3>
+                <hr class="border border-2 opacity-50 mb-4">
+
+                @if ($stokmenipis != 0)
+                <p class="card-text mb-3">
+                    Ditemukan <strong>{{ $stokmenipis }} sparepart</strong> dengan stok rendah:
+                </p>
+                <div class="list-group list-group-flush mb-3">
+                    @foreach ($spareparts as $item)
+                    <a href="{{ route('sparepart.show', ['id' => $item->id]) }}"
+                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                        wire:navigate>
+                        <span class="fw-semibold">{{ $item->nama }}</span>
+                        <span class="badge bg-danger rounded-pill">{{ $item->stok }} tersisa</span>
+                    </a>
                     @endforeach
                 </div>
+                <div class="text-center">
+                    <a href="{{ route('sparepart.view') }}" class="btn btn-danger btn-sm" wire:navigate>
+                        Lihat Semua Sparepart
+                    </a>
+                </div>
+                @else
+                <div class="text-center">
+                    <img src="{{ asset('images/icons/Checking boxes-amico.svg') }}" alt="stok aman" width="60%"
+                        class="mb-3">
+                    <h5 class="text-muted fw-semibold">Stok sparepart dalam kondisi aman</h5>
+                </div>
+                @endif
             </div>
         </div>
-        @endcan
+    </div>
+
+    {{-- Quick Access --}}
+    <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 card-hover">
+            <div class="card-body">
+                <h3 class="card-title text-success mb-3">
+                    <i class="fa-solid fa-universal-access"></i> Quick Access
+                </h3>
+                <hr class="border border-2 opacity-50 mb-4">
+
+                @foreach ([
+                ['route' => 'pelanggan.create', 'label' => 'Tambah Pelanggan', 'icon' => 'fa-user-plus'],
+                ['route' => 'service.create', 'label' => 'Tambah Service', 'icon' => 'fa-tools'],
+                ['route' => 'penjualan.create', 'label' => 'Tambah Penjualan', 'icon' => 'fa-cash-register'],
+                ['route' => 'konten.create', 'label' => 'Tambah Konten', 'icon' => 'fa-file-alt']
+                ] as $menu)
+                <div class="d-flex justify-content-between align-items-center mb-4 px-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas {{ $menu['icon'] }} text-muted me-2"></i>
+                        <span class="fw-semibold">{{ $menu['label'] }}</span>
+                    </div>
+                    <a href="{{ route($menu['route']) }}" wire:navigate class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endcan
 
         {{-- Owner Section --}}
         @can('owner')
@@ -268,70 +269,70 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                     </h5>
                     <hr class="border border-2 opacity-50">
 
-                    @if($belumAbsen->count() > 0)
-                    <p class="card-text">
-                        📌 ada <strong>{{ $belumAbsen->count() }} karyawan</strong> belum absen
-                    </p>
-                    <div class="overflow-auto" style="max-height: 200px;">
-                        <ol class="list-group list-group-numbered rounded px-3 my-3 shadow-sm">
-                            @foreach($belumAbsen as $karyawan)
-                            <li class="d-flex align-items-center justify-content-between border-0 border-bottom">
-                                <span class="fw-semibold text-dark">{{ $karyawan->nama }}</span>
-                            </li>
-                            @endforeach
-                        </ol>
-                    </div>
-                    @else
-                    <div class="text-center">
-                        <img src="{{ asset('images/icons/Confirmed attendance-amico.svg') }}" alt="absen"
-                            class="animate-pop" width="60%">
-                        <h4 class="card-text semibold text-muted">Semua Karyawan Sudah absen</h4>
-                    </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        {{-- Sparepart Menipis (Owner) --}}
-        <div class="col-12 col-md-3">
-            <div class="card h-100 card-hover">
-                <div class="card-body">
-                    <h3 class="card-title text-danger mb-3">
-                        <i class="fa-solid fa-triangle-exclamation"></i> Sparepart Menipis
-                    </h3>
-                    <hr class="border border-2 opacity-50 mb-4">
-
-                    @if ($stokmenipis != 0)
-                    <p class="card-text mb-3">
-                        Ditemukan <strong>{{ $stokmenipis }} sparepart</strong> dengan stok rendah:
-                    </p>
-                    <div class="list-group list-group-flush mb-3">
-                        @foreach ($spareparts as $item)
-                        <a href="{{ route('sparepart.show', ['id' => $item->id]) }}"
-                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                            wire:navigate>
-                            <span class="fw-semibold">{{ $item->nama }}</span>
-                            <span class="badge bg-danger rounded-pill">{{ $item->stok }} tersisa</span>
-                        </a>
+                @if($belumAbsen->count() > 0)
+                <p class="card-text">
+                    📌 ada <strong>{{ $belumAbsen->count() }} karyawan</strong> belum absen
+                </p>
+                <div class="overflow-auto" style="max-height: 200px;">
+                    <ol class="list-group list-group-numbered rounded px-3 my-3 shadow-sm">
+                        @foreach($belumAbsen as $karyawan)
+                        <li class="d-flex align-items-center justify-content-between border-0 border-bottom">
+                            <span class="fw-semibold text-dark">{{ $karyawan->nama }}</span>
+                        </li>
                         @endforeach
-                    </div>
-                    <div class="text-center">
-                        <a href="{{ route('sparepart.view') }}" class="btn btn-danger btn-sm" wire:navigate>
-                            Lihat Semua Sparepart
-                        </a>
-                    </div>
-                    @else
-                    <div class="text-center">
-                        <img src="{{ asset('images/icons/Checking boxes-amico.svg') }}" alt="stok aman" width="60%"
-                            class="mb-3">
-                        <h5 class="text-muted fw-semibold">Stok sparepart dalam kondisi aman</h5>
-                    </div>
-                    @endif
+                    </ol>
                 </div>
+                @else
+                <div class="text-center">
+                    <img src="{{ asset('images/icons/Confirmed attendance-amico.svg') }}" alt="absen"
+                        class="animate-pop" width="60%">
+                    <h4 class="card-text semibold text-muted">Semua Karyawan Sudah absen</h4>
+                </div>
+                @endif
             </div>
         </div>
-        @endcan
     </div>
+
+    {{-- Sparepart Menipis (Owner) --}}
+    <div class="col-12 col-md-3">
+        <div class="card h-100 card-hover">
+            <div class="card-body">
+                <h3 class="card-title text-danger mb-3">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Sparepart Menipis
+                </h3>
+                <hr class="border border-2 opacity-50 mb-4">
+
+                @if ($stokmenipis != 0)
+                <p class="card-text mb-3">
+                    Ditemukan <strong>{{ $stokmenipis }} sparepart</strong> dengan stok rendah:
+                </p>
+                <div class="list-group list-group-flush mb-3">
+                    @foreach ($spareparts as $item)
+                    <a href="{{ route('sparepart.show', ['id' => $item->id]) }}"
+                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                        wire:navigate>
+                        <span class="fw-semibold">{{ $item->nama }}</span>
+                        <span class="badge bg-danger rounded-pill">{{ $item->stok }} tersisa</span>
+                    </a>
+                    @endforeach
+                </div>
+                <div class="text-center">
+                    <a href="{{ route('sparepart.view') }}" class="btn btn-danger btn-sm" wire:navigate>
+                        Lihat Semua Sparepart
+                    </a>
+                </div>
+                @else
+                <div class="text-center">
+                    <img src="{{ asset('images/icons/Checking boxes-amico.svg') }}" alt="stok aman" width="60%"
+                        class="mb-3">
+                    <h5 class="text-muted fw-semibold">Stok sparepart dalam kondisi aman</h5>
+                </div>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endcan
+</div>
 </div>
 
 {{-- Script Chart --}}
@@ -589,8 +590,13 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
             };
 
             if (window.Livewire) {
+                console.log('✅ Listener Livewire aktif!');
                 Livewire.on('chart-pendapatan-updated', chartPendapatanHandler);
-                Livewire.on('chart-absensi-updated', chartAbsensiHandler);
+                //Livewire.on('chart-absensi-updated', chartAbsensiHandler);
+                Livewire.on('chart-absensi-updated', (data) => {
+        console.log('📊 Event chart-absensi-updated diterima:', data);
+        chartAbsensiHandler(data);
+    });
             }
 
             // Initial render
@@ -618,13 +624,15 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         document.addEventListener('livewire:navigated', () => {
             chartInitialized = false;
             setTimeout(initialize, 300);
-        }),{ once : true };
+        }, { once: true }); // ← ini baru benar
+
 
         // Cleanup
         document.addEventListener('livewire:before-unload', () => {
             pendapatanBulananChartInstance = safeDestroyChart(pendapatanBulananChartInstance);
             absensiChartInstance = safeDestroyChart(absensiChartInstance);
         });
+        
     })();
 </script>
 @endpush

@@ -335,9 +335,6 @@
                         @else
                         <img src="{{ $src }}" class="img-fluid w-100 rounded" alt="{{ $konten->judul ?? 'Konten' }}"
                             style="object-fit: cover; max-height: 250px;">
-                        @else
-                        <img src="{{ asset('images/asset/default-konten.jpg') }}" class="img-fluid w-100 rounded"
-                            alt="Default Konten" style="object-fit: cover; max-height: 250px;">
                         @endif
 
                         {{-- Label kategori --}}

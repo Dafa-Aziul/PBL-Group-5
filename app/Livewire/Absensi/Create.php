@@ -52,6 +52,8 @@ class Create extends Component
 
         $ip = $getRealIp();
         $prefix = env('BENGKEL_WIFI_PREFIX');
+        Log::info('Client IP: ' . $ip);
+        Log::info('Prefix: ' . $prefix);
 
         if (!str_starts_with($ip, $prefix)) {
             abort(403, 'Absensi hanya bisa dilakukan di jaringan WiFi bengkel.');
@@ -77,7 +79,7 @@ class Create extends Component
         }
 
         if ($this->type === 'check-out') {
-            $batasKeluar = now()->setTime(17,0);
+            $batasKeluar = now()->setTime(17, 0);
 
             // Ambil absensi hari ini
             $absensiHariIni = Absensi::where('karyawan_id', $this->karyawan_id)
@@ -157,7 +159,7 @@ class Create extends Component
 
 
 
-        if ($this->type === 'tidak hadir') {
+        if ($this->type === 'tidak-hadir') {
             $absensiHariIni = Absensi::where('karyawan_id', $this->karyawan_id)
                 ->whereDate('tanggal', $today)
                 ->first();
@@ -176,6 +178,7 @@ class Create extends Component
             if ($this->form->bukti_tidak_hadir) {
                 $data['bukti_tidak_hadir'] = $this->form->bukti_tidak_hadir->store('absensi/foto_tidak_hadir', 'public');
             }
+            Absensi::create($data);
         }
 
         if ($this->type === 'check-in') {
@@ -231,6 +234,7 @@ class Create extends Component
 
 
         // dd($data);
+        //dd($this->type); // Pastikan nilainya benar-benar 'tidak hadir'
         // Simpan data check-in
         // Absensi::create($data);
 
