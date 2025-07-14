@@ -29,6 +29,6 @@ class Konten extends Model
      */
     public function penulis()
     {
-        return $this->belongsTo(Karyawan::class, 'penulis_id');
+        return $this->belongsTo(Karyawan::class, 'penulis_id')->withTrashed();
     }
 }

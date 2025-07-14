@@ -8,7 +8,6 @@ use App\Models\Service;
 use App\Models\ServiceJasa;
 use App\Models\ServiceSparepart;
 use App\Models\Sparepart;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
@@ -46,7 +45,6 @@ class ServiceDetail extends Component
 
     public function hitungTotal()
     {
-        Log::info('Hitung Total dipanggil');
         $this->totalJasa = collect($this->jasaList)->sum('harga');
         $this->estimasiWaktu = $this->hitungEstimasiWaktu();
         $this->estimasiWaktuReadable = $this->hitungEstimasiWaktuReadable();

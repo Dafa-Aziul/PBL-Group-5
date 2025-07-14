@@ -2,7 +2,6 @@
 
 namespace App\Livewire\User;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -82,7 +81,6 @@ class Profile extends Component
 
         } catch (\Exception $e) {
             session()->flash('error', 'Failed to save photo: ' . $e->getMessage());
-            Log::error('Photo save error: ' . $e->getMessage());
         }
     }
 
@@ -93,7 +91,7 @@ class Profile extends Component
             try {
                 $this->photo->delete();
             } catch (\Exception $e) {
-                Log::error('Failed to delete temp file: ' . $e->getMessage());
+                session()->flash('error', 'Failed to delete temp file ' . $e->getMessage());
             }
         }
         $this->photo = null;

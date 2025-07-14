@@ -52,7 +52,22 @@ class Create extends Component
 
         try {
             $validated = $this->validateInput();
+
+            // Tambahkan password default jika kosong
+            if (empty($validated['password'])) {
+                $validated['password'] = bcrypt('Bengkel@2025!');
+            } else {
+                $validated['password'] = bcrypt($validated['password']);
+            }
+
             $user = User::create($validated);
+
+            Karyawan::create([
+                'user_id' => $user->id,
+                'nama' => $validated['name'],
+                'jabatan' => $validated['role'] ?? '',
+                'status' => 'aktif', // default status
+            ]);
             event(new Registered($user));
             session()->flash('success', 'User berhasil ditambahkan!');
             return redirect()->route('user.view');

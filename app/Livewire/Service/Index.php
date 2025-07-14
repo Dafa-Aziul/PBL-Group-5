@@ -211,6 +211,23 @@ class Index extends Component
             });
     }
 
+    protected function getFilteredServicesPerminggu()
+    {
+        return Service::with(['kendaraan.pelanggan'])
+            ->when(!$this->showAll && !$this->search, function ($query) {
+                // Ambil 8 minggu ke belakang
+                $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() :  now()->subDays(6)->startOfDay(); // Mulai dari minggu ke-8 terakhir
+                $end = $this->tanggalAkhir ? Carbon::parse($this->tanggalAkhir)->endOfDay() : now()->endOfDay(); // Akhir minggu ini
+
+                if ($this->filterBulan) {
+                    return $query->whereMonth('created_at', $this->filterBulan);
+                }
+
+                return $query->whereBetween('tanggal_mulai_service', [$start, $end]);
+            });
+    }
+
+
     public function getStatusChart()
     {
         $query = $this->getFilteredServicesTanpaSearch()->get();
@@ -272,10 +289,23 @@ class Index extends Component
 
     public function getJumlahServicePerHariLineChart()
     {
-        $startDate = now()->subDays(6)->startOfDay();
-        $endDate = now()->endOfDay();
 
-        $result = $this->getFilteredServicesTanpaSearch()
+        if ($this->filterBulan) {
+            // Jika filter bulan dipilih, ambil awal dan akhir bulan tersebut
+            $startDate = Carbon::createFromDate(null, $this->filterBulan, 1)->startOfMonth();
+            $endDate = Carbon::createFromDate(null, $this->filterBulan, 1)->endOfMonth();
+        } else {
+            // Kalau tidak, pakai range berdasarkan tanggalAwal dan tanggalAkhir, atau default 7 hari terakhir
+            $startDate = $this->tanggalAwal
+                ? Carbon::parse($this->tanggalAwal)->startOfDay()
+                : now()->subDays(6)->startOfDay();
+
+            $endDate = $this->tanggalAkhir
+                ? Carbon::parse($this->tanggalAkhir)->endOfDay()
+                : now()->endOfDay();
+        }
+
+        $result = $this->getFilteredServicesPerminggu()
             ->whereBetween('tanggal_mulai_service', [$startDate, $endDate])
             ->selectRaw('DATE(tanggal_mulai_service) as tanggal, COUNT(*) as jumlah')
             ->groupBy('tanggal')

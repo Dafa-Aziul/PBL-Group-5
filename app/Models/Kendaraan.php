@@ -29,7 +29,7 @@ class Kendaraan extends Model
 
     public function jenis_kendaraan()
     {
-        return $this->belongsTo(JenisKendaraan::class, 'jenis_kendaraan_id');
+        return $this->belongsTo(JenisKendaraan::class, 'jenis_kendaraan_id')->withTrashed();
     }
 
     public function services()

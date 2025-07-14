@@ -211,11 +211,16 @@ class Dashboard extends Component
 
         // // Ambil karyawan yang terkait dengan user yang sedang login
         $user = Auth::user();
-        $karyawan = Karyawan::where('user_id', $user->id)->firstOrFail();
-        $transaksis = Absensi::where('tanggal', $today)
-            ->where('karyawan_id', $karyawan->id)
-            ->orderBy('jam_masuk', 'asc')
-            ->get();
+        $karyawan = Karyawan::where('user_id', $user->id)->first();
+
+        // Kalau tidak ada, atur default kosong
+        $transaksis = collect();
+        if ($karyawan) {
+            $transaksis = Absensi::where('tanggal', $today)
+                ->where('karyawan_id', $karyawan->id)
+                ->orderBy('jam_masuk', 'asc')
+                ->get();
+        }
 
         $spareparts = Sparepart::where('stok', '<=', 10)->get();
         $stokmenipis = $spareparts->count();

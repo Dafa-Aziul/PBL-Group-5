@@ -63,10 +63,10 @@
                             <thead class="table-secondary">
                                 <tr>
                                     <th>No.</th>
+                                    <th>Kode Service</th>
                                     <th>Tanggal Service</th>
+                                    <th>Status</th>
                                     <th>Keterangan</th>
-                                    <th>Montir</th>
-                                    <th>Total Biaya</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -74,10 +74,18 @@
                                 @forelse ($kendaraan->services as $index => $service)
                                 <tr>
                                     <td class="text-center">{{ $index + 1 }}</td>
+                                    <td>{{ $service->kode_service }}</td>
                                     <td>{{ \Carbon\Carbon::parse($service->tanggal_service)->format('d M Y') }}</td>
+                                    <td>@if($service->status == 'selesai')
+                                    <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
+                                        <i class="fas fa-check-circle me-1"></i> Selesai
+                                    </div>
+                                    @elseif($service->status == 'batal')
+                                    <div class="badge bg-danger d-inline-flex align-items-center py-2 px-3 fs-7">
+                                        <i class="fas fa-times-circle me-1"></i> Batal
+                                    </div>
+                                    @endif</td>
                                     <td>{{ $service->keterangan ?? '-' }}</td>
-                                    <td>{{ $service->montir->nama ?? '-' }}</td>
-                                    {{-- <td>Rp {{ number_format($service->total_biaya ?? 0, 0, ',', '.') }}</td> --}}
                                     <td class="text-center">
                                         <a href="{{ route('service.show', ['id' => $service->id]) }}"
                                             class="btn btn-info btn-sm" wire:navigate>

@@ -21,10 +21,10 @@
             <form wire:submit.prevent="update">
                 <div class="mb-3">
                     <label>User</label>
-                    <select class="form-select" wire:model="form.user_id">
+                    <select class="form-select" wire:model="form.user_id" disabled>
                         <option value="" disabled selected hidden>-- Pilih User --</option>
                         @foreach($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        <option value="{{ $user->id }}">{{ $user->email }}</option>
                         @endforeach
                     </select>
                     @error('form.user_id') <span class="text-danger">{{ $message }}</span> @enderror
@@ -133,7 +133,7 @@
                         </button>
                     </div>
                     <div class="col-4 col-md-2">
-                        <button type="reset" class="btn btn-warning" wire:click="$emit('resetForm')">Reset</button>
+                        <button type="reset" class="btn btn-warning w-100" wire:click="$emit('resetForm')">Reset</button>
                     </div>
                 </div>
             </form>

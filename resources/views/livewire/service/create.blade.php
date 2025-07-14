@@ -1,6 +1,6 @@
 @push('scripts')
-    <script>
-        function initPelangganSelect2() {
+<script>
+    function initPelangganSelect2() {
             $('#pelanggan_id').select2({
                 theme: 'bootstrap-5',
                 width: '100%',
@@ -28,7 +28,7 @@
         document.addEventListener('livewire:navigated', () => {
             initPelangganSelect2();
         });
-    </script>
+</script>
 @endpush
 <div>
     <h2 class="mt-4">Kelola Service</h2>
@@ -56,7 +56,7 @@
                     <label>Pelanggan</label>
                     <div wire:ignore>
                         <select wire:model="pelanggan_id" class="form-select select2" id="pelanggan_id">
-                            <option value="" >-- Pilih Pelanggan --</option>
+                            <option value="">-- Pilih Pelanggan --</option>
                             @foreach ($pelanggans as $pelanggan)
                             <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
                             @endforeach
@@ -100,7 +100,8 @@
                 {{-- Tambahkan field lain sesuai kebutuhan --}}
                 <div class="mb-3">
                     <label>Odometer</label>
-                    <input wire:model="form.odometer" type="number" class="form-control" placeholder="{{ $selectedKendaraan?->odometer ? 'Terakhir: ' . $selectedKendaraan->odometer . ' Km' : 'Masukkan odometer sekarang' }}">
+                    <input wire:model="form.odometer" type="number" class="form-control"
+                        placeholder="{{ $selectedKendaraan?->odometer ? 'Terakhir: ' . $selectedKendaraan->odometer . ' Km' : 'Masukkan odometer sekarang' }}">
                     @error('form.odometer') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
@@ -109,36 +110,6 @@
                     <textarea wire:model="form.deskripsi_keluhan" class="form-control"></textarea>
                     @error('form.deskripsi_keluhan') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
-
-                {{-- <div class="mb-3">
-                    <label>Status</label>
-                    <select wire:model="form.status" class="form-select">
-                        <option value="" >-- Pilih Status --</option>
-                        <option value="dalam antrian">dalam antrian</option>
-                        <option value="dianalisis">dianalisis</option>
-                        <option value="analisis selesai">analisis selesai</option>
-                        <option value="dalam proses">dalam proses</option>
-                        <option value="selesai">Selesai</option>
-                        <option value="batal">Batal</option>
-                    </select>
-
-                    @error('form.status') <span class="text-danger">{{ $message }}</span> @enderror
-                </div> --}}
-
-                {{-- <div class="mb-3">
-                    <label>Estimasi Harga</label>
-                    <input wire:model="estimasi_harga" type="number" class="form-control">
-                </div> --}}
-
-                {{-- <div class="mb-3">
-                    <label>Tanggal Mulai</label>
-                    <input wire:model="tanggal_mulai_service" type="date" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                    <label>Tanggal Selesai</label>
-                    <input wire:model="tanggal_service" type="date" class="form-control">
-                </div> --}}
 
                 <div class="mb-3">
                     <label>Keterangan</label>
@@ -151,6 +122,9 @@
                         <button type="submit" class="btn btn-success w-100">
                             <i class="fa-solid fa-paper-plane me-1"></i> Simpan
                         </button>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <button type="reset" class="btn btn-warning w-100">Reset</button>
                     </div>
                 </div>
             </form>
