@@ -190,7 +190,7 @@ class Create extends Component
                     'Penggunaan sparepart "%s" sebanyak %d pcs pada Penjualan: #%s oleh Pelanggan: %s',
                     $sparepart['nama'],
                     $sparepart['jumlah'],
-                    $transaksi->transaksi,
+                    $transaksi->kode_transaksi,
                     optional($transaksi->pelanggan)->nama ?? '-'
                 ),
             ]);

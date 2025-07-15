@@ -257,7 +257,7 @@ class ServiceDetail extends Component
                 'keterangan' => 'Penggunaan sparepart "'
                     . $sparepart['nama'] . '" sebanyak '
                     . $sparepart['jumlah'] . ' pcs pada service : #'
-                    . $this->service->kode_service . ' oleh Pelanggn : '
+                    . $this->service->kode_service . ' oleh Pelanggan : '
                     . $this->service->kendaraan->pelanggan->nama . ' (' . $this->service->kendaraan->no_polisi . ')',
             ]);
         }
