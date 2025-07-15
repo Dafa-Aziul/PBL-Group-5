@@ -51,7 +51,7 @@
                         <strong>Daftar Riwayat Service</strong>
                     </div>
                     @can('admin')
-                    <a class="btn bg-white text-primary btn-primary" href="{{ route('service.create', ['pelanggan_id' => $kendaraan->pelanggan_id, 'selectedKendaraan' => $kendaraan->id]) }}">
+                    <a class="btn bg-white text-primary btn-primary" href="{{ route('service.create', ['pelanggan_id' => $kendaraan->pelanggan_id, 'selectedKendaraan' => $kendaraan->id]) }}" wire:navigate>
                         <i class="fas fa-plus"></i>
                         <span class="d-none d-md-inline ms-1">Tambah service</span>
                     </a>

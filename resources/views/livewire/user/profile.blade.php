@@ -174,8 +174,8 @@
                         <div class="position-relative d-inline-block">
                             <img src="{{ auth()->user()->profile_photo
                                 ? asset('storage/images/profile/' . auth()->user()->profile_photo)
-                                : asset('storage/images/default.png') }}"
-                                onerror="this.src='{{ asset('storage/images/default.png') }}';" alt="Foto Karyawan"
+                                : asset('images/user/default.jpg') }}"
+                                onerror="this.src='{{ asset('images/user/default.jpg') }}';" alt="Foto Karyawan"
                                 width="200" height="200" class="rounded-circle border mb-3">
 
 

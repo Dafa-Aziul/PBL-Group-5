@@ -92,12 +92,13 @@
                         <i class="fas fa-credit-card me-2"></i>
                         <strong>log gudang</strong>
                     </div>
-
-                    <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
-                        data-bs-target="#stokModal">
-                        <i class="fas fa-plus"></i>
-                        <span class="d-none d-md-inline ms-1">Tambah log gudang</span>
-                    </button>
+                    @can('admin')
+                        <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
+                            data-bs-target="#stokModal">
+                            <i class="fas fa-plus"></i>
+                            <span class="d-none d-md-inline ms-1">Tambah log gudang</span>
+                        </button>
+                    @endcan
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
