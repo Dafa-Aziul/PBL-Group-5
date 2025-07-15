@@ -2,7 +2,7 @@
     <div class="sb-sidenav-menu">
         <div class="nav">
             <div class="sb-sidenav-menu-heading">Menu</div>
-            <x-nav-link wire:current.exact href="{{ route('dashboard') }}" icon="fas fa-tachometer-alt p-2">Dashboard
+            <x-nav-link wire:current.exact href="{{ route('dashboard') }}" icon="fas fa-tachometer-alt p-2" class="mb-1">Dashboard
             </x-nav-link>
 
             <a class="nav-link d-flex align-items-center collapsed" href="#" data-bs-toggle="collapse"
@@ -43,7 +43,7 @@
             @endcan
 
             @can('akses-admin-owner')
-            <x-nav-link wire:current.exact href="{{ route('pelanggan.view') }}" icon="fas fa-users  p-2">Pelanggan
+            <x-nav-link wire:current.exact href="{{ route('pelanggan.view') }}" icon="fas fa-users  p-2" class="mb-1">Pelanggan
             </x-nav-link>
             @endcan
             <a class="nav-link d-flex align-items-center collapsed" href="#" data-bs-toggle="collapse"
