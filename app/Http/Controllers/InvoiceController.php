@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Routing\Controller;
 
 class InvoiceController extends Controller
 {

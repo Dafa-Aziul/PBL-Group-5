@@ -9,7 +9,6 @@ use App\Http\Controllers\AbsensiController;
 //auth
 use \App\Livewire\User\Create as UserCreate;
 use App\Http\Controllers\auth\VerifyEmailController;
-use App\Livewire\Action\Logout;
 
 // user
 use App\Livewire\Auth\ForgotPassword;
@@ -30,7 +29,6 @@ use App\Livewire\FrontEnd\Lacak;
 
 // jasa
 use App\Livewire\FrontEnd\Layanan;
-use App\Livewire\Gudang\Create as GudangCreate;
 use App\Livewire\Jasa\Create as JasaCreate;
 use App\Livewire\Jasa\Edit as JasaEdit;
 use App\Livewire\Jasa\Index as JasaIndex;
@@ -101,11 +99,9 @@ Route::get('/tentang-kami', About::class)->name('about');
 Route::get('/lacak-service', Lacak::class)->name('lacakService');
 Route::get('/berita/{id}', KontenDetail::class)->name('berita');
 
-// Auth::routes(['verify' => true, 'register' => false, 'login' => false]);
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('logout', App\Livewire\Actions\Logout::class)
-    ->name('logout');
+        ->name('logout');
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile.show');
     Route::get('/profile/password', Password::class)->name('profile.password');
@@ -171,7 +167,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/rekap-absen', AbsensiShow::class)->name('absensi.rekap')->middleware('role:superadmin,admin,owner');
     Route::get('rekap-absen/export/pdf', [AbsensiController::class, 'exportPdf'])->name('absensi.export');
     Route::get('rekap-absen/preview/pdf', [AbsensiController::class, 'showPdf'])
-->name('absensi.preview');
+        ->name('absensi.preview');
 
     // Transaksi
     Route::prefix('transaksi')->middleware('role:superadmin,admin,owner')->group(function () {

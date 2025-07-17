@@ -6,6 +6,7 @@ use App\Models\Service;
 use App\Models\StatusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class LacakController extends Controller
 {

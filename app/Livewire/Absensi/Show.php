@@ -24,10 +24,9 @@ class Show extends Component
     public $tanggalAwal;
     public $tanggalAkhir;
 
-    public $start_date;
-    public $end_date;
+    public $start_date = '';
+    public $end_date = '';
     public $format = 'pdf';
-    public $action = '';
 
     public function mount()
     {
@@ -58,16 +57,14 @@ class Show extends Component
             'format' => 'required|in:pdf',
         ]);
 
-        $url = route(
-            $this->action === 'preview' ? 'absensi.preview' : 'absensi.export',
-            [
-                'start_date' => $this->start_date,
-                'end_date' => $this->end_date,
-            ]
-        );
+        $url = route('absensi.export', [
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+        ]);
 
         return redirect()->away($url);
     }
+
 
 
 

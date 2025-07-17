@@ -51,7 +51,7 @@ class Service extends Model
 
     public function montir()
     {
-        return $this->belongsTo(Karyawan::class, 'montir_id');
+        return $this->belongsTo(Karyawan::class, 'montir_id')->withTrashed();
     }
 
     public function spareparts()

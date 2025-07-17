@@ -74,7 +74,8 @@ class Show extends Component
     public function render()
     {
         return view('livewire.sparepart.show', [
-            'sparepart' => $this->sparepart, 'gudangs' => $this->sparepart->gudangs()->paginate($this->perPage),
+            'sparepart' => $this->sparepart,
+            'gudangs' => $this->sparepart->gudangs()->latest()->paginate($this->perPage),
         ]);
     }
 }

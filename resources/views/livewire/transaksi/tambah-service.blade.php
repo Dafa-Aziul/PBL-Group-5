@@ -1,5 +1,5 @@
 <div>
-    Manajemen Transaksi</h1>
+    <h2 class="mt-4">Manajemen Transaksi</h2>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('sparepart.view') }}">Transaksi</a></li>
@@ -141,6 +141,9 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($service->spareparts as $index => $sp)
+                                    @php
+                                    $subtotalSparepart = $sp->jumlah * $sp->harga;
+                                    @endphp
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td><span class="badge bg-info text-dark">{{ $sp->sparepart->kode ?? '-'
@@ -149,8 +152,7 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         <td class="text-end">Rp {{ number_format($sp->harga, 0, ',', '.') }}</td>
-                                        <td class="text-end">Rp {{ number_format($sp->subtotal,
-                                            0, ',', '.') }}</td>
+                                        <td class="text-end">Rp {{ number_format($subtotalSparepart,   0, ',', '.') }}</td>
                                     </tr>
                                     @endforeach
                                     <tr class="table-light fw-bold">

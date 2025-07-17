@@ -102,6 +102,16 @@
                     @endcan
                 </div>
                 <div class="card-body">
+                    @if (session()->has('success'))
+                    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
+                        class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                    @elseif (session()->has('error'))
+                    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                    @endif
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <thead class="table-secondary">

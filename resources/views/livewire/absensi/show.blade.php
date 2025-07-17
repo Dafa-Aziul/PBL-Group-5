@@ -347,13 +347,13 @@
                 <!-- From -->
                 <div class="d-flex align-items-center gap-2 me-md-0 mb-2 mb-md-0">
                     <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
-                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control">
+                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if ($filterBulan) disabled @endif>
                 </div>
 
                 <!-- To -->
                 <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
                     <label for="tanggalAkhir" class="form-label mb-0" style="width: 50px;">To :</label>
-                    <input type="date" id="tanggalAkhir" wire:model.lazy="tanggalAkhir" class="form-control">
+                    <input type="date" id="tanggalAkhir" wire:model.lazy="tanggalAkhir" class="form-control" @if ($filterBulan) disabled @endif>
                 </div>
 
             </div>
@@ -364,7 +364,7 @@
         <div class="col-12 col-md-4 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
             <!-- Checkbox "Semua" -->
             <div>
-                <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
+                <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($tanggalAwal) disabled @endif>
                     <option value="" disabled selected hidden>Pilih Bulan</option>
                     @foreach(range(1, 12) as $bulan)
                     <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
@@ -411,7 +411,7 @@
                     Export <i class="fa-solid fa-file-export ms-1"></i>
                 </button>
             </div>
-            <div wire:ignore class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            <div wire:ignore.self class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog">
                     <form wire:submit.prevent="submitForm" class="modal-content">
@@ -450,11 +450,6 @@
                                     <label class="btn btn-outline-danger" for="formatPdf">
                                         <i class="fa-solid fa-file-pdf me-1"></i> PDF
                                     </label>
-                                    <input type="radio" class="btn-check" id="formatExcel" wire:model="format"
-                                        value="excel">
-                                    <label class="btn btn-outline-success" for="formatExcel">
-                                        <i class="fa-solid fa-file-excel me-1"></i> Excel
-                                    </label>
                                 </div>
                                 @error('format')
                                 <div class="text-danger small mt-1">{{ $message }}</div>
@@ -465,11 +460,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
 
-                            <button type="submit" class="btn btn-info" wire:click="$set('action', 'preview')">
-                                <i class="fa-solid fa-eye me-1"></i> Preview
-                            </button>
-
-                            <button type="submit" class="btn btn-primary" wire:click="$set('action', 'download')">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fa-solid fa-download me-1"></i> Download
                             </button>
                         </div>

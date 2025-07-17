@@ -3,13 +3,13 @@
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('service.view') }}">service</a></li>
-        <li class="breadcrumb-item active">Tambah service</li>
+        <li class="breadcrumb-item active">Edit service</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fa-solid fa-clipboard-user"></i>
-                <span class="d-none d-md-inline ms-1">Input Data service</span>
+                <span class="d-none d-md-inline ms-1">Edit Data service</span>
             </div>
             <div>
                 <a class="btn btn-danger float-end" href="{{  route('service.view') }}" wire:navigate><i
@@ -85,28 +85,22 @@
                     @error('form.status') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                {{-- <div class="mb-3">
-                    <label>Estimasi Harga</label>
-                    <input wire:model="estimasi_harga" type="number" class="form-control">
-                </div> --}}
-
-                {{-- <div class="mb-3">
-                    <label>Tanggal Mulai</label>
-                    <input wire:model="tanggal_mulai_service" type="date" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                    <label>Tanggal Selesai</label>
-                    <input wire:model="tanggal_service" type="date" class="form-control">
-                </div> --}}
-
                 <div class="mb-3">
                     <label>Keterangan</label>
                     <textarea wire:model="form.keterangan" class="form-control"></textarea>
                     @error('form.keterangan') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                <button class="btn btn-primary">Simpan</button>
+                <div class="row g-3">
+                    <div class="col-8 col-md-3">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="fa-solid fa-paper-plane me-1"></i> Simpan
+                        </button>
+                    </div>
+                    <div class="col-4 col-md-2">
+                        <button type="reset" class="btn btn-warning w-100">Reset</button>
+                    </div>
+                </div>
             </form>
 
         </div>
