@@ -1,19 +1,14 @@
 <div>
-    <div class="container-fluid py-5" style="background-color:#373390; ">
+    <!-- Section Atas -->
+    <div class="container-fluid py-5" style="background-color:#373390;">
         <div class="container" style="max-width: 900px;">
             <div class="row align-items-center">
-                <!-- Kolom Teks -->
                 <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
-                    <h4 class="text-white display-4 mb-3 wow fadeInDown" data-wow-delay="0.1s">Lacak Service!
-
-                    </h4>
+                    <h4 class="text-white display-4 mb-3 wow fadeInDown" data-wow-delay="0.1s">Lacak Service!</h4>
                     <p class="text-white mb-3">
-                        Pantau status kendaraanmu secara real-time, tanpa repot — cukup masukkan nomor polisi atau kode
-                        service!
+                        Pantau status kendaraanmu secara real-time, tanpa repot — cukup masukkan kode service!
                     </p>
                 </div>
-
-                <!-- Kolom Gambar -->
                 <div class="col-md-6 text-center">
                     <img src="{{ asset('images/asset/illustraci-lacak.png') }}" alt="Ilustrasi Layanan"
                         class="img-fluid wow fadeInUp" data-wow-delay="0.2s" style="max-height: 300px;">
@@ -22,7 +17,7 @@
         </div>
     </div>
 
-
+    <!-- Form Lacak -->
     <div class="container my-5">
         <div class="text-center mb-4">
             <h2 class="text-primary">Lacak Status Service</h2>
@@ -39,82 +34,72 @@
                 </form>
 
                 @if ($status)
-                <div class="alert alert-danger text-center">
-                    <i class="fas fa-info-circle me-1"></i> {{ $status }}
-                </div>
+                    <div class="alert alert-danger text-center">
+                        <i class="fas fa-info-circle me-1"></i> {{ $status }}
+                    </div>
                 @endif
             </div>
         </div>
 
+        <!-- Hasil Tracking -->
         @if ($submitted && $service)
-        <div class="row justify-content-center">
-            <div class="col-lg-6 wow fadeInUp">
-                {{-- CARD: Info Dasar Service --}}
-                <div class="card mt-4 shadow-sm border-0">
-                    <div class="card-header bg-primary text-white fs-6 fw-semibold">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>Info Dasar Service</strong>
+            <div class="row justify-content-center">
+                <div class="col-lg-6 wow fadeInUp">
 
+                    <!-- Info Dasar -->
+                    <div class="card mt-4 shadow-sm border-0">
+                        <div class="card-header bg-primary text-white fs-6 fw-semibold">
+                            <i class="fas fa-info-circle me-2"></i><strong>Info Dasar Service</strong>
+                        </div>
+                        <div class="card-body fs-6">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2"><strong>Kode Service:</strong>
+                                    <span class="badge bg-light text-dark px-2 py-1">{{ $service[0]['kode_service'] ?? '-' }}</span>
+                                </li>
+                                <li class="mb-2"><strong>No Polisi:</strong>
+                                    <span class="badge bg-info text-white px-2 py-1">{{ $service[0]['no_polisi'] ?? '-' }}</span>
+                                </li>
+                                <li class="mb-2"><strong>Montir:</strong>
+                                    <span class="badge bg-success text-white px-2 py-1">{{ $service[0]['montir']['nama'] ?? '-' }}</span>
+                                </li>
+                                <li class="mb-2"><strong>Estimasi Waktu:</strong>
+                                    @php
+                                        $waktu = $service[0]['estimasi_waktu'] ?? null;
+                                        $jam = $menit = 0;
+                                        if ($waktu) {
+                                            $carbon = \Carbon\Carbon::parse($waktu);
+                                            $jam = (int) $carbon->format('G');
+                                            $menit = (int) $carbon->format('i');
+                                        }
+                                    @endphp
+                                    <span class="badge bg-warning text-dark px-2 py-1">
+                                        @if ($waktu)
+                                            @if ($jam > 0 && $menit > 0)
+                                                {{ $jam }} jam {{ $menit }} menit
+                                            @elseif ($jam > 0)
+                                                {{ $jam }} jam
+                                            @elseif ($menit > 0)
+                                                {{ $menit }} menit
+                                            @else
+                                                -
+                                            @endif
+                                        @else
+                                            -
+                                        @endif
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="card-body fs-6">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">
-                                <strong>Kode Service:</strong>
-                                <span class="badge bg-light text-dark px-2 py-1">{{ $service[0]['kode_service'] ?? '-'
-                                    }}</span>
-                            </li>
-                            <li class="mb-2">
-                                <strong>No Polisi:</strong>
-                                <span class="badge bg-info text-white px-2 py-1">{{ $service[0]['no_polisi'] ?? '-'
-                                    }}</span>
-                            </li>
-                            <li class="mb-2">
-                                <strong>Montir:</strong>
-                                <span class="badge bg-success text-white px-2 py-1">{{ $service[0]['montir']['nama'] ??
-                                    '-' }}</span>
-                            </li>
-                            <li class="mb-2">
-                                <strong>Estimasi Waktu:</strong>
-                                @php
-                                $waktu = $service[0]['estimasi_waktu'] ?? null;
-                                $jam = $menit = 0;
-                                if ($waktu) {
-                                $carbon = \Carbon\Carbon::parse($waktu);
-                                $jam = (int) $carbon->format('G');
-                                $menit = (int) $carbon->format('i');
-                                }
-                                @endphp
-                                <span class="badge bg-warning text-dark px-2 py-1">
-                                    @if ($waktu)
-                                    @if ($jam > 0 && $menit > 0)
-                                    {{ $jam }} jam {{ $menit }} menit
-                                    @elseif ($jam > 0)
-                                    {{ $jam }} jam
-                                    @elseif ($menit > 0)
-                                    {{ $menit }} menit
-                                    @else
-                                    -
-                                    @endif
-                                    @else
-                                    -
-                                    @endif
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
 
-                {{-- CARD: Log Status Service --}}
-                <div class="card mt-4 shadow-sm border-0">
-                    <div class="card-header bg-primary text-white d-flex align-items-center">
-                        <i class="fas fa-stream me-2"></i>
-                        <strong>Log Status Service</strong>
-                    </div>
-                    <div class="card-body">
+                    <!-- Timeline Status -->
+                    <div class="card mt-4 shadow-sm border-0">
+                        <div class="card-header bg-primary text-white d-flex align-items-center">
+                            <i class="fas fa-stream me-2"></i><strong>Log Status Service</strong>
+                        </div>
+                        <div class="card-body">
 
-                        {{-- Timeline Styles --}}
-                        {{-- Timeline Styles --}}
-                        <style>
+                            <style>
                             .timeline-container {
                                 position: relative;
                                 margin-left: 0;
@@ -194,67 +179,50 @@
                             }
                         </style>
 
-                        {{-- Timeline --}}
-                        @php
-                        $icons = [
-                        'dalam antrian' => 'fas fa-check',
-                        'dianalisis' => 'fas fa-tools',
-                        'analisis selesai' => 'fas fa-clipboard-check',
-                        'dalam proses' => 'fas fa-cogs',
-                        'selesai' => 'fas fa-car',
-                        'batal' => 'fas fa-times-circle'
-                        ];
-                        {{-- Timeline --}}
-                        @php
-                        $icons = [
-                        'dalam antrian' => 'fas fa-check',
-                        'dianalisis' => 'fas fa-tools',
-                        'analisis selesai' => 'fas fa-clipboard-check',
-                        'dalam proses' => 'fas fa-cogs',
-                        'selesai' => 'fas fa-car',
-                        'batal' => 'fas fa-times-circle'
-                        ];
+                            @php
+                                $icons = [
+                                    'dalam antrian' => 'fas fa-check',
+                                    'dianalisis' => 'fas fa-tools',
+                                    'analisis selesai' => 'fas fa-clipboard-check',
+                                    'dalam proses' => 'fas fa-cogs',
+                                    'selesai' => 'fas fa-car',
+                                    'batal' => 'fas fa-times-circle'
+                                ];
 
-                        $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
-                        return array_search($step['status'], $allStatus) <= array_search($currentStatus, $allStatus);
-                            })->reverse();
-                            @endphp
-                        $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
-                        return array_search($step['status'], $allStatus) <= array_search($currentStatus, $allStatus);
-                            })->reverse();
+                                $filteredStatus = $statusHistory->filter(function ($step) use ($allStatus, $currentStatus) {
+                                    return array_search($step['status'], $allStatus) <= array_search($currentStatus, $allStatus);
+                                })->reverse();
                             @endphp
 
-                            <div class="timeline-container">
                             <div class="timeline-container">
                                 @foreach ($filteredStatus as $step)
-                                @php
-                                $status = $step['status'];
-                                $isActive = $status === $currentStatus;
-                                $isDone = array_search($status, $allStatus) < array_search($currentStatus, $allStatus);
-                                    $iconClass=$icons[$status] ?? 'fas fa-circle' ; $badgeClass=$isDone ? 'success' :
-                                    ($isActive ? 'primary' : 'gray' ); @endphp <div class="timeline-step">
-                                    <div class="timeline-icon {{ $badgeClass }}">
-                                        <i class="{{ $iconClass }}"></i>
+                                    @php
+                                        $status = $step['status'];
+                                        $isActive = $status === $currentStatus;
+                                        $isDone = array_search($status, $allStatus) < array_search($currentStatus, $allStatus);
+                                        $iconClass = $icons[$status] ?? 'fas fa-circle';
+                                        $badgeClass = $isDone ? 'success' : ($isActive ? 'primary' : 'gray');
+                                    @endphp
+                                    <div class="timeline-step">
+                                        <div class="timeline-icon {{ $badgeClass }}">
+                                            <i class="{{ $iconClass }}"></i>
+                                        </div>
+                                        <div class="timeline-content">
+                                            <p class="timeline-title">{{ $status }}</p>
+                                            <p class="timeline-desc">
+                                                <i class="fas fa-clock me-1"></i>
+                                                {{ \Carbon\Carbon::parse($step['changed_at'])->format('d M Y H:i') }}
+                                            </p>
+                                            <p class="timeline-keterangan">{{ $step['keterangan'] ?? '-' }}</p>
+                                        </div>
                                     </div>
-                                    <div class="timeline-content">
-                                        <p class="timeline-title">{{ $status }}</p>
-                                        <p class="timeline-desc">
-                                            <i class="fas fa-clock me-1"></i>
-                                            {{ \Carbon\Carbon::parse($step['changed_at'])->format('d M Y H:i') }}
-                                        </p>
-                                        <p class="timeline-keterangan">{{ $step['keterangan'] ?? '-' }}</p>
-                                    </div>
+                                @endforeach
                             </div>
-                            @endforeach
-                            </div>
-                            @endforeach
+                        </div>
                     </div>
+
                 </div>
             </div>
-
-
-
-        </div>
+        @endif
     </div>
-    @endif
 </div>

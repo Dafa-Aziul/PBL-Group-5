@@ -75,6 +75,16 @@
                                 <td>{{ $absensi->jam_masuk ?? '-' }}</td>
                                 <td>{{ $absensi->jam_keluar ?? '-' }}</td>
                                 <td class="text-center">
+                                    <img src="{{ asset(
+                                        optional($absensi)?->bukti_tidak_hadir
+                                            ? 'storage/absensi/foto_tidak_hadir/' . optional($absensi)->bukti_tidak_hadir
+                                            : (optional($absensi)?->foto_masuk
+                                                ? 'storage/absensi/foto_masuk/' . optional($absensi)->foto_masuk
+                                                : 'images/user/default.jpg')
+                                    ) }}"
+                                    alt="Foto Absensi" class="img-thumbnail" style="max-width: 100px;">
+
+
                                     <img src="{{ $absensi && $absensi->foto_masuk ? asset('storage/absensi/foto_masuk/' . $absensi->foto_masuk) : asset('images/user/default.jpg') }}"
                                         alt="Foto Masuk" class="img-thumbnail" style="max-width: 100px;">
                                 </td>

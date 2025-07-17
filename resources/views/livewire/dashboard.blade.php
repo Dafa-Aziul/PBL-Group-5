@@ -593,11 +593,9 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
             };
 
             if (window.Livewire) {
-                console.log('✅ Listener Livewire aktif!');
                 Livewire.on('chart-pendapatan-updated', chartPendapatanHandler);
                 //Livewire.on('chart-absensi-updated', chartAbsensiHandler);
                 Livewire.on('chart-absensi-updated', (data) => {
-        console.log('📊 Event chart-absensi-updated diterima:', data);
         chartAbsensiHandler(data);
     });
             }
