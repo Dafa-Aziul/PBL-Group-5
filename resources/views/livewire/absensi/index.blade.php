@@ -14,19 +14,25 @@ $absenHariIni = $user->karyawan
 $sudahCheckIn = $absenHariIni && $absenHariIni->jam_masuk;
 $sudahCheckOut = $absenHariIni && $absenHariIni->jam_keluar;
 
+// Ambil list absensi hari ini yang status-nya izin atau sakit
+$tidakHadirList = $absensis->filter(function ($item) {
+return in_array(strtolower($item->status), ['izin', 'sakit']);
+});
+
 $statusText = 'Belum Absen';
 
 if ($sudahCheckIn && !$sudahCheckOut) {
 $statusText = 'Kamu sudah Check In';
 } elseif ($sudahCheckIn && $sudahCheckOut) {
 $statusText = 'Selamat beristirahat!';
+} elseif (!$sudahCheckIn && !$sudahCheckOut && $tidakHadirList->isNotEmpty()) {
+$statusText = 'Kamu Tidak Hadir Hari Ini';
 }
-$tidakHadirList = $absensis->filter(function($item) {
-return in_array(strtolower($item->status), ['izin', 'sakit']);
-});
 
+// Untuk keperluan kontrol tombol atau logika lain
 $statusHariIni = $absenHariIni ? strtolower($absenHariIni->status) : null;
 $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
+
 
 @endphp
 <div>
@@ -37,16 +43,17 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
 
     </ol>
     @if (session()->has('success'))
-    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
-        class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @elseif (session()->has('error'))
-    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" class="alert alert-danger">
-        {{ session('error') }}
+    <div class="        ">
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    </div @elseif (session()->has('error'))
+    <div class="">
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
     </div>
     @endif
-
 
 
 
@@ -102,7 +109,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
             </div>
             @endif
 
-
+            {{-- Tombol Tidak Hadir --}}
             @if (!$sudahCheckIn && !$sudahCheckOut)
             <div class="text-center">
                 <a class="btn btn-outline-primary btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"
