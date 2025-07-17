@@ -155,7 +155,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                         @if (!$sudahCheckIn && !$sudahCheckOut)
                             <div class="text-center">
                                 <a class="btn btn-outline-primary btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"
-                                    href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'tidak hadir']) : '#' }}"
+                                    href="{{ $bolehCheckIn ? route('absensi.create', ['id' => $user->karyawan->id, 'type' => 'tidak-hadir']) : '#' }}"
                                     wire:navigate
                                     @if (!$bolehCheckIn) aria-disabled="true" tabindex="-1" @endif>
                                     <i class="fas fa-user-times"></i>

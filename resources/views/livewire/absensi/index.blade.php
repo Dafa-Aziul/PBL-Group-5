@@ -109,7 +109,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
             </div>
             @endif
 
-
+            {{-- Tombol Tidak Hadir --}}
             @if (!$sudahCheckIn && !$sudahCheckOut)
             <div class="text-center">
                 <a class="btn btn-outline-primary btn-sm mt-3 float {{ $bolehCheckIn ? '' : 'disabled' }}"

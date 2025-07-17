@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\StatusService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Jobs\ProcessTrackingDataJob;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Routing\Controller;
 
 class LacakController extends Controller
 {
@@ -54,23 +52,5 @@ class LacakController extends Controller
                 'statusHistory' => $history,
             ],
         ]);
-        // $kode_service = strtoupper(trim($kode_service));
-        // $cacheKey = "tracking_{$kode_service}";
-
-        // // 1. Kalau sudah diproses → langsung balikin hasilnya
-        // if (Cache::has($cacheKey)) {
-        //     return response()->json([
-        //         'status' => 'success',
-        //         'data' => Cache::get($cacheKey),
-        //     ]);
-        // }
-
-        // // 2. Kalau belum ada → dispatch job, kasih respon 202 Accepted
-        // ProcessTrackingData::dispatch($kode_service);
-
-        // return response()->json([
-        //     'status'  => 'processing',
-        //     'message' => 'Sedang mengambil data tracking, silakan tunggu beberapa detik...',
-        // ], 202);
     }
 }
