@@ -5,9 +5,9 @@
             <x-nav-link wire:current.exact href="{{ route('dashboard') }}" icon="fas fa-tachometer-alt p-2" class="mb-1">Dashboard
             </x-nav-link>
 
-            <a class="nav-link d-flex align-items-center collapsed" href="#" data-bs-toggle="collapse"
+            <a class="nav-link d-flex align-items-center collapsed @if (request()->routeIs('absensi.view') || request()->routeIs('absensi.rekap') || request()->routeIs('absensi.read')) active @endif" href="#" data-bs-toggle="collapse"
                 data-bs-target="#collapseAbsensi" aria-expanded="false" aria-controls="collapseLayouts"
-                wire:current.exact>
+                >
                 <i class="fa-solid fa-person-chalkboard p-2"></i>
                 <span class="ml-2">Absensi</span>
                 <div class="sb-sidenav-collapse-arrow me-2"><i class="fas fa-angle-down"></i></div>
@@ -46,7 +46,7 @@
             <x-nav-link wire:current.exact href="{{ route('pelanggan.view') }}" icon="fas fa-users  p-2" class="mb-1">Pelanggan
             </x-nav-link>
             @endcan
-            <a class="nav-link d-flex align-items-center collapsed" href="#" data-bs-toggle="collapse"
+            <a class="nav-link d-flex align-items-center collapsed @if (request()->routeIs('transaksi.view') || request()->routeIs('penjualan.view') || request()->routeIs('service.view')) active @endif" href="#" data-bs-toggle="collapse"
                 data-bs-target="#collapseTransaksi" aria-expanded="false" aria-controls="collapseLayouts"
                 wire:current.exact>
                 <i class="fas fa-receipt p-2"></i>

@@ -59,10 +59,46 @@
         }
     }
 
+    var modalInstance = null;
 
+    function initModal() {
+        const modalEl = document.getElementById('editJumlahModal');
+        if (!modalEl) return;
 
+        // Hapus instance lama jika ada
+        if (modalInstance) {
+            modalInstance.dispose();
+        }
+
+        // Buat instance baru
+        modalInstance = new bootstrap.Modal(modalEl, {
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        // Cleanup saat modal ditutup
+        modalEl.addEventListener('hidden.bs.modal', () => {
+            Livewire.dispatch('modal-closed');
+        });
+    }
+
+    // Handle modal events
+    window.addEventListener('open-edit-modal', () => {
+        if (!modalInstance) {
+            initModal();
+        }
+        modalInstance.show();
+        setTimeout(() => document.getElementById('editJumlah')?.focus(), 50);
+    });
+
+    window.addEventListener('hide-edit-jumlah-modal', () => {
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+    });
     // Ketika Livewire selesai load halaman
     document.addEventListener('livewire:load', () => {
+        initModal();
         initPelangganSelect2();
         initSparepartSelect2();
     });
@@ -74,6 +110,7 @@
     });
 
     document.addEventListener('livewire:navigated', () => {
+        initModal();
         initPelangganSelect2();
         initSparepartSelect2();
     });
@@ -82,19 +119,6 @@
         $('#sparepart_id').val(null).trigger('change');
     });
 
-    window.addEventListener('open-edit-modal', event => {
-        var myModal = new bootstrap.Modal(document.getElementById('editJumlahModal'));
-        myModal.show();
-        Livewire.dispatch('modalOpened');
-    });
-
-    window.addEventListener('hide-edit-jumlah-modal', event => {
-        var myModalEl = document.getElementById('editJumlahModal');
-        var modal = bootstrap.Modal.getInstance(myModalEl);
-        if (modal) {
-            modal.hide();
-        }
-    });
 </script>
 
 @endpush
@@ -307,7 +331,7 @@
                     </div>
                 </div>
             </form>
-            <div wire:ignore.self class="modal fade" id="editJumlahModal" tabindex="-1"
+            <div wire:ignore.self class="modal fade" id="editJumlahModal" data-bs-backdrop="static" tabindex="-1"
                 aria-labelledby="editJumlahModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <form wire:submit.prevent="updateJumlah">
@@ -315,7 +339,7 @@
                             <div class="modal-header">
                                 <h5 class="modal-title" id="editJumlahModalLabel">Edit Jumlah Sparepart
                                 </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                <button type="button" class="btn-close" wire:click="closeEditModal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -326,7 +350,8 @@
                                 @enderror
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-secondary"
+                                    wire:click="closeEditModal">Batal</button>
                                 <button type="submit" class="btn btn-primary">Update Jumlah</button>
                             </div>
                         </div>

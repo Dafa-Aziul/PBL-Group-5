@@ -23,6 +23,7 @@ class Index extends Component
     public $tanggalAwal;
     public $tanggalAkhir;
     public $filterBulan;
+    public $status = '';
     public $showAll = false;
 
     // Array untuk menyimpan status masing-masing service by id
@@ -187,6 +188,9 @@ class Index extends Component
                                 $sub->where('nama', 'like', '%' . $this->search . '%');
                             });
                     })
+                    ->orWhereHas('montir', function ($q) {
+                        $q->where('nama', 'like', '%' . $this->search . '%');
+                    })
                     ->orWhere('keterangan', 'like', '%' . $this->search . '%');
             })->when(!$this->showAll && !$this->search, function ($query) {
                 $start = $this->tanggalAwal ? Carbon::parse($this->tanggalAwal)->startOfDay() : Carbon::today()->startOfDay();
@@ -195,6 +199,8 @@ class Index extends Component
                     return $query->whereMonth('created_at', $this->filterBulan);
                 }
                 $query->whereBetween('created_at', [$start, $end]);
+            })->when($this->status, function ($query) {
+                return $query->where('status', $this->status);
             });
     }
 

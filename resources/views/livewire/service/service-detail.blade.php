@@ -96,8 +96,49 @@
         }
     }
 
+    var modalInstance = null;
+
+    function initModal() {
+        const modalEl = document.getElementById('editJumlahModal');
+        if (!modalEl) return;
+
+        // Hapus instance lama jika ada
+        if (modalInstance) {
+            modalInstance.dispose();
+        }
+
+        // Buat instance baru
+        modalInstance = new bootstrap.Modal(modalEl, {
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        // Cleanup saat modal ditutup
+        modalEl.addEventListener('hidden.bs.modal', () => {
+            Livewire.dispatch('modal-closed');
+        });
+    }
+
+    // Handle modal events
+    window.addEventListener('open-edit-modal', () => {
+        if (!modalInstance) {
+            initModal();
+        }
+        modalInstance.show();
+        setTimeout(() => document.getElementById('editJumlah')?.focus(), 50);
+    });
+
+    window.addEventListener('hide-edit-jumlah-modal', () => {
+        if (modalInstance) {
+            modalInstance.hide();
+        }
+    });
+
+
+
     // Ketika Livewire selesai load halaman
     document.addEventListener('livewire:load', () => {
+        setupEditModalListener();
         initJasaSelect2();
         initSparepartSelect2();
     });
@@ -109,6 +150,7 @@
     });
 
     document.addEventListener('livewire:navigated', () => {
+        initModal();
         initJasaSelect2();
         initSparepartSelect2();
     });
@@ -118,19 +160,6 @@
     });
     window.addEventListener('reset-sparepart-select2', () => {
         $('#sparepart_id').val(null).trigger('change');
-    });
-    window.addEventListener('open-edit-modal', event => {
-        var myModal = new bootstrap.Modal(document.getElementById('editJumlahModal'));
-        myModal.show();
-        Livewire.dispatch('modalOpened');
-    });
-
-    window.addEventListener('hide-edit-jumlah-modal', event => {
-        var myModalEl = document.getElementById('editJumlahModal');
-        var modal = bootstrap.Modal.getInstance(myModalEl);
-        if (modal) {
-            modal.hide();
-        }
     });
 </script>
 

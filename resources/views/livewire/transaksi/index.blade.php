@@ -432,7 +432,7 @@
                         Semua
                     </label>
                 </div>
-                <div class="">
+                <div class="w-100">
                     <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($showAll)
                         disabled @endif @if($tanggalAwal || $tanggalAkhir) disabled @endif>
                         <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
@@ -443,11 +443,18 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="">
+                <div class="w-100">
                     <select class="form-select" wire:model.live="jenis_transaksi" style="cursor:pointer;">
                         <option value="" disabled selected hidden class="text-muted">Pilih jenis</option>
                         <option value="service">Service</option>
                         <option value="penjualan">Penjualan</option>
+                    </select>
+                </div>
+                <div class="w-100">
+                    <select class="form-select" wire:model.live="status_pembayaran" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih Status</option>
+                        <option value="lunas">Lunas</option>
+                        <option value="pending">Pending</option>
                     </select>
                 </div>
                 <!-- Tombol Reset -->
@@ -459,14 +466,14 @@
                 </div>
             </div>
             <div class="row d-md-none g-2 mb-2 w-100">
-                <div class="col-6 col-md-3 order-3 order-lg-1">
+                <div class="col-4 col-md-3 order-3 order-lg-1">
                     <input type="checkbox" class="btn-check" id="showAllCheck" wire:model.live="showAll"
                         autocomplete="off">
                     <label class="btn btn-outline-primary mb-0" for="showAllCheck">
                         Semua
                     </label>
                 </div>
-                <div class="col-6 col-md-3 order-1 order-lg-2">
+                <div class="col-4 col-md-3 order-1 order-lg-2">
                     <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;">
                         <option value="" disabled selected hidden class="text-muted" @if($showAll) disabled @endif
                             @if($tanggalAwal || $tanggalAkhir) disabled @endif>Pilih bulan</option>
@@ -477,15 +484,22 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-6 col-md-3 order-2 order-lg-3">
+                <div class="col-4 col-md-3 order-2 order-lg-3">
                     <select class="form-select" wire:model.live="jenis_transaksi" style="cursor:pointer;">
                         <option value="" disabled selected hidden class="text-muted">Pilih jenis</option>
                         <option value="service">Service</option>
                         <option value="penjualan">Penjualan</option>
                     </select>
                 </div>
+                <div class="col-4 col-md-3 order-2 order-lg-3">
+                    <select class="form-select" wire:model.live="status_pembayaran" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih Status</option>
+                        <option value="lunas">Lunas</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
                 <!-- Tombol Reset -->
-                <div class="col-6 col-md-3 order-4 order-lg-4 d-flex justify-content-end">
+                <div class="col-8 col-md-3 order-4 order-lg-4 d-flex justify-content-end">
                     <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
                         <i class="fas fa-rotate me-1"></i>
                         <span class="d-none d-md-inline">Reset</span>

@@ -309,7 +309,18 @@
                         Semua
                     </label>
                 </div>
-                <div class="">
+                <div class="w-100">
+                    <select class="form-select" wire:model.live="status" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih Status</option>
+                        <option value="dalam antrian">dalam antarian</option>
+                        <option value="dianalisis">dianalisis</option>
+                        <option value="analisis selesai">analisis selesai</option>
+                        <option value="dalam proses">dalam proses</option>
+                        <option value="selesai">selesai</option>
+                        <option value="batal">batal</option>
+                    </select>
+                </div>
+                <div class="w-100">
                     <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($showAll)
                         disabled @endif @if($tanggalAwal || $tanggalAkhir) disabled @endif>
                         <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
@@ -336,10 +347,21 @@
                         Semua
                     </label>
                 </div>
-                <div class="col-12 col-md-3 order-1 order-lg-2 w-100">
+                <div class="col-6 col-md-3 order-1 order-lg-2">
+                    <select class="form-select" wire:model.live="status" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih Status</option>
+                        <option value="dalam antrian">dalam antarian</option>
+                        <option value="dianalisis">dianalisis</option>
+                        <option value="analisis selesai">analisis selesai</option>
+                        <option value="dalam proses">dalam proses</option>
+                        <option value="selesai">selesai</option>
+                        <option value="batal">batal</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-3 order-1 order-lg-2">
                     <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($showAll)
                         disabled @endif>
-                        <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
+                        <option value="" disabled selected hidden class="text-muted">Pilih Bulan</option>
                         @foreach(range(1, 12) as $bulan)
                         <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F')
                             }}
@@ -400,13 +422,14 @@
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead class="table-primary">
-                            <tr>
+                            <tr class="align-middle">
                                 <th>No.</th>
                                 <th>Kode service</th>
                                 <th>Pelanggan</th>
                                 <th>Nomor Polisi</th>
                                 <th>Tipe Kendaraan</th>
-                                <th>status</th>
+                                <th>Status Service</th>
+                                <th>Montir</th>
                                 <th>Tanggal Mulai</th>
                                 <th>tanggal Selesai</th>
                                 <th>keterangan</th>
@@ -428,15 +451,15 @@
                                 <td @click.stop class="text-center">
                                     @can('admin')
                                     @if(in_array($service->status, ['selesai', 'batal']))
-                                    @if($service->status == 'selesai')
-                                    <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
-                                        <i class="fas fa-check-circle me-1"></i> Selesai
-                                    </div>
-                                    @elseif($service->status == 'batal')
-                                    <div class="badge bg-danger d-inline-flex align-items-center py-2 px-3 fs-7">
-                                        <i class="fas fa-times-circle me-1"></i> Batal
-                                    </div>
-                                    @endif
+                                        @if($service->status == 'selesai')
+                                            <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
+                                                <i class="fas fa-check-circle me-1"></i> Selesai
+                                            </div>
+                                        @elseif($service->status == 'batal')
+                                            <div class="badge bg-danger d-inline-flex align-items-center py-2 px-3 fs-7">
+                                                <i class="fas fa-times-circle me-1"></i> Batal
+                                            </div>
+                                        @endif
                                     @else
                                     <form wire:submit.prevent="updateStatus({{ $service->id }})"
                                         class="d-flex flex-column align-items-start">
@@ -448,7 +471,9 @@
                                                 <option value="analisis selesai">analisis selesai</option>
                                                 <option value="dalam proses">dalam proses</option>
                                                 <option value="selesai">selesai</option>
-                                                <option value="batal">batal</option>
+                                                @if ($service->status != 'dalam proses' )
+                                                    <option value="batal">batal</option>
+                                                @endif
                                             </select>
                                             <button type="submit" class="btn btn-success">
                                                 <i class="fas fa-check"></i>
@@ -502,7 +527,7 @@
                                     @endif
                                     @endif
                                 </td>
-
+                                <td>{{ $service->montir ? $service->montir->nama : 'Belum ditugaskan' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($service->tanggal_mulai_service)->translatedFormat('d F Y
                                     H:i') }}</td>
                                 <td>{{

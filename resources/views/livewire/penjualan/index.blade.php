@@ -300,6 +300,13 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="">
+                    <select class="form-select" wire:model.live="status_pembayaran" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih Status</option>
+                        <option value="lunas">Lunas</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                </div>
                 <!-- Tombol Reset -->
                 <div class="">
                     <button wire:click="resetFilter" class="btn btn-outline-secondary d-flex align-items-center">
@@ -316,7 +323,7 @@
                         Semua
                     </label>
                 </div>
-                <div class="col-12 col-md-3 order-1 order-lg-2 w-100">
+                <div class="col-6 col-md-3 order-2 order-lg-2 ">
                     <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($showAll)
                         disabled @endif @if($tanggalAwal || $tanggalAkhir) disabled @endif>
                         <option value="" disabled selected hidden class="text-muted">Pilih bulan</option>
@@ -325,6 +332,13 @@
                             }}
                         </option>
                         @endforeach
+                    </select>
+                </div>
+                <div class="col-6 col-md-3 order-1 order-lg-2 ">
+                    <select class="form-select" wire:model.live="status_pembayaran" style="cursor:pointer;">
+                        <option value="" disabled selected hidden class="text-muted">Pilih Status</option>
+                        <option value="lunas">Lunas</option>
+                        <option value="pending">Pending</option>
                     </select>
                 </div>
                 <!-- Tombol Reset -->

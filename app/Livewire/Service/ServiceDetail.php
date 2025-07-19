@@ -41,7 +41,10 @@ class ServiceDetail extends Component
     public $editJumlah = null;
 
     public $isProcessing = false;
-    protected $listeners = ['modalOpened'];
+    protected $listeners = [
+        'modal-closed' => 'handleModalClosed',
+        'modalOpened' => 'handleModalOpened'
+    ];
 
     public function hitungTotal()
     {
@@ -92,6 +95,17 @@ class ServiceDetail extends Component
     {
         $this->isProcessing = false;
     }
+    public function handleModalOpened()
+    {
+        $this->isProcessing = false;
+    }
+
+    public function handleModalClosed()
+    {
+        $this->reset(['editIndex', 'editJumlah']);
+        $this->isProcessing = false;
+    }
+
     public function openEditModal($index)
     {
         if ($this->isProcessing) return;
@@ -99,30 +113,25 @@ class ServiceDetail extends Component
         $this->isProcessing = true;
         $this->editIndex = $index;
         $this->editJumlah = $this->sparepartList[$index]['jumlah'];
-
-        // Kirim event ke frontend agar modal dibuka
         $this->dispatch('open-edit-modal');
+    }
 
-        // Setelah proses selesai, reset flag
-        // $this->isProcessing = false;
+    public function closeEditModal()
+    {
+        $this->dispatch('hide-edit-jumlah-modal');
     }
 
     public function updateJumlah()
     {
-        // Validasi editJumlah
         $this->validate([
             'editJumlah' => 'required|integer|min:1',
         ]);
 
-        // Update jumlah di sparepartList
         $this->sparepartList[$this->editIndex]['jumlah'] = $this->editJumlah;
-
-        // Bisa update sub_total juga, misalnya:
         $this->sparepartList[$this->editIndex]['sub_total'] = $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
 
-        // $this->emit('sparepartListUpdated', $this->sparepartList); // Jika perlu
-
-        $this->dispatch('hide-edit-jumlah-modal');
+        $this->hitungTotal(); // Jangan lupa hitung ulang total
+        $this->closeEditModal(); // Tutup modal
     }
 
 

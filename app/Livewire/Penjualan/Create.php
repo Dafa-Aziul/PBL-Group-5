@@ -28,7 +28,11 @@ class Create extends Component
     public float $total_diskon = 0;
 
     public $isProcessing = false;
-    protected $listeners = ['modalOpened'];
+    protected $listeners = [
+        'modal-closed' => 'handleModalClosed',
+        'modalOpened' => 'handleModalOpened'
+    ];
+
 
     public function mount()
     {
@@ -68,6 +72,17 @@ class Create extends Component
     {
         $this->isProcessing = false;
     }
+    public function handleModalOpened()
+    {
+        $this->isProcessing = false;
+    }
+
+    public function handleModalClosed()
+    {
+        $this->reset(['editIndex', 'editJumlah']);
+        $this->isProcessing = false;
+    }
+
     public function openEditModal($index)
     {
         if ($this->isProcessing) return;
@@ -75,12 +90,12 @@ class Create extends Component
         $this->isProcessing = true;
         $this->editIndex = $index;
         $this->editJumlah = $this->sparepartList[$index]['jumlah'];
-
-        // Kirim event ke frontend agar modal dibuka
         $this->dispatch('open-edit-modal');
+    }
 
-        // Setelah proses selesai, reset flag
-        // $this->isProcessing = false;
+    public function closeEditModal()
+    {
+        $this->dispatch('hide-edit-jumlah-modal');
     }
 
     public function updateJumlah()
@@ -90,11 +105,10 @@ class Create extends Component
         ]);
 
         $this->sparepartList[$this->editIndex]['jumlah'] = $this->editJumlah;
-        $this->sparepartList[$this->editIndex]['sub_total'] =
-            $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
+        $this->sparepartList[$this->editIndex]['sub_total'] = $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
 
-        $this->hitungTotal();
-        $this->dispatch('hide-edit-jumlah-modal');
+        $this->hitungTotal(); // Jangan lupa hitung ulang total
+        $this->closeEditModal(); // Tutup modal
     }
 
     public function addSparepart()

@@ -249,7 +249,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                             <td>{{ $absensi->jam_keluar}}</td>
                             <td class="text-center">
                                 @if ($absensi->foto_keluar)
-                                <img src="{{ $absensi->foto_keluar ? asset('storage/' . $absensi->foto_keluar) : asset('foto/default.png') }}"
+                                <img src="{{ $absensi->foto_keluar ? asset('storage/absensi/foto_keluar/' . $absensi->foto_keluar) : asset('foto/default.png') }}"
                                     alt="Foto Keluar" class="img-thumbnail"
                                     style="max-width: 150px; max-height: 150px; object-fit: contain;"
                                     data-bs-toggle="modal" data-bs-target="#fotoModal{{ $absensi->id }}"

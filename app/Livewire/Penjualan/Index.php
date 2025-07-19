@@ -23,6 +23,7 @@ class Index extends Component
     public $tanggalAkhir;
 
     public $filterBulan = '';
+    public $status_pembayaran = '';
 
     public $showAll = false;
 
@@ -56,6 +57,7 @@ class Index extends Component
         $this->resetPage();
         $this->perPage = 5;
         $this->filterBulan = '';
+        $this->status_pembayaran = '';
         $this->emitChartData();
     }
 
@@ -116,6 +118,8 @@ class Index extends Component
                 $todayStart = Carbon::today()->startOfDay();
                 $todayEnd = Carbon::today()->endOfDay();
                 return $query->whereBetween('created_at', [$todayStart, $todayEnd]);
+            })->when($this->status_pembayaran, function ($q) {
+                $q->where('status_pembayaran', $this->status_pembayaran);
             });
     }
 
@@ -140,6 +144,8 @@ class Index extends Component
                 $todayStart = Carbon::today()->startOfDay();
                 $todayEnd = Carbon::today()->endOfDay();
                 return $query->whereBetween('created_at', [$todayStart, $todayEnd]);
+            })->when($this->status_pembayaran, function ($q) {
+                $q->where('status_pembayaran', $this->status_pembayaran);
             });
     }
 

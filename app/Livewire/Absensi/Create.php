@@ -174,7 +174,8 @@ class Create extends Component
 
             // Simpan file ke dua kolom jika ada foto
             if ($this->form->bukti_tidak_hadir) {
-                $data['bukti_tidak_hadir'] = $this->form->bukti_tidak_hadir->store('absensi/foto_tidak_hadir', 'public');
+                $path = $this->form->bukti_tidak_hadir->store('absensi/foto_tidak_hadir', 'public');
+                $data['bukti_tidak_hadir'] = basename($path);
             }
             Absensi::create($data);
         }
@@ -211,7 +212,8 @@ class Create extends Component
 
             // Simpan foto keluar jika ada
             if ($data['foto_keluar']) {
-                $updateData['foto_keluar'] = $data['foto_keluar']->store('absensi/foto_keluar', 'public');
+                $path = $data['foto_keluar']->store('absensi/foto_keluar', 'public');
+                $updateData['foto_keluar'] = basename($path);
             }
 
             // Update absensi hari ini

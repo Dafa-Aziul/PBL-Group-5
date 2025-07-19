@@ -83,10 +83,6 @@
                                                 : 'images/user/default.jpg')
                                     ) }}"
                                     alt="Foto Absensi" class="img-thumbnail" style="max-width: 100px;">
-
-
-                                    <img src="{{ $absensi && $absensi->foto_masuk ? asset('storage/absensi/foto_masuk/' . $absensi->foto_masuk) : asset('images/user/default.jpg') }}"
-                                        alt="Foto Masuk" class="img-thumbnail" style="max-width: 100px;">
                                 </td>
                                 <td class="text-center">
                                     <img src="{{ $absensi && $absensi->foto_keluar ? asset('storage/absensi/foto_keluar/' . $absensi->foto_keluar) : asset('images/user/default.jpg') }}"

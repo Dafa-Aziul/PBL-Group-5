@@ -528,9 +528,14 @@
 
                             {{-- Foto masuk, dengan fallback default --}}
                             <td class="text-center">
-                                <img src="{{ $absensi->foto_masuk ? asset('storage/absensi/foto_masuk/' . $absensi->foto_masuk) : asset('images/user/default.jpg') }}"
-                                    alt="Foto Masuk" class="img-thumbnail"
-                                    style="max-width: 100px; max-height: 100px; object-fit: contain;">
+                                <img src="{{ asset(
+                                        optional($absensi)?->bukti_tidak_hadir
+                                            ? 'storage/absensi/foto_tidak_hadir/' . optional($absensi)->bukti_tidak_hadir
+                                            : (optional($absensi)?->foto_masuk
+                                                ? 'storage/absensi/foto_masuk/' . optional($absensi)->foto_masuk
+                                                : 'images/user/default.jpg')
+                                    ) }}"
+                                    alt="Foto Absensi" class="img-thumbnail" style="max-width: 100px; max-height: 100px; object-fit: contain;">
                             </td>
 
                             {{-- Foto keluar, dengan fallback default --}}
