@@ -196,7 +196,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                         wire:navigate>
                         <span class="fw-semibold">{{ $item->nama }}</span>
-                        <span class="badge bg-danger rounded-pill">{{ $item->stok }} tersisa</span>
+                        <span class="badge text-bg-@if ($item->stok <= 5) bg-danger @elseif ($item->stok <= 10) bg-warning @else bg-info @endif rounded-pill">{{ $item->stok }} tersisa</span>
                     </a>
                     @endforeach
                 </div>
@@ -315,7 +315,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                         wire:navigate>
                         <span class="fw-semibold">{{ $item->nama }}</span>
-                        <span class="badge bg-danger rounded-pill">{{ $item->stok }} tersisa</span>
+                        <span class="badge text-bg-@if ($item->stok <= 5) bg-danger @elseif ($item->stok <= 10) bg-warning @else bg-info @endif rounded-pill">{{ $item->stok }} tersisa</span>
                     </a>
                     @endforeach
                 </div>

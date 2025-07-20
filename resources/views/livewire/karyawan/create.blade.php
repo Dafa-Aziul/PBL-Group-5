@@ -33,7 +33,7 @@
                 <div class="mb-3">
                     <label>Nama</label>
                     <input type="text" class="form-control" wire:model.defer="form.nama" value="" readonly>
-                    @error(S'form.nama') <span class="text-danger">{{ $message }}</span> @enderror
+                    @error('form.nama') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">

@@ -20,7 +20,8 @@ class Show extends Component
 
         $this->pelanggan = $pelanggan;
         $this->kendaraan = $kendaraan->load(['services' => function ($query) {
-            $query->whereIn('status', ['selesai', 'batal']);
+            $query->whereIn('status', ['selesai', 'batal'])
+                ->orderBy('tanggal_selesai_service', 'desc'); // atau 'created_at', tergantung kebutuhan
         }]);
     }
 

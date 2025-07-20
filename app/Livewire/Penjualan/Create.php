@@ -26,6 +26,15 @@ class Create extends Component
     public $editIndex = null;
     public $editJumlah = null;
     public float $total_diskon = 0;
+    public $editStok = 0;
+
+    public $konfirmasiSparepart = [
+        'sparepart_id' => null,
+        'nama' => '',
+        'stok' => 0,
+        'jumlah' => 0,
+        'harga' => 0,
+    ];
 
     public $isProcessing = false;
     protected $listeners = [
@@ -90,6 +99,10 @@ class Create extends Component
         $this->isProcessing = true;
         $this->editIndex = $index;
         $this->editJumlah = $this->sparepartList[$index]['jumlah'];
+
+        $sparepartId = $this->sparepartList[$index]['sparepart_id'];
+        $this->editStok = Sparepart::find($sparepartId)?->stok ?? 0;
+
         $this->dispatch('open-edit-modal');
     }
 
@@ -104,12 +117,38 @@ class Create extends Component
             'editJumlah' => 'required|integer|min:1',
         ]);
 
+        if ($this->editJumlah > $this->editStok) {
+            $this->addError('editJumlah', 'Jumlah melebihi stok tersedia (' . $this->editStok . ').');
+            return;
+        }
+
         $this->sparepartList[$this->editIndex]['jumlah'] = $this->editJumlah;
         $this->sparepartList[$this->editIndex]['sub_total'] = $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
 
         $this->hitungTotal(); // Jangan lupa hitung ulang total
         $this->closeEditModal(); // Tutup modal
     }
+
+    public function konfirmasiTambah()
+    {
+        if (!$this->konfirmasiSparepart) return;
+
+        $data = $this->konfirmasiSparepart;
+
+        $this->sparepartList[] = [
+            'sparepart_id' => $data['sparepart_id'],
+            'nama' => $data['nama'],
+            'jumlah' => $data['jumlah'],
+            'harga' => $data['harga'],
+            'sub_total' => $data['harga'] * $data['jumlah'],
+        ];
+
+        $this->reset(['selectedSparepartId', 'jumlahSparepart', 'konfirmasiSparepart']);
+        $this->hitungTotal();
+        $this->dispatch('hide-modal-konfirmasi');
+        $this->dispatch('reset-select2');
+    }
+
 
     public function addSparepart()
     {
@@ -126,21 +165,41 @@ class Create extends Component
 
         $sparepart = Sparepart::find($this->selectedSparepartId);
 
-        if ($sparepart->stok < 10) {
-            $this->addError('selectedSparepartId', 'Stok sparepart ini kurang dari 10 dan tidak dapat digunakan.');
-            return;
-        }
 
         // Cek apakah jumlah yang diminta melebihi stok
-        if ($this->jumlahSparepart > $sparepart->stok) {
-            $this->addError('jumlahSparepart', 'Jumlah yang diminta melebihi stok yang tersedia (' . $sparepart->stok . ').');
-            return;
+
+        // Cek duplikasi sparepart
+        if (collect($this->sparepartList)->contains('sparepart_id', $sparepart->id)) {
+            return $this->addError('selectedSparepartId', 'Sparepart ini sudah ditambahkan.');
         }
 
-        if (collect($this->sparepartList)->contains('sparepart_id', $sparepart->id)) {
-            $this->addError('selectedSparepartId', 'Sparepart ini sudah ditambahkan.');
-            return;
+        // Validasi stok kosong
+        if ($sparepart->stok <= 0) {
+            return $this->addError('selectedSparepartId', 'Stok sparepart ini sudah habis.');
         }
+
+        // Validasi jumlah melebihi stok
+        if ($this->jumlahSparepart > $sparepart->stok) {
+            return $this->addError('jumlahSparepart', 'Jumlah melebihi stok tersedia (' . $sparepart->stok . ').');
+        }
+
+        // Konfirmasi jika stok rendah
+        if ($sparepart->stok < 10) {
+            $this->konfirmasiSparepart = [
+                'sparepart_id' => $sparepart->id,
+                'nama' => $sparepart->nama,
+                'stok' => $sparepart->stok,
+                'jumlah' => $this->jumlahSparepart,
+                'harga' => $sparepart->harga,
+            ];
+
+            return $this->dispatch('open-modal-konfirmasi', [
+                'nama' => $sparepart->nama,
+                'stok' => $sparepart->stok,
+                'jumlah' => $this->jumlahSparepart,
+            ]);
+        }
+
 
         $this->sparepartList[] = [
             'sparepart_id' => $sparepart->id,

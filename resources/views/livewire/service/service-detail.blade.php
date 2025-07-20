@@ -22,7 +22,7 @@
             placeholder: '-- Pilih --',
             allowClear: true,
             templateResult: formatSparepartOption,
-            templateSelection: formatSparepartOption
+            templateSelection: formatSparepartSelection
         }).on('change', function () {
             const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
             const component = Livewire.find(componentId);
@@ -58,43 +58,7 @@
                 </div>
             `);
         }
-    }
-    function initSparepartSelect2() {
-        $('#sparepart_id').select2({
-            theme: 'bootstrap-5',
-            width: '100%',
-            placeholder: '-- Pilih --',
-            allowClear: true,
-            templateResult: formatSparepartOption,
-            templateSelection: formatSparepartSelection
-        }).on('change', function () {
-            const componentId = this.closest('[wire\\:id]').getAttribute('wire:id');
-            const component = Livewire.find(componentId);
-            if (component) {
-                component.set("selectedSparepartId", $(this).val());
-            }
-        });
 
-        function formatSparepartOption(option) {
-            if (!option.id) return option.text;
-
-            const $el = $(option.element);
-            const img = $el.data('image');
-            const nama = $el.data('nama');
-            const harga = $el.data('harga');
-            const tipe = $el.data('tipe');
-
-            return $(`
-                <div class="d-flex align-items-center gap-2">
-                    <img src="${img}" width="75" class="rounded"/>
-                    <div class="small lh-sm">
-                        <div><strong>Nama:</strong> ${nama}</div>
-                        <div><strong>Harga:</strong> ${harga}</div>
-                        <div><strong>Tipe Kendaraan:</strong> ${tipe}</div>
-                    </div>
-                </div>
-            `);
-        }
         function formatSparepartSelection(option) {
             if (!option.id) return option.text;
 
@@ -103,48 +67,69 @@
         }
     }
 
-    var modalInstance = null;
+    var modalEditInstance = null;
+    var modalKonfirmasiInstance = null;
 
     function initModal() {
         const modalEl = document.getElementById('editJumlahModal');
         if (!modalEl) return;
 
-        // Hapus instance lama jika ada
-        if (modalInstance) {
-            modalInstance.dispose();
-        }
+        if (modalEditInstance) modalEditInstance.dispose();
 
-        // Buat instance baru
-        modalInstance = new bootstrap.Modal(modalEl, {
+        modalEditInstance = new bootstrap.Modal(modalEl, {
             backdrop: 'static',
             keyboard: false
         });
 
-        // Cleanup saat modal ditutup
         modalEl.addEventListener('hidden.bs.modal', () => {
             Livewire.dispatch('modal-closed');
         });
     }
 
-    // Handle modal events
-    window.addEventListener('open-edit-modal', () => {
-        if (!modalInstance) {
-            initModal();
+    function initModalKonfirmasi() {
+        const modalEl = document.getElementById('konfirmasiSparepartModal');
+        if (!modalEl){
+            return;
         }
-        modalInstance.show();
-        setTimeout(() => document.getElementById('editJumlah')?.focus(), 50);
+
+        if (modalKonfirmasiInstance)
+            modalKonfirmasiInstance.dispose();
+
+        modalKonfirmasiInstance = new bootstrap.Modal(modalEl, {
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        modalEl.addEventListener('hidden.bs.modal', () => {
+            Livewire.dispatch('modal-closed');
+        });
+    }
+
+    // lalu di bagian open modal gunakan instance yang sesuai:
+    window.addEventListener('open-edit-modal', () => {
+        if (!modalEditInstance) initModal();
+        modalEditInstance.show();
     });
 
     window.addEventListener('hide-edit-jumlah-modal', () => {
-        if (modalInstance) {
-            modalInstance.hide();
-        }
+        if (modalEditInstance) modalEditInstance.hide();
+    });
+
+    window.addEventListener('open-modal-konfirmasi', (event) => {
+        if (!modalKonfirmasiInstance) initModalKonfirmasi();
+        modalKonfirmasiInstance.show();
+    });
+
+    window.addEventListener('hide-modal-konfirmasi', () => {
+        if (modalKonfirmasiInstance) modalKonfirmasiInstance.hide();
     });
 
 
 
     // Ketika Livewire selesai load halaman
     document.addEventListener('livewire:load', () => {
+        initModal()
+        initModalKonfirmasi();
         setupEditModalListener();
         initJasaSelect2();
         initSparepartSelect2();
@@ -158,6 +143,7 @@
 
     document.addEventListener('livewire:navigated', () => {
         initModal();
+        initModalKonfirmasi();
         initJasaSelect2();
         initSparepartSelect2();
     });
@@ -466,28 +452,73 @@
                 </div> --}}
             </form>
             <!-- Modal Edit Jumlah Sparepart -->
-            <div wire:ignore class="modal fade" id="editJumlahModal" tabindex="-1"
+            <div wire:ignore.self class="modal fade" id="editJumlahModal" data-bs-backdrop="static" tabindex="-1"
                 aria-labelledby="editJumlahModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <form wire:submit.prevent="updateJumlah">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="editJumlahModalLabel">Edit Jumlah Sparepart</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                <h5 class="modal-title" id="editJumlahModalLabel">Edit Jumlah Sparepart
+                                </h5>
+                                <button type="button" class="btn-close" wire:click="closeEditModal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <label for="editJumlah" class="form-label">Jumlah</label>
+                                <div>
+                                    <label class="form-label">Stok yang tersedia:</label>
+                                    <span class="badge
+                                        @if ($editStok <= 5) text-bg-danger
+                                        @elseif ($editStok <= 10) text-bg-warning
+                                        @else text-bg-info
+                                        @endif">
+                                        {{ $editStok }}
+                                    </span>
+                                    <small class="ms-2 text-muted">
+                                        @if ($editStok <= 5) (Sangat sedikit) @elseif ($editStok <=10) (Menipis) @else
+                                            (Tersedia cukup) @endif </small>
+                                </div>
+
+                                <label for="editJumlah" class="form-label mt-3">Jumlah</label>
                                 <input type="number" wire:model.defer="editJumlah" id="editJumlah" min="1"
                                     class="form-control" required>
-                                @error('editJumlah') <span class="text-danger">{{ $message }}</span> @enderror
+                                @error('editJumlah')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
+
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-secondary"
+                                    wire:click="closeEditModal">Batal</button>
                                 <button type="submit" class="btn btn-primary">Update Jumlah</button>
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+
+
+            <div wire:ignore.self class="modal fade" id="konfirmasiSparepartModal" tabindex="-1"
+                aria-labelledby="konfirmasiSparepartModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Konfirmasi Stok Rendah</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Stok sparepart <strong>{{ $konfirmasiSparepart['nama'] }}</strong> tersisa
+                                <strong>{{ $konfirmasiSparepart['stok'] }}</strong> unit.
+                            </p>
+                            <p>Yakin tetap ingin menambahkan <strong>{{ $konfirmasiSparepart['jumlah'] }}</strong> unit?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-primary" wire:click="konfirmasiTambah">
+                                Ya, Tambahkan
+                            </button>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

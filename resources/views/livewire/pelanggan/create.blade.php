@@ -39,13 +39,17 @@
                 <div class="mb-3">
                     <label class="form-label">Keterangan</label>
                     <div class="btn-group">
-                        <input type="radio" id="pribadi" value="pribadi" wire:model="form.keterangan"
-                            class="btn-check">
-                        <label for="pribadi" class="btn btn-outline-primary">pribadi</label>
-
+                        <input type="radio" id="pribadi" value="pribadi" wire:model="form.keterangan" class="btn-check">
+                        <label for="pribadi"
+                            class="btn btn-outline-info @if($form->keterangan === 'pribadi') text-white @endif">
+                            Pribadi
+                        </label>
                         <input type="radio" id="perusahaan" value="perusahaan" wire:model="form.keterangan"
-                            class="btn-check">
-                        <label for="perusahaan" class="btn btn-outline-primary">Perusahaan</label>
+                        class="btn-check">
+                        <label for="perusahaan"
+                            class="btn btn-outline-primary @if($form->keterangan === 'perusahaan') active text-white @endif">
+                            Perusahaan
+                        </label>
                     </div>
                     {{-- --}}
                     @error('form.keterangan')

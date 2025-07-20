@@ -517,15 +517,16 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-money-bill-wave me-1"></i>
-                <span class="d-none d-md-inline ms-1 ">Daftar Transaksi</span>
+                <span class="ms-1 ">Daftar Transaksi</span>
             </div>
         </div>
 
         <div class="card-body">
-            <div class="row g-3 mb-3 d-flex justify-content-between">
+            <div class="row g-3 mb-3 align-items-center">
                 <!-- Select Entries per page -->
-                <div class=" col-2 col-md-2 d-flex align-items-center">
-                    <select class="form-select" wire:model.live="perPage" style="width:auto;cursor:pointer;">
+                <div class="col-auto d-flex align-items-center">
+                    <select class="form-select form-select" wire:model.live="perPage"
+                        style="width:auto; cursor:pointer;">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
@@ -534,10 +535,13 @@
                 </div>
 
                 <!-- Search -->
-                <div class="position-relative col-5 col-md-3">
-                    <input type="text" class="form-control ps-5" placeholder="Search"
-                        wire:model.live.debounce.100ms="search" />
-                    <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <div class="col-6 ms-auto col-md-4">
+                    <div class="position-relative">
+                        <input type="text" class="form-control form-control ps-5" placeholder="Search"
+                            wire:model.live.debounce.300ms="search" />
+                        <i
+                            class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                    </div>
                 </div>
             </div>
 

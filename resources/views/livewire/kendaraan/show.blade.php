@@ -65,6 +65,7 @@
                                     <th>No.</th>
                                     <th>Kode Service</th>
                                     <th>Tanggal Service</th>
+                                    <th>Tanggal Selesai</th>
                                     <th>Status</th>
                                     <th>Keterangan</th>
                                     <th class="text-center">Aksi</th>
@@ -75,7 +76,8 @@
                                 <tr>
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td>{{ $service->kode_service }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($service->tanggal_service)->format('d M Y') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($service->tanggal_mulai_service)->format('d M Y, H:i') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($service->tanggal_selesai_service)->format('d M Y, H:i') }}</td>
                                     <td>@if($service->status == 'selesai')
                                     <div class="badge bg-success d-inline-flex align-items-center py-2 px-3 fs-7">
                                         <i class="fas fa-check-circle me-1"></i> Selesai

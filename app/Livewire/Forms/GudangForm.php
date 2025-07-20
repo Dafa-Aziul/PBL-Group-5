@@ -14,7 +14,7 @@ class GudangForm extends Form
     #[Validate('required|integer|min:1')]
     public ?int $jumlah;
 
-    #[Validate('nullable|string')]
+    #[Validate('required|string')]
     public ?string $keterangan;
 
     public function resetForm()

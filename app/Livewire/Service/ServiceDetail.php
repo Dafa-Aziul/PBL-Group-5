@@ -8,8 +8,9 @@ use App\Models\Service;
 use App\Models\ServiceJasa;
 use App\Models\ServiceSparepart;
 use App\Models\Sparepart;
-use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 #[Title('Tambah Penggunaan Jasa & Sparepart')]
 class ServiceDetail extends Component
@@ -41,6 +42,17 @@ class ServiceDetail extends Component
     public $editJumlah = null;
 
     public $isProcessing = false;
+
+    public $editStok = 0;
+
+    public $konfirmasiSparepart = [
+        'sparepart_id' => null,
+        'nama' => '',
+        'stok' => 0,
+        'jumlah' => 0,
+        'harga' => 0,
+    ];
+
     protected $listeners = [
         'modal-closed' => 'handleModalClosed',
         'modalOpened' => 'handleModalOpened'
@@ -113,6 +125,10 @@ class ServiceDetail extends Component
         $this->isProcessing = true;
         $this->editIndex = $index;
         $this->editJumlah = $this->sparepartList[$index]['jumlah'];
+
+        $sparepartId = $this->sparepartList[$index]['sparepart_id'];
+        $this->editStok = Sparepart::find($sparepartId)?->stok ?? 0;
+
         $this->dispatch('open-edit-modal');
     }
 
@@ -126,6 +142,11 @@ class ServiceDetail extends Component
         $this->validate([
             'editJumlah' => 'required|integer|min:1',
         ]);
+
+        if ($this->editJumlah > $this->editStok) {
+            $this->addError('editJumlah', 'Jumlah melebihi stok tersedia (' . $this->editStok . ').');
+            return;
+        }
 
         $this->sparepartList[$this->editIndex]['jumlah'] = $this->editJumlah;
         $this->sparepartList[$this->editIndex]['sub_total'] = $this->editJumlah * $this->sparepartList[$this->editIndex]['harga'];
@@ -171,6 +192,27 @@ class ServiceDetail extends Component
         $this->hitungTotal();
     }
 
+    public function konfirmasiTambah()
+    {
+        if (!$this->konfirmasiSparepart) return;
+
+        $data = $this->konfirmasiSparepart;
+
+        $this->sparepartList[] = [
+            'sparepart_id' => $data['sparepart_id'],
+            'nama' => $data['nama'],
+            'jumlah' => $data['jumlah'],
+            'harga' => $data['harga'],
+            'sub_total' => $data['harga'] * $data['jumlah'],
+        ];
+
+        $this->reset(['selectedSparepartId', 'jumlahSparepart', 'konfirmasiSparepart']);
+        $this->hitungTotal();
+        $this->dispatch('hide-modal-konfirmasi');
+        $this->dispatch('reset-select2');
+    }
+
+
     public function addSparepart()
     {
         $this->validate([
@@ -184,39 +226,55 @@ class ServiceDetail extends Component
             'jumlahSparepart.min' => 'Jumlah minimal 1.',
         ]);
 
-        $sparepart = Sparepart::find($this->selectedSparepartId); // aman karena sudah divalidasi exists
+        $sparepart = Sparepart::find($this->selectedSparepartId);
 
-        if ($sparepart->stok < 10) {
-            $this->addError('selectedSparepartId', 'Stok sparepart ini kurang dari 10 dan tidak dapat digunakan.');
-            return;
-        }
 
         // Cek apakah jumlah yang diminta melebihi stok
-        if ($this->jumlahSparepart > $sparepart->stok) {
-            $this->addError('jumlahSparepart', 'Jumlah yang diminta melebihi stok yang tersedia (' . $sparepart->stok . ').');
-            return;
-        }
 
-        // Cek jika sparepart sudah ada di daftar (opsional, seperti untuk jasa)
+        // Cek duplikasi sparepart
         if (collect($this->sparepartList)->contains('sparepart_id', $sparepart->id)) {
-            $this->addError('selectedSparepartId', 'Sparepart ini sudah ditambahkan.');
-            return;
+            return $this->addError('selectedSparepartId', 'Sparepart ini sudah ditambahkan.');
         }
 
-        $sub_total = $sparepart->harga * $this->jumlahSparepart;
+        // Validasi stok kosong
+        if ($sparepart->stok <= 0) {
+            return $this->addError('selectedSparepartId', 'Stok sparepart ini sudah habis.');
+        }
+
+        // Validasi jumlah melebihi stok
+        if ($this->jumlahSparepart > $sparepart->stok) {
+            return $this->addError('jumlahSparepart', 'Jumlah melebihi stok tersedia (' . $sparepart->stok . ').');
+        }
+
+        // Konfirmasi jika stok rendah
+        if ($sparepart->stok < 10) {
+            $this->konfirmasiSparepart = [
+                'sparepart_id' => $sparepart->id,
+                'nama' => $sparepart->nama,
+                'stok' => $sparepart->stok,
+                'jumlah' => $this->jumlahSparepart,
+                'harga' => $sparepart->harga,
+            ];
+
+            return $this->dispatch('open-modal-konfirmasi', [
+                'nama' => $sparepart->nama,
+                'stok' => $sparepart->stok,
+                'jumlah' => $this->jumlahSparepart,
+            ]);
+        }
+
 
         $this->sparepartList[] = [
             'sparepart_id' => $sparepart->id,
             'nama' => $sparepart->nama,
             'jumlah' => $this->jumlahSparepart,
             'harga' => $sparepart->harga,
-            'sub_total' => $sub_total,
+            'sub_total' => $sparepart->harga * $this->jumlahSparepart,
         ];
 
-        $this->selectedSparepartId = '';
-        $this->jumlahSparepart = '';
+        $this->reset(['selectedSparepartId', 'jumlahSparepart']);
         $this->hitungTotal();
-        $this->dispatch('reset-sparepart-select2');
+        $this->dispatch('reset-select2');
     }
 
 
@@ -234,46 +292,129 @@ class ServiceDetail extends Component
     {
         $this->validate([
             'jasaList' => 'required|array|min:1',
-            // validasi lainnya
+            // kamu bisa tambahkan validasi sparepartList di sini jika perlu
         ]);
 
-        ServiceJasa::where('service_id', $this->service->id)->delete();
-        ServiceSparepart::where('service_id', $this->service->id)->delete();
+        // Cek apakah sudah ada detail sebelumnya
+        $adaJasa = ServiceJasa::where('service_id', $this->service->id)->exists();
+        $adaSparepart = ServiceSparepart::where('service_id', $this->service->id)->exists();
 
-        // Simpan jasa
-        foreach ($this->jasaList as $jasa) {
-            ServiceJasa::create([
-                'service_id' => $this->service->id,
-                'jasa_id' => $jasa['jasa_id'],
-                'harga' => $jasa['harga'],
-            ]);
-        }
+        if ($adaJasa || $adaSparepart) {
+            // Jika data jasa/sparepart SUDAH ADA → jalankan dalam transaksi
+            DB::beginTransaction();
 
-        // Simpan sparepart
-        foreach ($this->sparepartList as $sparepart) {
-            ServiceSparepart::create([
-                'service_id' => $this->service->id,
-                'sparepart_id' => $sparepart['sparepart_id'],
-                'harga' => $sparepart['harga'],
-                'jumlah' => $sparepart['jumlah'],
-                'sub_total' => $sparepart['sub_total'],
-            ]);
+            try {
+                // Ambil data sparepart lama (jika butuh untuk selisih stok)
+                $sparepartLama = $this->service->spareparts()->get()->keyBy('sparepart_id');
 
-            Gudang::create([
-                'sparepart_id' => $sparepart['sparepart_id'],
-                'aktivitas' => 'keluar',
-                'jumlah' => $sparepart['jumlah'],
-                'keterangan' => 'Penggunaan sparepart "'
-                    . $sparepart['nama'] . '" sebanyak '
-                    . $sparepart['jumlah'] . ' pcs pada service : #'
-                    . $this->service->kode_service . ' oleh Pelanggan : '
-                    . $this->service->kendaraan->pelanggan->nama . ' (' . $this->service->kendaraan->no_polisi . ')',
-            ]);
+                // Hapus data lama
+                ServiceJasa::where('service_id', $this->service->id)->delete();
+                ServiceSparepart::where('service_id', $this->service->id)->delete();
+
+                // Simpan ulang jasa
+                foreach ($this->jasaList as $jasa) {
+                    ServiceJasa::create([
+                        'service_id' => $this->service->id,
+                        'jasa_id' => $jasa['jasa_id'],
+                        'harga' => $jasa['harga'],
+                    ]);
+                }
+
+                // Simpan ulang sparepart
+                foreach ($this->sparepartList as $sparepart) {
+                    $jumlahBaru = $sparepart['jumlah'];
+                    $id = $sparepart['sparepart_id'];
+                    $jumlahLama = $sparepartLama[$id]->jumlah ?? 0;
+                    $selisih = $jumlahBaru - $jumlahLama;
+
+                    ServiceSparepart::create([
+                        'service_id' => $this->service->id,
+                        'sparepart_id' => $id,
+                        'harga' => $sparepart['harga'],
+                        'jumlah' => $jumlahBaru,
+                        'sub_total' => $sparepart['sub_total'],
+                    ]);
+
+                    // Catat ke Gudang
+                    if ($selisih !== 0) {
+                        Gudang::create([
+                            'sparepart_id' => $id,
+                            'aktivitas' => $selisih > 0 ? 'keluar' : 'masuk',
+                            'jumlah' => abs($selisih),
+                            'keterangan' => ($selisih > 0 ? 'Penyesuaian penggunaan' : 'Koreksi pengurangan penggunaan') .
+                                ' sparepart "' . $sparepart['nama'] . '" sebanyak ' . abs($selisih) . ' pcs pada service : #' .
+                                $this->service->kode_service . ' oleh Pelanggan : ' .
+                                $this->service->kendaraan->pelanggan->nama . ' (' .
+                                $this->service->kendaraan->no_polisi . ')',
+                        ]);
+                    }
+                }
+
+
+                // Cari sparepart lama yang sekarang tidak ada lagi di list baru
+                $sparepartBaruIds = collect($this->sparepartList)->pluck('sparepart_id')->toArray();
+                $sparepartDihapus = $sparepartLama->filter(function ($item, $key) use ($sparepartBaruIds) {
+                    return !in_array($key, $sparepartBaruIds);
+                });
+
+                // Catat pengembalian ke gudang untuk sparepart yang dihapus
+                foreach ($sparepartDihapus as $hapus) {
+                    Gudang::create([
+                        'sparepart_id' => $hapus->sparepart_id,
+                        'aktivitas' => 'masuk',
+                        'jumlah' => $hapus->jumlah,
+                        'keterangan' => 'Pengembalian sparepart "' . $hapus->sparepart->nama . '" sebanyak ' . $hapus->jumlah .
+                            ' pcs karena dihapus dari detail service : #' . $this->service->kode_service .
+                            ' oleh Pelanggan : ' . $this->service->kendaraan->pelanggan->nama .
+                            ' (' . $this->service->kendaraan->no_polisi . ')',
+                    ]);
+                }
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                session()->flash('error', 'Gagal menyimpan detail: ' . $e->getMessage());
+                return redirect()->back();
+            }
+        } else {
+            // Jika BELUM ADA DETAIL → langsung tambahkan tanpa transaksi
+            foreach ($this->jasaList as $jasa) {
+                ServiceJasa::create([
+                    'service_id' => $this->service->id,
+                    'jasa_id' => $jasa['jasa_id'],
+                    'harga' => $jasa['harga'],
+                ]);
+            }
+
+            foreach ($this->sparepartList as $sparepart) {
+                ServiceSparepart::create([
+                    'service_id' => $this->service->id,
+                    'sparepart_id' => $sparepart['sparepart_id'],
+                    'harga' => $sparepart['harga'],
+                    'jumlah' => $sparepart['jumlah'],
+                    'sub_total' => $sparepart['sub_total'],
+                ]);
+
+                Gudang::create([
+                    'sparepart_id' => $sparepart['sparepart_id'],
+                    'aktivitas' => 'keluar',
+                    'jumlah' => $sparepart['jumlah'],
+                    'keterangan' => 'Penggunaan sparepart "' . $sparepart['nama'] . '" sebanyak ' .
+                        $sparepart['jumlah'] . ' pcs pada service : #' .
+                        $this->service->kode_service . ' oleh Pelanggan : ' .
+                        $this->service->kendaraan->pelanggan->nama . ' (' .
+                        $this->service->kendaraan->no_polisi . ')',
+                ]);
+            }
         }
 
         session()->flash('success', 'Detail service berhasil disimpan.');
         return redirect()->route('service.view');
     }
+
+
+
+
     protected function hitungEstimasiWaktu(): string
     {
         $totalDetik = collect($this->jasaList)->reduce(function ($carry, $item) {

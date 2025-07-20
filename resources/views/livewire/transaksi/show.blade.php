@@ -52,7 +52,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-receipt me-1"></i>
-                <span class="d-none d-md-inline ms-1">Data Transaksi</span>
+                <span class="ms-1">Data Transaksi</span>
             </div>
             <div>
                 <a class="btn btn-primary float-end" href="{{  route('transaksi.view') }}" wire:navigate>

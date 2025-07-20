@@ -183,7 +183,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1 ">Absen Masuk</span>
+                <span class=" ms-1 ">Absen Masuk</span>
             </div>
         </div>
         <div class="card-body">
@@ -228,7 +228,7 @@ $bolehCheckIn = !in_array($statusHariIni, ['izin', 'sakit']);
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1 ">Absen Pulang</span>
+                <span class="ms-1 ">Absen Pulang</span>
             </div>
         </div>
         <div class="card-body">

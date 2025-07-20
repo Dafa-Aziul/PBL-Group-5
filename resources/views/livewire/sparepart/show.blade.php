@@ -43,7 +43,7 @@
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
                 <i class="fas fa-table me-1"></i>
-                <span class="d-none d-md-inline ms-1">Data sparepart</span>
+                <span class="ms-1">Data sparepart</span>
             </div>
             <div>
                 <a class="btn btn-primary float-end" href="{{  route('sparepart.view') }}" wire:navigate>
@@ -72,7 +72,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Harga</label>
-                        <div class="form-control bg-light">{{ $sparepart->harga }}</div>
+                        <div class="form-control bg-light">Rp. {{ number_format( $sparepart->harga,0, ',', '.') }}</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Tipe Kendaraan</label>
@@ -93,17 +93,18 @@
                         <strong>log gudang</strong>
                     </div>
                     @can('admin')
-                        <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
-                            data-bs-target="#stokModal">
-                            <i class="fas fa-plus"></i>
-                            <span class="d-none d-md-inline ms-1">Tambah log gudang</span>
-                        </button>
+                    <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
+                        data-bs-target="#stokModal">
+                        <i class="fas fa-plus"></i>
+                        <span class="d-none d-md-inline ms-1">Tambah log gudang</span>
+                    </button>
                     @endcan
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
                         <h5>
-                            <span class="badge bg-{{ $sparepart->stok <= 10 ? 'danger' : 'info' }} fs-6">
+                            <span
+                                class="badge bg-@if ($sparepart->stok <= 5) bg-danger @elseif ($sparepart->stok <= 10) bg-warning @else bg-info @endif fs-6">
                                 Stok barang : {{ $sparepart->stok }}
                             </span>
                         </h5>
@@ -129,7 +130,6 @@
                                     <th>Jumlah</th>
                                     <th>Keterangan</th>
                                     <th>Tanggal</th>
-                                    {{-- <th class="text-center">Aksi</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -137,16 +137,14 @@
                                 <tr>
                                     <td class="text-center">{{ ($gudangs->firstItem() + $loop->iteration) - 1 }}</td>
                                     <td>{{ $gudang->sparepart->nama ?? '-' }}</td>
-                                    <td>{{ $gudang->aktivitas }}</td>
+                                    <td>
+                                        <span
+                                            class="badge {{ $gudang->aktivitas === 'masuk' ? 'bg-success' : 'bg-danger' }}">
+                                            {{ ucfirst($gudang->aktivitas) }}
+                                        </span></td>
                                     <td>{{ $gudang->jumlah }}</td>
                                     <td>{{ $gudang->keterangan }}</td>
                                     <td>{{ \Carbon\Carbon::parse($gudang->created_at)->format('d M Y, H:i') }}</td>
-                                    {{-- <td class="text-center">
-                                        <a href="" class="btn btn-warning btn-sm" wire:navigate>
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                            <span class="d-none d-md-inline ms-1">Riwayat Service<s /span>
-                                        </a>
-                                    </td> --}}
                                 </tr>
                                 @empty
                                 <tr>
@@ -161,25 +159,6 @@
                     {{ $gudangs -> links() }}
                 </div>
             </div>
-            {{-- <div class="col-md-12">
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <label class="form-label fw-bold mb-0">log gudang</label>
-                        <a class="btn btn-primary" href="{{ route('gudang.create', ['id' => $sparepart->id]) }}"
-                            wire:navigate>
-                            <i class="fas fa-plus"></i>
-                            <span class="d-none d-md-inline ms-1">Tambah log gudang</span>
-                        </a>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#stokModal">
-                            <i class="fas fa-plus"></i>
-                            <span class="d-none d-md-inline ms-1">Tambah log gudang</span>
-                        </button>
-                    </div>
-
-
-                </div>
-            </div> --}}
         </div>
         <div class="modal fade" id="stokModal" tabindex="-1" aria-labelledby="stokModalLabel" aria-hidden="true"
             wire:ignore.self>
@@ -197,8 +176,8 @@
 
                         <div class="mb-3">
                             <label for="aktivitas" class="form-label">Aktivitas</label>
-                            <select id="aktivitas" class="form-select" wire:model="form.aktivitas" required>
-                                <option value="">-- Pilih Aktivitas --</option>
+                            <select id="aktivitas" class="form-select" wire:model="form.aktivitas">
+                                <option value="" selected hidden>-- Pilih Aktivitas --</option>
                                 <option value="masuk">Masuk</option>
                                 <option value="keluar">Keluar</option>
                             </select>
@@ -210,7 +189,7 @@
                         <div class="mb-3">
                             <label for="jumlah" class="form-label">Jumlah</label>
                             <input type="number" id="jumlah" class="form-control" wire:model="form.jumlah" min="1"
-                                required>
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             @error('form.jumlah') <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
