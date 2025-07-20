@@ -1,143 +1,163 @@
 @push('scripts')
 <script>
-    // Gunakan namespace untuk menghindari redeclaration
-    if (!window.profileCropper) {
+    window.livewireComponentId = @json($this->getId());
+</script>
+<script>
+if (!window.profileCropper) {
+    window.profileCropper = {
+        cropper: null,
+        modalEl: null,
+        _eventSetup: false,
 
-        window.profileCropper = {
-            cropper: null,
-            modalEl: null,
-            init: function() {
-                document.addEventListener('DOMContentLoaded', () => {
-                    this.setupEventListeners();
-                });
-            },
-            setupEventListeners: function() {
-                // Open cropper modal
-                window.addEventListener('open-cropper-modal', () => {
-                    this.modalEl = document.getElementById('cropPhotoModal');
-                    const modal = new bootstrap.Modal(this.modalEl, {
-                        backdrop: 'static',
-                        keyboard: false
-                    });
+        init: function () {
+            this.setupEventListeners();
+        },
 
-                    this.modalEl.addEventListener('shown.bs.modal', () => {
-                        const image = document.getElementById('cropperImage');
-                        if (image && image.src) {
-                            if (this.cropper) this.cropper.destroy();
+        setupEventListeners: function () {
+            if (this._eventSetup) return;
+            this._eventSetup = true;
 
-                            this.cropper = new Cropper(image, {
-                                aspectRatio: 1,
-                                viewMode: 1,
-                                autoCropArea: 1,
-                                responsive: true,
-                                restore: false,
-                                checkCrossOrigin: false
-                            });
-                        }
-                    });
-
-                    modal.show();
+            // Buka modal
+            window.addEventListener('open-cropper-modal', () => {
+                this.modalEl = document.getElementById('cropPhotoModal');
+                const modal = new bootstrap.Modal(this.modalEl, {
+                    backdrop: 'static',
+                    keyboard: false
                 });
 
-                // Close cropper modal
-                window.addEventListener('close-cropper-modal', () => {
-                    const modal = bootstrap.Modal.getInstance(this.modalEl);
-                    if (modal) modal.hide();
-
-                    setTimeout(() => {
-                        const backdrop = document.querySelector('.modal-backdrop');
-                        if (backdrop) backdrop.remove();
-
-                        document.body.classList.remove('modal-open');
-                        document.body.style.removeProperty('padding-right');
-                    }, 300);
-
-                    if (this.cropper) {
-                        this.cropper.destroy();
-                        this.cropper = null;
+                this.modalEl.addEventListener('shown.bs.modal', () => {
+                    const image = document.getElementById('cropperImage');
+                    if (!image || !image.src) {
+                        return;
                     }
 
-                    const livewireComponent = Livewire.find('{{ $this->getId() }}');
-                    if (livewireComponent) {
-                        livewireComponent.call('closeModal');
+                    if (image.complete) {
+                        this.initCropper(image);
+                    } else {
+                        image.onload = () => this.initCropper(image);
                     }
                 });
 
-                // Save button handler
-                const cropSaveBtn = document.getElementById('cropSaveBtn');
-                if (cropSaveBtn) {
-                    cropSaveBtn.addEventListener('click', () => {
-                        if (!this.cropper) {
-                            console.error('Cropper tidak ada');
+                modal.show();
+            });
+
+            // Tutup modal
+            window.addEventListener('close-cropper-modal', () => {
+                const modal = bootstrap.Modal.getInstance(this.modalEl);
+                if (modal) modal.hide();
+
+                setTimeout(() => {
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) backdrop.remove();
+
+                    document.body.classList.remove('modal-open');
+                    document.body.style.removeProperty('padding-right');
+                }, 300);
+
+                if (this.cropper) {
+                    this.cropper.destroy();
+                    this.cropper = null;
+                }
+
+                const livewireComponent = Livewire.find(window.livewireComponentId);
+                if (livewireComponent) {
+                    livewireComponent.call('closeModal');
+                }
+            });
+
+            // Simpan foto
+            const cropSaveBtn = document.getElementById('cropSaveBtn');
+            if (cropSaveBtn) {
+                cropSaveBtn.addEventListener('click', () => {
+                    if (!this.cropper) {
+                        return;
+                    }
+
+                    const canvas = this.cropper.getCroppedCanvas({
+                        width: 500,
+                        height: 500,
+                        minWidth: 256,
+                        minHeight: 256,
+                        maxWidth: 1024,
+                        maxHeight: 1024,
+                        fillColor: '#fff',
+                        imageSmoothingEnabled: true,
+                        imageSmoothingQuality: 'high'
+                    });
+
+                    if (!canvas) {
+                        return;
+                    }
+
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
                             return;
                         }
 
-                        const canvas = this.cropper.getCroppedCanvas({
-                            width: 500,
-                            height: 500,
-                            minWidth: 256,
-                            minHeight: 256,
-                            maxWidth: 1024,
-                            maxHeight: 1024,
-                            fillColor: '#fff',
-                            imageSmoothingEnabled: true,
-                            imageSmoothingQuality: 'high'
-                        });
-
-                        if (!canvas) {
-                            console.error('Canvas tidak ada');
-                            return;
-                        }
-
-                        canvas.toBlob((blob) => {
-                            if (!blob) {
-                                console.error('Gagal membuat blob');
-                                return;
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            const livewireComponent = Livewire.find(window.livewireComponentId);
+                            if (livewireComponent) {
+                                livewireComponent.call('saveCroppedPhoto', reader.result);
                             }
-
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                                const livewireComponent = Livewire.find('{{ $this->getId() }}');
-                                if (livewireComponent) {
-                                    livewireComponent.call('saveCroppedPhoto', reader.result);
-                                }
-                            };
-                            reader.readAsDataURL(blob);
-                        }, 'image/png', 0.95);
-                    });
-                }
-
-                // File input handler
-                const input = document.getElementById('photoInput');
-                if (input) {
-                    input.addEventListener('change', function(e) {
-                        if (e.target.files && e.target.files.length > 0) {
-                            const file = e.target.files[0];
-
-                            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-                            const maxSizeMB = 2;
-
-                            if (!allowedTypes.includes(file.type)) {
-                                e.target.value = ''; // reset file input
-                                return;
-                            }
-
-                            if (file.size > maxSizeMB * 1024 * 1024) {
-                                e.target.value = ''; // reset file input
-                                return;
-                            }
-
-                            // Jika lolos validasi JS, baru kirim event untuk buka modal
-                            window.dispatchEvent(new CustomEvent('open-cropper-modal'));
-                        }
-                    });
-                }
+                        };
+                        reader.readAsDataURL(blob);
+                    }, 'image/png', 0.95);
+                });
             }
-        };
 
+            // Input file
+            const input = document.getElementById('photoInput');
+            if (input) {
+                input.addEventListener('change', function (e) {
+                    const file = e.target.files[0];
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+                    const maxSizeMB = 2;
+
+                    if (!allowedTypes.includes(file.type) || file.size > maxSizeMB * 1024 * 1024) {
+                        e.target.value = '';
+                        return;
+                    }
+
+                    // Kirim event buka modal
+                    window.dispatchEvent(new CustomEvent('open-cropper-modal'));
+                });
+            }
+        },
+
+        initCropper: function (image) {
+            if (this.cropper) this.cropper.destroy();
+
+            this.cropper = new Cropper(image, {
+                aspectRatio: 1,
+                viewMode: 1,
+                autoCropArea: 1,
+                responsive: true,
+                restore: false,
+                checkCrossOrigin: false
+            });
+        }
+    };
+
+    window.profileCropper.init();
+}
+
+// Re-inisialisasi saat komponen Livewire diupdate
+document.addEventListener("livewire:load", function () {
+    if (window.profileCropper) {
+        window.profileCropper._eventSetup = false;
         window.profileCropper.init();
     }
+});
+
+Livewire.hook('message.processed', () => {
+    if (window.profileCropper) {
+        window.profileCropper._eventSetup = false;
+        window.profileCropper.init();
+    }
+});
 </script>
+
 @endpush
 
 <div>
