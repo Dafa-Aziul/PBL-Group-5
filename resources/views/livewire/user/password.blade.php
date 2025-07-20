@@ -32,10 +32,9 @@
                 <div class="mb-3">
                     <label>Password Saat Ini</label>
                     <div class="input-group">
-                        <input type="password" class="form-control" wire:model="current_password"
-                            id="current_password">
+                        <input type="password" class="form-control" wire:model="current_password" id="current_password">
                         <button type="button" class="btn btn-outline-secondary"
-                            onclick="togglePassword('current_password')">
+                            onclick="togglePassword('current_password', 'current_password_icon')">
                             <i class="fas fa-eye" id="current_password_icon"></i>
                         </button>
                     </div>
@@ -47,7 +46,7 @@
                     <div class="input-group">
                         <input type="password" class="form-control" wire:model="password" id="password">
                         <button type="button" class="btn btn-outline-secondary"
-                            onclick="togglePassword('password')">
+                            onclick="togglePassword('password', 'password_icon')">
                             <i class="fas fa-eye" id="password_icon"></i>
                         </button>
                     </div>
@@ -60,7 +59,7 @@
                         <input type="password" class="form-control" wire:model="password_confirmation"
                             id="password_confirmation">
                         <button type="button" class="btn btn-outline-secondary"
-                            onclick="togglePassword('password_confirmation')">
+                            onclick="togglePassword('password_confirmation', 'password_confirmation_icon')">
                             <i class="fas fa-eye" id="password_confirmation_icon"></i>
                         </button>
                     </div>
@@ -78,5 +77,19 @@
     function togglePassword(id) {
         const input = document.getElementById(id);
         input.type = input.type === "password" ? "text" : "password";
+    }
+    function togglePassword(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
     }
 </script>

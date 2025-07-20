@@ -3,159 +3,153 @@
     window.livewireComponentId = @json($this->getId());
 </script>
 <script>
-if (!window.profileCropper) {
-    window.profileCropper = {
-        cropper: null,
-        modalEl: null,
-        _eventSetup: false,
+    if (!window.profileCropper) {
+        window.profileCropper = {
+            cropper: null,
+            modalEl: null,
+            _eventSetup: false,
 
-        init: function () {
-            this.setupEventListeners();
-        },
+            init: function () {
+                this.setupEventListeners();
+            },
 
-        setupEventListeners: function () {
-            if (this._eventSetup) return;
-            this._eventSetup = true;
+            setupEventListeners: function () {
+                if (this._eventSetup) return;
+                this._eventSetup = true;
 
-            // Buka modal
-            window.addEventListener('open-cropper-modal', () => {
-                this.modalEl = document.getElementById('cropPhotoModal');
-                const modal = new bootstrap.Modal(this.modalEl, {
-                    backdrop: 'static',
-                    keyboard: false
-                });
-
-                this.modalEl.addEventListener('shown.bs.modal', () => {
-                    const image = document.getElementById('cropperImage');
-                    if (!image || !image.src) {
-                        return;
-                    }
-
-                    if (image.complete) {
-                        this.initCropper(image);
-                    } else {
-                        image.onload = () => this.initCropper(image);
-                    }
-                });
-
-                modal.show();
-            });
-
-            // Tutup modal
-            window.addEventListener('close-cropper-modal', () => {
-                const modal = bootstrap.Modal.getInstance(this.modalEl);
-                if (modal) modal.hide();
-
-                setTimeout(() => {
-                    const backdrop = document.querySelector('.modal-backdrop');
-                    if (backdrop) backdrop.remove();
-
+                // Buka modal
+                window.addEventListener('open-cropper-modal', () => {
+                    // Sebelum membuka modal
+                    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
                     document.body.classList.remove('modal-open');
                     document.body.style.removeProperty('padding-right');
-                }, 300);
 
-                if (this.cropper) {
-                    this.cropper.destroy();
-                    this.cropper = null;
-                }
-
-                const livewireComponent = Livewire.find(window.livewireComponentId);
-                if (livewireComponent) {
-                    livewireComponent.call('closeModal');
-                }
-            });
-
-            // Simpan foto
-            const cropSaveBtn = document.getElementById('cropSaveBtn');
-            if (cropSaveBtn) {
-                cropSaveBtn.addEventListener('click', () => {
-                    if (!this.cropper) {
-                        return;
-                    }
-
-                    const canvas = this.cropper.getCroppedCanvas({
-                        width: 500,
-                        height: 500,
-                        minWidth: 256,
-                        minHeight: 256,
-                        maxWidth: 1024,
-                        maxHeight: 1024,
-                        fillColor: '#fff',
-                        imageSmoothingEnabled: true,
-                        imageSmoothingQuality: 'high'
+                    this.modalEl = document.getElementById('cropPhotoModal');
+                    const modal = new bootstrap.Modal(this.modalEl, {
+                        backdrop: 'static',
+                        keyboard: false
                     });
 
-                    if (!canvas) {
-                        return;
-                    }
-
-                    canvas.toBlob((blob) => {
-                        if (!blob) {
+                    this.modalEl.addEventListener('shown.bs.modal', () => {
+                        const image = document.getElementById('cropperImage');
+                        if (!image || !image.src) {
                             return;
                         }
 
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                            const livewireComponent = Livewire.find(window.livewireComponentId);
-                            if (livewireComponent) {
-                                livewireComponent.call('saveCroppedPhoto', reader.result);
-                            }
-                        };
-                        reader.readAsDataURL(blob);
-                    }, 'image/png', 0.95);
+                        if (image.complete) {
+                            this.initCropper(image);
+                        } else {
+                            image.onload = () => this.initCropper(image);
+                        }
+                    });
+
+                    modal.show();
                 });
-            }
 
-            // Input file
-            const input = document.getElementById('photoInput');
-            if (input) {
-                input.addEventListener('change', function (e) {
-                    const file = e.target.files[0];
-                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-                    const maxSizeMB = 2;
+                // Tutup modal
+                window.addEventListener('close-cropper-modal', () => {
+                    const modal = bootstrap.Modal.getInstance(this.modalEl);
+                    if (modal) modal.hide();
 
-                    if (!allowedTypes.includes(file.type) || file.size > maxSizeMB * 1024 * 1024) {
-                        e.target.value = '';
-                        return;
+                    setTimeout(() => {
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) backdrop.remove();
+
+                        document.body.classList.remove('modal-open');
+                        document.body.style.removeProperty('padding-right');
+                    }, 300);
+
+                    if (this.cropper) {
+                        this.cropper.destroy();
+                        this.cropper = null;
                     }
 
-                    // Kirim event buka modal
-                    window.dispatchEvent(new CustomEvent('open-cropper-modal'));
+                    const livewireComponent = Livewire.find(window.livewireComponentId);
+                    if (livewireComponent) {
+                        livewireComponent.call('closeModal');
+                    }
+                });
+
+                // Simpan foto
+                const cropSaveBtn = document.getElementById('cropSaveBtn');
+                if (cropSaveBtn) {
+                    cropSaveBtn.addEventListener('click', () => {
+                        if (!this.cropper) {
+                            return;
+                        }
+
+                        const canvas = this.cropper.getCroppedCanvas({
+                            width: 500,
+                            height: 500,
+                            minWidth: 256,
+                            minHeight: 256,
+                            maxWidth: 1024,
+                            maxHeight: 1024,
+                            fillColor: '#fff',
+                            imageSmoothingEnabled: true,
+                            imageSmoothingQuality: 'high'
+                        });
+
+                        if (!canvas) {
+                            return;
+                        }
+
+                        canvas.toBlob((blob) => {
+                            if (!blob) {
+                                return;
+                            }
+
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                                const livewireComponent = Livewire.find(window.livewireComponentId);
+                                if (livewireComponent) {
+                                    livewireComponent.call('saveCroppedPhoto', reader.result);
+                                }
+                            };
+                            reader.readAsDataURL(blob);
+                        }, 'image/png', 0.95);
+                    });
+                }
+            },
+
+            initCropper: function (image) {
+                if (this.cropper) this.cropper.destroy();
+
+                this.cropper = new Cropper(image, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    responsive: true,
+                    restore: false,
+                    checkCrossOrigin: false
                 });
             }
-        },
+        };
 
-        initCropper: function (image) {
-            if (this.cropper) this.cropper.destroy();
+        window.profileCropper.init();
+    }
 
-            this.cropper = new Cropper(image, {
-                aspectRatio: 1,
-                viewMode: 1,
-                autoCropArea: 1,
-                responsive: true,
-                restore: false,
-                checkCrossOrigin: false
-            });
+    // Re-inisialisasi saat komponen Livewire diupdate
+    document.addEventListener("livewire:load", function () {
+        if (window.profileCropper) {
+            window.profileCropper._eventSetup = false;
+            window.profileCropper.init();
         }
-    };
+    });
 
-    window.profileCropper.init();
-}
+    Livewire.hook('message.processed', () => {
+        if (window.profileCropper) {
+            window.profileCropper._eventSetup = false;
+            window.profileCropper.init();
+        }
+    });
+    document.addEventListener("livewire:navigated", function () {
+        if (window.profileCropper) {
+            window.profileCropper._eventSetup = false;
+            window.profileCropper.init();
+        }
+    });
 
-// Re-inisialisasi saat komponen Livewire diupdate
-document.addEventListener("livewire:load", function () {
-    if (window.profileCropper) {
-        window.profileCropper._eventSetup = false;
-        window.profileCropper.init();
-    }
-});
-
-Livewire.hook('message.processed', () => {
-    if (window.profileCropper) {
-        window.profileCropper._eventSetup = false;
-        window.profileCropper.init();
-    }
-});
 </script>
 
 @endpush
@@ -182,7 +176,7 @@ Livewire.hook('message.processed', () => {
             <div class="card mb-4">
                 <div class="card-header justify-content-between d-flex align-items-center">
                     <div>
-                        <i class="fas fa-table me-1"></i>
+                        <i class="fa-solid fa-id-badge"></i>
                         <span class="d-none d-md-inline ms-1">Foto Profil</span>
                     </div>
                     <div>
@@ -206,10 +200,6 @@ Livewire.hook('message.processed', () => {
                                 <i class="fas fa-camera"></i>
                             </a>
 
-                            {{-- <a href="#"
-                                onclick="event.preventDefault(); document.getElementById('photoInput').click();"
-                                class="btn btn-warning">Upload Foto</a> --}}
-
                         </div>
                         <input type="file" id="photoInput" wire:model="photo" style="display:none" accept="image/*"
                             max="2048000">
@@ -229,13 +219,6 @@ Livewire.hook('message.processed', () => {
                                             onclick="window.dispatchEvent(new CustomEvent('close-cropper-modal'))"></button>
                                     </div>
 
-                                    <!-- Loading overlay -->
-                                    <div wire:loading wire:target="photo,croppedImage" class="text-center mt-2">
-                                        <div class="spinner-border text-primary" role="status">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
-                                    </div>
-
                                     <div class="modal-body d-flex justify-content-center align-items-center flex-column"
                                         style="padding: 1rem;">
                                         @if ($photo)
@@ -244,8 +227,6 @@ Livewire.hook('message.processed', () => {
                                                 class="img-fluid rounded shadow-sm"
                                                 style="max-height: 60vh; object-fit: contain;" alt="Preview Foto">
                                         </div>
-                                        @else
-                                        <p class="text-muted">Tidak ada foto untuk dicrop.</p>
                                         @endif
 
                                     </div>
@@ -263,69 +244,58 @@ Livewire.hook('message.processed', () => {
                                 </div>
                             </div>
                         </div>
-                        <h5>{{ auth()->user()->name }}</h5>
-                        <p class="text-muted">{{ auth()->user()->email }}</p>
-                        <p class="text-muted">{{ auth()->user()->created_at->format('d M Y') }}</p>
+                        <h5 class="mb-1">{{ auth()->user()->name }}</h5>
+                        <p class="text-muted mb-1">{{ auth()->user()->email }}</p>
+                        <p class="text-muted mb-0">Last change: {{ auth()->user()->updated_at->format('d M Y') }}</p>
+
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-12 col-md-8">
-            <div class="card mb-4">
-                <div class="card-header justify-content-between d-flex align-items-center">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <div>
-                        <i class="fas fa-table me-1"></i>
-                        <span class="d-none d-md-inline ms-1">Data User</span>
+                        <i class="fas fa-user me-2"></i>
+                        <span class="d-none d-md-inline">Informasi Pengguna</span>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="mb-3 row">
-                        <label class="col-sm-3 col-form-label fw-bold">Name</label>
-                        <div class="col-sm-9 col-form-label">
-                            {{ auth()->user()->karyawan->nama }}
-                        </div>
+                <div class="card-body px-4 py-4">
+                    @php $karyawan = auth()->user()->karyawan; @endphp
+
+                    {{-- Nama --}}
+                    <div class="row mx-0 py-2 border-bottom">
+                        <label class="col-sm-4 fw-semibold text-muted">Nama</label>
+                        <div class="col-sm-8">{{ $karyawan->nama }}</div>
                     </div>
 
-                    <div class="mb-3 row">
-                        <label class="col-sm-3 col-form-label fw-bold">Jabatan</label>
-                        <div class="col-sm-9 col-form-label">
-                            {{ auth()->user()->karyawan->jabatan }}
-                        </div>
+                    {{-- Jabatan --}}
+                    <div class="row mx-0 py-2 border-bottom">
+                        <label class="col-sm-4 fw-semibold text-muted">Jabatan</label>
+                        <div class="col-sm-8">{{ $karyawan->jabatan }}</div>
                     </div>
 
-                    @if(auth()->user()->karyawan->no_hp)
-                    <div class="mb-3 row">
-                        <label class="col-sm-3 col-form-label fw-bold">Phone</label>
-                        <div class="col-sm-9 col-form-label">
-                            {{ auth()->user()->karyawan->no_hp }}
-                        </div>
-                    </div>
-                    @endif
-
-                    @if(auth()->user()->karyawan->alamat)
-                    <div class="mb-3 row">
-                        <label class="col-sm-3 col-form-label fw-bold">Alamat</label>
-                        <div class="col-sm-9 col-form-label">
-                            {{ auth()->user()->karyawan->alamat }}
+                    {{-- Dynamic Fields --}}
+                    @foreach (['no_hp' => 'No. HP', 'alamat' => 'Alamat', 'tgl_masuk' => 'Tanggal Masuk'] as $field =>
+                    $label)
+                    @if (!empty($karyawan->$field))
+                    <div class="row mx-0 py-2 border-bottom">
+                        <label class="col-sm-4 fw-semibold text-muted">{{ $label }}</label>
+                        <div class="col-sm-8">
+                            {{ $field === 'tgl_masuk' ? \Carbon\Carbon::parse($karyawan->tgl_masuk)->format('d M Y') :
+                            $karyawan->$field }}
                         </div>
                     </div>
                     @endif
+                    @endforeach
 
-                    @if(auth()->user()->karyawan->tgl_masuk)
-                    <div class="mb-3 row">
-                        <label class="col-sm-3 col-form-label fw-bold">Tanggal Masuk</label>
-                        <div class="col-sm-9 col-form-label">
-                            {{ \Carbon\Carbon::parse(auth()->user()->karyawan->tgl_masuk)->format('d M Y') }}
-                        </div>
-                    </div>
-                    @endif
-
-                    <div class="mb-3 row">
-                        <label class="col-sm-3 col-form-label fw-bold">Status</label>
-                        <div class="col-sm-9 col-form-label">
+                    {{-- Status --}}
+                    <div class="row mx-0 py-2">
+                        <label class="col-sm-4 fw-semibold text-muted">Status</label>
+                        <div class="col-sm-8">
                             <span
-                                class="badge {{ auth()->user()->karyawan->status == 'aktif' ? 'bg-success' : 'bg-secondary' }}">
-                                {{ ucfirst(auth()->user()->karyawan->status) }}
+                                class="badge {{ $karyawan->status === 'aktif' ? 'bg-success' : 'bg-secondary' }} text-capitalize">
+                                {{ $karyawan->status }}
                             </span>
                         </div>
                     </div>

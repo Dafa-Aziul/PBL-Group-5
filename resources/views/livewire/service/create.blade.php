@@ -82,14 +82,14 @@
                 {{-- Input lainnya --}}
                 <div class="mb-3">
                     <label>Kode Service</label>
-                    <input wire:model="kode_service" type="text" class="form-control">
+                    <div class="form-control"> {{ $kode_service }}</div>
                     @error('kode_service') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="mb-3">
                     <label>Montir</label>
                     <select wire:model="form.montir_id" class="form-select">
-                        <option value="">-- Pilih Montir --</option>
+                        <option value="" selected hidden>-- Pilih Montir --</option>
                         @foreach ($montirs as $m)
                         <option value="{{ $m->id }}">{{ $m->nama }}</option>
                         @endforeach

@@ -26,8 +26,13 @@ class Profile extends Component
     {
         $validator = validator(
             ['photo' => $this->photo],
-            ['photo' => 'image|max:2048']
+            ['photo' => 'image|max:2048'],
+            [
+                'photo.image' => 'File yang dipilih harus berupa gambar.',
+                'photo.max' => 'Ukuran file tidak boleh lebih dari 2MB.',
+            ]
         );
+
 
         if ($validator->fails()) {
             $this->reset('photo');

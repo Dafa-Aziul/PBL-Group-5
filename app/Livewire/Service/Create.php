@@ -27,8 +27,28 @@ class Create extends Component
 
     public $selectedKendaraan;
 
+    private function generateKodeService()
+    {
+        $today = Carbon::now()->format('Ymd'); // Misal: 20250720
+        $prefix = 'SRV-' . $today . '-';
+
+        // Ambil kode terakhir untuk hari ini
+        $lastService = Service::whereDate('created_at', Carbon::today())
+            ->orderBy('id', 'desc')
+            ->first();
+
+        $lastNumber = 1;
+        if ($lastService && preg_match('/SRV-\d{8}-(\d+)/', $lastService->kode_service, $matches)) {
+            $lastNumber = (int)$matches[1] + 1;
+        }
+
+        return $prefix . str_pad($lastNumber, 4, '0', STR_PAD_LEFT);
+    }
+
     public function mount()
     {
+        $this->kode_service = $this->generateKodeService(); // ✅ Ini tempat yang tepat
+
         $this->pelanggan_id = request()->query('pelanggan_id');
         $selectedKendaraan = request()->query('selectedKendaraan');
 
@@ -40,6 +60,7 @@ class Create extends Component
         $this->pelanggans = Pelanggan::all();
         $this->montirs = Karyawan::where('jabatan', 'mekanik')->get();
     }
+
 
     public function getKendaraansProperty()
     {

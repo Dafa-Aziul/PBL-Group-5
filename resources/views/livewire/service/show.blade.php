@@ -1,3 +1,46 @@
+@push('scripts')
+<script>
+    function initTooltips() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (el) {
+            new bootstrap.Tooltip(el);
+        });
+    }
+
+    function copyKodeService(button) {
+        const kode = document.getElementById("kodeService").innerText;
+        navigator.clipboard.writeText(kode).then(() => {
+            const tooltip = bootstrap.Tooltip.getInstance(button);
+            if (tooltip) {
+                // Ubah isi tooltip
+                tooltip.setContent({ '.tooltip-inner': 'Disalin!' });
+                tooltip.show();
+
+                // Setelah 1.5 detik, kembalikan ke pesan awal dan sembunyikan tooltip
+                setTimeout(() => {
+                    tooltip.setContent({ '.tooltip-inner': 'Salin Kode' });
+                    tooltip.hide(); // Paksa tooltip ditutup
+                }, 1500);
+            }
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initTooltips();
+    });
+
+    // Untuk Livewire v3 navigasi
+    document.addEventListener("livewire:navigated", function () {
+        initTooltips();
+    });
+
+    // Pastikan fungsi bisa diakses global
+    window.copyKodeService = copyKodeService;
+</script>
+@endpush
+
+
 <div>
     <h2 class="mt-4">Kelola Service</h2>
     <ol class="breadcrumb mb-4">
@@ -5,7 +48,21 @@
                 href="{{ route('service.view') }}">Service</a></li>
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('service.view') }}">Daftar Service</a></li>
-        <li class="breadcrumb-item active">Detail Data Service : {{ $service->kode_service }}</li>
+        <li class="breadcrumb-item active d-flex align-items-center gap-2">
+            Detail Data Service :
+
+            <span id="kodeService" class="fw-semibold text-dark">
+                {{ $service->kode_service }}
+            </span>
+
+            <button onclick="copyKodeService(this)"
+                class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="tooltip" data-bs-placement="top"
+                title="Salin Kode">
+                <i class="fa-solid fa-copy"></i>
+            </button>
+        </li>
+
     </ol>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
@@ -232,8 +289,8 @@
                                         <th style="width: 50px;">Qty</th>
                                         <th style="width: 70px;">Satuan</th>
                                         @can('akses-admin-owner')
-                                            <th>Harga</th>
-                                            <th>Subtotal</th>
+                                        <th>Harga</th>
+                                        <th>Subtotal</th>
                                         @endcan
                                     </tr>
                                 </thead>
@@ -247,8 +304,9 @@
                                         <td class="text-center">{{ $sp->jumlah ?? '-' }}</td>
                                         <td class="text-center">{{ $sp->sparepart->satuan ?? '-' }}</td>
                                         @can('akses-admin-owner')
-                                            <td class="text-end">Rp {{ number_format($sp->harga, 0, ',', '.') }}</td>
-                                            <td class="text-end fw-semibold text-primary">Rp {{ number_format($sp->sub_total,
+                                        <td class="text-end">Rp {{ number_format($sp->harga, 0, ',', '.') }}</td>
+                                        <td class="text-end fw-semibold text-primary">Rp {{
+                                            number_format($sp->sub_total,
                                             0, ',', '.') }}</td>
                                         @endcan
                                     </tr>
@@ -277,14 +335,14 @@
 
                             {{-- Baris: Estimasi Biaya --}}
                             @can('akses-admin-owner')
-                                <div class="d-flex align-items-center text-success mb-2">
-                                    <i class="fas fa-money-bill-wave me-2"></i>
-                                    <div>
-                                        <strong>Total Estimasi Biaya:</strong>
-                                        <span class="fs-5 ms-1">Rp {{ number_format($totalEstimasi, 0, ',', '.') }}</span>
-                                    </div>
+                            <div class="d-flex align-items-center text-success mb-2">
+                                <i class="fas fa-money-bill-wave me-2"></i>
+                                <div>
+                                    <strong>Total Estimasi Biaya:</strong>
+                                    <span class="fs-5 ms-1">Rp {{ number_format($totalEstimasi, 0, ',', '.') }}</span>
                                 </div>
-                                @endcan
+                            </div>
+                            @endcan
 
                             {{-- Baris: Estimasi Waktu --}}
                             <div class="d-flex align-items-center text-primary">

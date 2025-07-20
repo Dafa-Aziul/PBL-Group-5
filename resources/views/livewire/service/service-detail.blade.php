@@ -39,6 +39,9 @@
             const nama = $el.data('nama');
             const harga = $el.data('harga');
             const tipe = $el.data('tipe');
+            const stok = $el.data('stok');
+
+            const badgeClass = stok <= 10 ? 'bg-danger' : 'bg-primary';
 
             return $(`
                 <div class="d-flex align-items-center gap-2">
@@ -47,6 +50,10 @@
                         <div><strong>Nama:</strong> ${nama}</div>
                         <div><strong>Harga:</strong> ${harga}</div>
                         <div><strong>Tipe Kendaraan:</strong> ${tipe}</div>
+                        <div>
+                            <strong>Stok:</strong>
+                            <span class="badge ${badgeClass}">${stok}</span>
+                        </div>
                     </div>
                 </div>
             `);
@@ -337,7 +344,8 @@
                                             data-image="{{ $sparepart->foto ? asset('storage/images/sparepart/' . $sparepart->foto) : asset('images/asset/default-sparepart.jpg') }}"
                                             data-nama="{{ $sparepart->nama }}"
                                             data-harga="Rp {{ number_format($sparepart->harga, 0, ',', '.') }}"
-                                            data-tipe="{{ $sparepart->tipe_kendaraan }}">
+                                            data-tipe="{{ $sparepart->tipe_kendaraan }}"
+                                            data-stok="{{ $sparepart->stok }}">
                                             {{ $sparepart->nama }}, {{ $sparepart->tipe_kendaraan }}
                                         </option>
                                         @endforeach
