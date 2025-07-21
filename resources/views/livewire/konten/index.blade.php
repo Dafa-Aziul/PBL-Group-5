@@ -85,7 +85,7 @@
                                 };
                                 @endphp
 
-                                <span class="badge {{ $badgeClass }} px-3 py-1 fs-6 fw-semibold">
+                                <span class="badge {{ $badgeClass }} px-3 py-1 fw-semibold">
                                     {{ ucfirst($status) }}
                                 </span>
                             </td>
@@ -93,11 +93,11 @@
 
                             <td class="text-center">
                                 <a href="{{ route('konten.edit', ['id' => $konten->id]) }}"
-                                    class="btn btn-warning mb-3 mb-md-2" wire:navigate>
+                                    class="btn btn-warning btn-sm me-1 mb-2 mb-md-2" wire:navigate>
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="d-none d-md-inline ms-1">Edit</span>
                                 </a>
-                                <button class="btn btn-danger mb-3 mb-md-2" data-bs-toggle="modal"
+                                <button class="btn btn-danger btn-sm me-1 mb-2 mb-md-2" data-bs-toggle="modal"
                                     data-bs-target="#confirm-{{ $konten->id }}">
                                     <i class="fas fa-trash-can"></i>
                                     <span class="d-none d-md-inline ms-1">Delete</span>

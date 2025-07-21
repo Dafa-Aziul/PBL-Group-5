@@ -119,7 +119,7 @@
                             <td>{{ $user->updated_at }}</td>
                             @can('admin')
                                 <td class="text-center">
-                                    <button class="btn btn-danger" data-bs-toggle="modal"
+                                    <button class="btn btn-danger btn-sm " data-bs-toggle="modal"
                                         data-bs-target="#confirm-{{ $user->id }}">
                                         <i class="fas fa-trash-can"></i>
                                         <span class="d-none d-md-inline ms-1">Delete</span>

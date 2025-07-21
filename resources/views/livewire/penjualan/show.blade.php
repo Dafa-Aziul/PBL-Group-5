@@ -1,12 +1,72 @@
+@push('scripts')
+<script>
+    function initTooltips() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (el) {
+            new bootstrap.Tooltip(el);
+        });
+    }
+
+    function copyKodePenjualan(button) {
+        const kode = document.getElementById("KodePenjualan").innerText;
+        navigator.clipboard.writeText(kode).then(() => {
+            const tooltip = bootstrap.Tooltip.getInstance(button);
+            if (tooltip) {
+                // Ubah isi tooltip
+                tooltip.setContent({ '.tooltip-inner': 'Disalin!' });
+                tooltip.show();
+
+                // Setelah 1.5 detik, kembalikan ke pesan awal dan sembunyikan tooltip
+                setTimeout(() => {
+                    tooltip.setContent({ '.tooltip-inner': 'Salin Kode' });
+                    tooltip.hide(); // Paksa tooltip ditutup
+                }, 1500);
+            }
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initTooltips();
+    });
+
+    // Untuk Livewire v3 navigasi
+    document.addEventListener("livewire:navigated", function () {
+        initTooltips();
+    });
+
+    // Pastikan fungsi bisa diakses global
+    window.copyKodePenjualan = copyKodePenjualan;
+</script>
+@endpush
+
 <div>
     <h2 class="mt-4">Manajemen Penjualan</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
-                href="{{ route('penjualan.view') }}">Penjualan</a></li>
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
-                href="{{ route('penjualan.view') }}">Daftar Penjualan</a></li>
-        <li class="breadcrumb-item active">Detail Penjualan : {{ $penjualan->kode_transaksi }}</li>
+        <li class="breadcrumb-item">
+            <a wire:navigate class="text-primary text-decoration-none"
+                href="{{ route('penjualan.view') }}">Penjualan</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a wire:navigate class="text-primary text-decoration-none" href="{{ route('penjualan.view') }}">Daftar
+                Penjualan</a>
+        </li>
+        <li class="breadcrumb-item active">
+            <div class="d-flex align-items-center gap-2">
+                <span>Detail Penjualan :</span>
+                <span id="KodePenjualan" class="fw-semibold text-dark">
+                    {{ $penjualan->kode_transaksi }}
+                </span>
+                <button onclick="copyKodePenjualan(this)"
+                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Salin Kode">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            </div>
+        </li>
     </ol>
+
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
@@ -164,8 +224,7 @@
                             </table>
                             <div class="row">
                                 <div class="mt-2">
-                                    <div class="alert alert-info d-flex align-items-center"
-                                        role="alert">
+                                    <div class="alert alert-info d-flex align-items-center" role="alert">
                                         <i class="fas fa-calculator me-2"></i>
                                         <div>
                                             <strong>Total Keseluruhan: </strong>

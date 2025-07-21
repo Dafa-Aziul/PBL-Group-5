@@ -44,26 +44,29 @@
 <div>
     <h2 class="mt-4">Kelola Service</h2>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
-                href="{{ route('service.view') }}">Service</a></li>
-        <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
-                href="{{ route('service.view') }}">Daftar Service</a></li>
-        <li class="breadcrumb-item active d-flex align-items-center gap-2">
-            Detail Data Service :
-
-            <span id="kodeService" class="fw-semibold text-dark">
-                {{ $service->kode_service }}
-            </span>
-
-            <button onclick="copyKodeService(this)"
-                class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
-                style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="tooltip" data-bs-placement="top"
-                title="Salin Kode">
-                <i class="fa-solid fa-copy"></i>
-            </button>
+        <li class="breadcrumb-item">
+            <a wire:navigate class="text-primary text-decoration-none" href="{{ route('service.view') }}">Service</a>
         </li>
-
+        <li class="breadcrumb-item">
+            <a wire:navigate class="text-primary text-decoration-none" href="{{ route('service.view') }}">Daftar
+                Service</a>
+        </li>
+        <li class="breadcrumb-item active">
+            <div class="d-flex align-items-center gap-2">
+                <span>Detail Data Service :</span>
+                <span id="kodeService" class="fw-semibold text-dark">
+                    {{ $service->kode_service }}
+                </span>
+                <button onclick="copyKodeService(this)"
+                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Salin Kode">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            </div>
+        </li>
     </ol>
+
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>

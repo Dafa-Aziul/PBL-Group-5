@@ -37,7 +37,45 @@
         });
     });
 </script>
+<script>
+    function initTooltips() {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (el) {
+            new bootstrap.Tooltip(el);
+        });
+    }
 
+    function copyKodeTransaksi(button) {
+        const kode = document.getElementById("KodeTransaksi").innerText;
+        navigator.clipboard.writeText(kode).then(() => {
+            const tooltip = bootstrap.Tooltip.getInstance(button);
+            if (tooltip) {
+                // Ubah isi tooltip
+                tooltip.setContent({ '.tooltip-inner': 'Disalin!' });
+                tooltip.show();
+
+                // Setelah 1.5 detik, kembalikan ke pesan awal dan sembunyikan tooltip
+                setTimeout(() => {
+                    tooltip.setContent({ '.tooltip-inner': 'Salin Kode' });
+                    tooltip.hide(); // Paksa tooltip ditutup
+                }, 1500);
+            }
+        });
+    }
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initTooltips();
+    });
+
+    // Untuk Livewire v3 navigasi
+    document.addEventListener("livewire:navigated", function () {
+        initTooltips();
+    });
+
+    // Pastikan fungsi bisa diakses global
+    window.copyKodeTransaksi = copyKodeTransaksi;
+</script>
 @endpush
 <div>
     <h2 class="mt-4">Manajemen Transaksi</h2>
@@ -46,7 +84,20 @@
                 href="{{ route('transaksi.view') }}">Transaksi</a></li>
         <li class="breadcrumb-item"><a wire:navigate class="text-primary text-decoration-none"
                 href="{{ route('transaksi.view') }}">Daftar Transaksi</a></li>
-        <li class="breadcrumb-item active">Detail Transaksi : {{ $transaksi->kode_transaksi }}</li>
+        <li class="breadcrumb-item active">
+            <div class="d-flex align-items-center gap-2">
+                <span>Detail Transaksi :</span>
+                <span id="KodeTransaksi" class="fw-semibold text-dark">
+                    {{ $transaksi->kode_transaksi }}
+                </span>
+                <button onclick="copyKodeTransaksi(this)"
+                    class="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px; padding: 0;" data-bs-toggle="tooltip" data-bs-placement="top"
+                    title="Salin Kode">
+                    <i class="fa-solid fa-copy"></i>
+                </button>
+            </div>
+        </li>
     </ol>
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
@@ -161,11 +212,11 @@
 
                     @if($transaksi->status_pembayaran != 'lunas')
                     @can('admin')
-                        <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
-                            data-bs-target="#paymentModal">
-                            <i class="fas fa-money-bill-wave"></i> <span class="d-none d-md-inline ms-1">Bayar
-                                Sekarang</span>
-                        </button>
+                    <button class="btn bg-white text-success btn-success" data-bs-toggle="modal"
+                        data-bs-target="#paymentModal">
+                        <i class="fas fa-money-bill-wave"></i> <span class="d-none d-md-inline ms-1">Bayar
+                            Sekarang</span>
+                    </button>
                     @endcan
                     @endif
                 </div>

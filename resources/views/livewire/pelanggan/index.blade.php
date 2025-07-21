@@ -83,7 +83,7 @@
                                 <td>{{ $pelanggan->email }}</td>
                                 <td>{{ $pelanggan->no_hp }}</td>
                                 <td>{{ $pelanggan->alamat }}</td>
-                                <td>
+                                <td class="text-center align-middle">
                                     <span class="badge text-
                                         @if($pelanggan->keterangan === 'pribadi')
                                             bg-info
@@ -99,7 +99,7 @@
                                 @can('admin')
                                 <td class="text-center" @click.stop>
                                     <a href="{{ route('pelanggan.edit', ['id' => $pelanggan->id]) }} "
-                                        class="btn btn-warning" wire:navigate>
+                                        class="btn btn-warning btn-sm" wire:navigate>
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         <span class="d-none d-md-inline ms-1">Edit</span>
                                     </a>

@@ -88,9 +88,9 @@
                             <td>{{ \Carbon\Carbon::parse($karyawan->tgl_masuk)->format('d-m-Y') }}</td>
                             <td class="text-center">
                                 @if ($karyawan->status === 'aktif')
-                                <span class="badge bg-success px-3 py-1 fs-6 fw-semibold">Aktif</span>
+                                <span class="badge bg-success px-3 py-1  fw-semibold">Aktif</span>
                                 @else
-                                <span class="badge bg-secondary px-3 py-1 fs-6 fw-semibold">Tidak Aktif</span>
+                                <span class="badge bg-secondary px-3 py-1 fw-semibold">Tidak Aktif</span>
                                 @endif
                             </td>
 

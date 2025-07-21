@@ -80,7 +80,7 @@
                             <td>{{ $sparepart->nama}}</td>
                             <td>{{ $sparepart->merk}}</td>
                             <td>{{ $sparepart->satuan}}</td>
-                            <td>
+                            <td class="text-center">
                                 <span class="badge text-bg-@if ($sparepart->stok <= 5) bg-danger @elseif ($sparepart->stok <= 10) bg-warning @else bg-info @endif">
                                     {{ $sparepart->stok }}
                                 </span>
@@ -117,15 +117,15 @@
                                 </div>
                             </td>
 
-                            <td class="text-center" @click.stop>
+                            <td class="text-center align-middle" @click.stop>
                                 <a href="{{ route('sparepart.edit', ['id' => $sparepart->id]) }}"
-                                    class="btn btn-warning mb-3 mb-md-2" wire:navigate>
+                                    class="btn btn-warning btn-sm me-1 mb-2 mb-md-2" wire:navigate>
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     <span class="d-none d-md-inline ms-1">Edit</span>
                                 </a>
 
                                 <!-- Button delete yang trigger modal unik -->
-                                <button class="btn btn-danger mb-3 mb-md-2" data-bs-toggle="modal"
+                                <button class="btn btn-danger btn-sm me-1 mb-2 mb-md-2" data-bs-toggle="modal"
                                     data-bs-target="#confirm-{{ $sparepart->id }}">
                                     <i class="fas fa-trash-can"></i>
                                     <span class="d-none d-md-inline ms-1">Delete</span>
