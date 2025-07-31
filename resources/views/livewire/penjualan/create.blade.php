@@ -41,7 +41,7 @@
             const tipe = $el.data('tipe');
             const stok = $el.data('stok');
 
-            const badgeClass = stok <= 10 ? 'bg-danger' : 'bg-primary';
+            const badgeClass = stok <= 5 ? 'bg-danger' : stok <= 10 ? 'bg-warning' : 'bg-primary';
 
             return $(`
                 <div class="d-flex align-items-center gap-2">

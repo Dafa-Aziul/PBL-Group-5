@@ -184,7 +184,7 @@ class Create extends Component
         }
 
         // Konfirmasi jika stok rendah
-        if ($sparepart->stok < 10) {
+        if ($sparepart->stok <= 10) {
             $this->konfirmasiSparepart = [
                 'sparepart_id' => $sparepart->id,
                 'nama' => $sparepart->nama,

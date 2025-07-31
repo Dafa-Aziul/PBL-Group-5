@@ -44,4 +44,14 @@ class Karyawan extends Model
     {
         return $this->hasMany(Absensi::class);
     }
+
+    public function services()
+    {
+        return $this->hasMany(Service::class, 'montir_id');
+    }
+
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class, 'kasir_id');
+    }
 }

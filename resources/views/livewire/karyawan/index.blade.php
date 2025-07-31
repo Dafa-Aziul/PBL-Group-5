@@ -1,3 +1,199 @@
+@push('scripts')
+<script>
+    (function () {
+        let performanceChartInstance = null;
+        let livewireListenersAttached = false;
+        let chartInitialized = false;
+        const colorMap = {};
+
+
+
+        function safeDestroyChart(instance) {
+            if (instance) {
+                try {
+                    instance.destroy();
+                } catch (e) {
+                    console.warn('Gagal menghancurkan chart:', e);
+                }
+            }
+            return null;
+        }
+
+        function renderPerformanceChart(chartPerformance) {
+            const ctx = document.getElementById('performanceChart');
+            if (!ctx) return;
+
+            if (
+                !chartPerformance ||
+                !Array.isArray(chartPerformance.labels) ||
+                !Array.isArray(chartPerformance.datasets) ||
+                chartPerformance.datasets.length === 0
+            ) {
+                console.warn('Data kosong untuk performanceChart, tidak dirender');
+                performanceChartInstance = safeDestroyChart(performanceChartInstance);
+                return;
+            }
+
+            function getColorForLabel(label) {
+                if (!colorMap[label]) {
+                    const r = Math.floor(Math.random() * 255);
+                    const g = Math.floor(Math.random() * 255);
+                    const b = Math.floor(Math.random() * 255);
+                    colorMap[label] = {
+                        border: `rgba(${r}, ${g}, ${b}, 1)`,
+                        background: `rgba(${r}, ${g}, ${b}, 0.2)`
+                    };
+                }
+                return colorMap[label];
+            }
+
+            const datasetsWithColor = chartPerformance.datasets.map(ds => {
+                const color = getColorForLabel(ds.label);
+                return {
+                    ...ds,
+                    fill: false,
+                    borderColor: color.border,
+                    backgroundColor: color.background,
+                    tension: 0.1
+                };
+            });
+
+            // Gunakan Chart.getChart untuk cek apakah chart sudah ada
+            const existingChart = Chart.getChart(ctx);
+
+            if (existingChart) {
+                // Update chart yang sudah ada tanpa destroy
+                existingChart.data.labels = chartPerformance.labels;
+
+                chartPerformance.datasets.forEach((newDataset, index) => {
+                    const color = getColorForLabel(newDataset.label);
+
+                    if (existingChart.data.datasets[index]) {
+                        const existingDataset = existingChart.data.datasets[index];
+                        existingDataset.label = newDataset.label;
+                        existingDataset.data = newDataset.data;
+                        existingDataset.borderColor = color.border;
+                        existingDataset.backgroundColor = color.background;
+                    } else {
+                        existingChart.data.datasets.push({
+                            ...newDataset,
+                            borderColor: color.border,
+                            backgroundColor: color.background,
+                            fill: false,
+                            tension: 0.1
+                        });
+                    }
+                });
+
+                // Hapus dataset lebih jika ada
+                while (existingChart.data.datasets.length > chartPerformance.datasets.length) {
+                    existingChart.data.datasets.pop();
+                }
+
+                existingChart.update();
+            } else {
+                // Hancurkan jika instance lama tersimpan
+                performanceChartInstance = safeDestroyChart(performanceChartInstance);
+
+                performanceChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartPerformance.labels,
+                        datasets: datasetsWithColor,
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const label = context.dataset.label || '';
+                                        const value = context.parsed.y || 0;
+                                        return `${label}: ${value}`;
+                                    },
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // Fungsi aman untuk menghancurkan chart
+        function safeDestroyChart(chartInstance) {
+            if (chartInstance && typeof chartInstance.destroy === 'function') {
+                chartInstance.destroy();
+            }
+            return null;
+        }
+
+        function attachLivewireListeners() {
+            if (livewireListenersAttached || !window.Livewire) return;
+
+            Livewire.on('chart-updated', (event) => {
+                const data = event?.chartPerformance ?? event;
+                renderPerformanceChart(data);
+            });
+
+            livewireListenersAttached = true;
+        }
+
+        function initializeChart() {
+            if (chartInitialized) return;
+
+            if (window.Livewire) {
+                attachLivewireListeners();
+            } else {
+                document.addEventListener('livewire:load', attachLivewireListeners);
+            }
+
+            renderPerformanceChart(@json($chartPeformance));
+            chartInitialized = true;
+        }
+
+        document.addEventListener('livewire:navigated', () => {
+            chartInitialized = false;
+            livewireListenersAttached = false;
+
+            setTimeout(() => {
+                if (document.getElementById('performanceChart')) {
+                    initializeChart();
+                }
+            }, 100);
+        });
+
+        if (document.readyState === 'complete') {
+            initializeChart();
+        } else {
+            document.addEventListener('DOMContentLoaded', initializeChart);
+        }
+
+        document.addEventListener('livewire:before-unload', () => {
+            performanceChartInstance = safeDestroyChart(performanceChartInstance);
+            livewireListenersAttached = false;
+        });
+    })();
+</script>
+@endpush
+
+
+
 <div>
     <h2 class="mt-4">Kelola Karyawan</h2>
     <ol class="breadcrumb mb-4">
@@ -18,6 +214,75 @@
     </div>
     @endif
 
+    @can('owner')
+    <div class="d-flex flex-column h-100 gap-3 g-3 mb-4" wire:poll.visible.3000ms='emitChartData'>
+        <div class="card card-jumlah flex-fill card-hover">
+            <div class="card-body">
+                <h5 class="card-title text-success">
+                    <i class="fa-solid fas fa-chart-area me-2"></i>Kinerja Karyawan
+                </h5>
+                <hr class="border border-2 opacity-50">
+                <div class="d-flex justify-content-center p-5">
+                    <canvas id="performanceChart" wire:ignore></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endcan
+
+    <div class="row g-2 d-flex justify-content-between align-items-center mb-2">
+
+        <div class="col-12 col-md-4 d-flex align-items-center gap-3">
+            <!-- Container form untuk dari dan sampai -->
+            <div class="d-flex flex-column flex-md-row gap-3 w-100">
+                <!-- From -->
+                <div class="d-flex align-items-center gap-2 me-md-0 mb-2 mb-md-0">
+                    <label for="tanggalAwal" class="form-label mb-0" style="width: 50px;">From:</label>
+                    <input type="date" id="tanggalAwal" wire:model="tanggalAwal" class="form-control" @if ($filterBulan)
+                        disabled @endif>
+                </div>
+
+                <!-- To -->
+                <div class="d-flex align-items-center gap-2 me-md-4 mb-2 mb-md-0">
+                    <label for="tanggalAkhir" class="form-label mb-0" style="width: 50px;">To :</label>
+                    <input type="date" id="tanggalAkhir" wire:model.lazy="tanggalAkhir" class="form-control" @if($filterBulan) disabled @endif>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Reset Button -->
+        <div class="col-12 col-md-4 d-flex justify-content-between justify-content-md-end gap-2 mb-2">
+            <!-- Checkbox "Semua" -->
+            <div>
+                <select class="form-select" wire:model.live="filterBulan" style="cursor:pointer;" @if($tanggalAwal)
+                    disabled @endif>
+                    <option value='' disabled selected hidden>Pilih Bulan</option>
+                    @foreach(range(1, 12) as $bulan)
+                    <option value="{{ $bulan }}">{{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <select class="form-select" wire:model.live.debounce.300ms="filterRole" style="cursor:pointer;">
+                    <option value='' disabled selected hidden>Pilih Karyawan</option>
+                    <option value="admin">Admin</option>
+                    <option value="mekanik">Mekanik</option>
+                </select>
+            </div>
+            <div class="">
+                <button wire:click="resetFilters" class="btn btn-outline-secondary d-flex align-items-center">
+                    <i class="fas fa-rotate me-1"></i>
+                    <span class="d-none d-md-inline">Reset</span>
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+
     <div class="card mb-4">
         <div class="card-header justify-content-between d-flex align-items-center">
             <div>
@@ -26,10 +291,10 @@
             </div>
             <div>
                 @can('admin')
-                    <a class="btn btn-primary float-end" href="{{ route('karyawan.create') }}" wire:navigate>
-                        <i class="fas fa-plus"></i>
-                        <span class="d-none d-md-inline ms-1">Tambah karyawan</span>
-                    </a>
+                <a class="btn btn-primary float-end" href="{{ route('karyawan.create') }}" wire:navigate>
+                    <i class="fas fa-plus"></i>
+                    <span class="d-none d-md-inline ms-1">Tambah karyawan</span>
+                </a>
                 @endcan
             </div>
         </div>
